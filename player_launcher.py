@@ -54,7 +54,7 @@ def init_camera(cam_index=0):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH,  1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT,  720)
 
-    print("Camera opened successfully!\n")
+    print("Camera detected successfully!")
     return cap
 
 
@@ -86,7 +86,7 @@ class Player(object):
             print("Joystick connected!")
             self.controller = controllers.Joystick(mode, self.car_number, ideal_speed, max_angle)
         else:
-            raise ValueError('Invalid controller')
+            raise ValueError('Invalid controller!')
 
         # Define variables
         self.remote_port = 6789
@@ -107,7 +107,7 @@ class Player(object):
         """Initiates the Pi and transfers incoming data to the Pi board at 100Hz"""
         th = Thread(target=self.boot)
         th.start()
-        print('Listening...')
+        print('Sending...\n')
 
         while self.controller.running:
             # Give the controller the latest shared frame instead of reading itself
@@ -128,7 +128,7 @@ class Player(object):
             time.sleep(1. / 100.)
         
         time.sleep(0.85)
-        print(f"Copying log file from the minicar-{self.car_number}...")
+        print(f"Copying log file from the minicar(s)...")
         self.copy_file()
 
         s.close()
@@ -146,10 +146,10 @@ def players_run(car_list):
     cam_thread.start()
 
     # Wait until at least one frame is available before proceeding
-    print('Waiting for camera...')
+    print('Waiting for camera connection...')
     while get_latest_frame() is None:
         time.sleep(0.05)
-    print('Camera ready.')
+    print('Camera ready!\n')
 
     print('Initializing...')
     for car_number in car_list:
@@ -158,18 +158,18 @@ def players_run(car_list):
 
         response = players[car_number].ping()
         if response == 0:
-            print('Player {} responsive and ready to drive!'.format(car_number))
+            print('Minicar {} responsive and ready to drive!\n'.format(car_number))
 
             players_thread[car_number] = Thread(target=players[car_number].transfer_data)
             players_thread[car_number].start()
         elif response == 1:
-            print('Player {} unresponsive!'.format(car_number))
+            print('Minicar {} unresponsive!'.format(car_number))
             
             del players[car_number]
             unresponsive.append(car_number)
     
     if unresponsive:
-        print('Cars {} unresponsive!\nPress R to retry connecting or Q the connection!'.format([*unresponsive]))
+        print('Minicar(s) {} unresponsive!\nPress R to retry connecting or Q the connection!'.format([*unresponsive]))
         
         while True:
             if keyboard.is_pressed(key_bind.stop):
@@ -177,13 +177,13 @@ def players_run(car_list):
                 s.close()
                 sys.exit(0)
             elif keyboard.is_pressed(key_bind.retry):
-                print("\n\nRetry connecting to unresponsive car(s)...")
+                print("\nRetry connecting to unresponsive minicar(s)...")
                 players_run(unresponsive)
                 break
 
         time.sleep(0.1)
     else:
-        print('Initializing finished!\nSending...')
+        print('Initializing minicar(s) finished!')
 
     # Main display loop: composite all car frames into one
     while True:
@@ -225,7 +225,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.cars is None:
-        print('No player selected')
+        print('No minicar selected!')
         sys.exit(0)
 
     # Setup socket

@@ -41,15 +41,16 @@ class Keyboard(object):
 
         self.binds = binds.KeyboardBinds()
         self.file = open('./player/console_prints/keyboard-console-log.txt', 'w')
+        self.file1 = open('./player/console_prints/camera-console-log.txt', 'w')
 
-        safe_write(self.file, "Turning on the control functionality...\n")
+        safe_write(self.file, "Turning on the control functionality...")
 
         if self.control_type == 0:
-            safe_write(self.file,"Launching in mode {} - Manual Control...\r\n".format(self.control_type))
+            safe_write(self.file,"[Minicar {}] Launching  in mode {} - Manual Control!\r\n".format(self.car_number, self.control_type))
         elif self.control_type == 1:
-            safe_write(self.file,"Launching in mode {} - Semi-Autonomous Control...\r\n".format(self.control_type))
+            safe_write(self.file,"[Minicar {}] Launching minicar {} in mode {} - Semi-Autonomous Control!\r\n".format(self.car_number, self.control_type))
         elif self.control_type == 2:
-            safe_write(self.file,"Launching in mode {} - Autonomous Control...\r\n".format(self.control_type))
+            safe_write(self.file,"[Minicar {}] Launching minicar {} in mode {} - Autonomous Control!\r\n".format(self.car_number, self.control_type))
 
     def break_until_stop(self):
         """Gradually brakes until the car's motor stops"""
@@ -64,11 +65,11 @@ class Keyboard(object):
 
     def motor_stop(self):
         """Full brakes and stops the car's motor instantly"""
-        self.speed = 0.
+        self.speed = 0.0
 
     def neutral_steering(self):
         """Straight steering position of the car's servo"""
-        self.angle = 0.
+        self.angle = 0.0
 
     def stop(self):
         """Shutdowns the motor, resets the servo's angle to stop the car"""
@@ -76,7 +77,7 @@ class Keyboard(object):
             self.motor_stop()
             self.neutral_steering()
             
-            safe_write(self.file,"Car is stopping...\nNeutral steering position...\n")
+            safe_write(self.file,f"[Minicar {self.car_number}] is stopping...\nNeutral steering position...\n")
 
     def accelerate(self, accel):
         """Increases/decreases the speed up to the max speed"""
@@ -96,7 +97,7 @@ class Keyboard(object):
 
         # Quit
         if keyboard.is_pressed(self.binds.exit):
-            safe_write(self.file,"\nTurning off the control functionality...")
+            safe_write(self.file,"\nTurning off the control functionality for all minicars...")
             self.file.close()
             print("Keyboard/print logs file generated from the console's outputs...")
             
@@ -111,19 +112,19 @@ class Keyboard(object):
             self.control_type = 0
             time.sleep(0.1)
 
-            safe_write(self.file,'Switching to Manual Control...\n')
+            safe_write(self.file, f'[Minicar {self.car_number}] Switching to Manual Control...\n')
         elif keyboard.is_pressed(self.binds.semiautonomous) and self.control_type != 1:
             self.stop()
             self.control_type = 1
             time.sleep(0.1)
 
-            safe_write(self.file,'Switching to Semi-Autonomous Control...\n')
+            safe_write(self.file, f'[Minicar {self.car_number}] Switching to Semi-Autonomous Control...\n')
         elif keyboard.is_pressed(self.binds.autonomous) and self.control_type != 2:
             self.stop()
             self.control_type = 2
             time.sleep(0.1)
             
-            safe_write(self.file,'Switching to Autonomous Control...\n')
+            safe_write(self.file, f'[Minicar {self.car_number}] Switching to Autonomous Control...\n')
 
         # Manual control
         if self.control_type == 0:
@@ -132,28 +133,28 @@ class Keyboard(object):
 
             if forward_pressed and backward_pressed:
                 self.motor_stop()
-                safe_write(self.file,"W and S - breaking with {}!\n".format(self.speed))
+                safe_write(self.file,"[Minicar {}] W and S - breaking with {}!\n".format(self.car_number, self.speed))
 
                 moved = True
             elif forward_pressed:
                 self.accelerate(self.ideal_speed)
-                safe_write(self.file,"W - acceleration with {}!\n".format(self.speed))
+                safe_write(self.file,"[Minicar {}] W - acceleration with {}!\n".format(self.car_number, self.speed))
 
                 moved = True
             elif backward_pressed:
                 self.accelerate(-self.ideal_speed)
-                safe_write(self.file,"S - deceleration with {}!\n".format(self.speed))
+                safe_write(self.file,"[Minicar {}] S - deceleration with {}!\n".format(self.car_number, self.speed))
                 
                 moved = True
 
             if keyboard.is_pressed(self.binds.turn_left):
                 self.turn(-self.max_angle)
-                safe_write(self.file,"A - turn left with {}!\n".format(self.angle))
+                safe_write(self.file,"[Minicar {}] A - turn left with {}!\n".format(self.car_number, self.angle))
 
                 turned = True
             elif keyboard.is_pressed(self.binds.turn_right):
                 self.turn(self.max_angle)
-                safe_write(self.file,"D - turn right with {}!\n".format(self.angle))
+                safe_write(self.file,"[Minicar {}] D - turn right with {}!\n".format(self.car_number, self.angle))
 
                 turned = True
             
@@ -169,17 +170,17 @@ class Keyboard(object):
 
             if forward_pressed and backward_pressed:
                 self.motor_stop()
-                safe_write(self.file,"W and S - breaking with {}!\n".format(self.speed))
+                safe_write(self.file,"[Minicar {}] W and S - breaking with {}!\n".format(self.car_number, self.speed))
 
                 moved = True
             elif forward_pressed:
                 self.accelerate(self.ideal_speed)
-                safe_write(self.file,"W - acceleration with {}!\n".format(self.speed))
+                safe_write(self.file,"[Minicar {}] W - acceleration with {}!\n".format(self.car_number, self.speed))
 
                 moved = True
             elif backward_pressed:
                 self.accelerate(-self.ideal_speed)
-                safe_write(self.file,"S - deceleration with {}!\n".format(self.speed))
+                safe_write(self.file,"[Minicar {}] S - deceleration with {}!\n".format(self.car_number, self.speed))
                 
                 moved = True
 
@@ -187,36 +188,36 @@ class Keyboard(object):
                 self.break_until_stop()      
 
             self.angle, _, self.frame = run(self.capture, self.car_number)
-            safe_write(self.file, "Autonomous turning with {}!\n".format(self.angle))
+            safe_write(self.file1, "[Minicar {}] Autonomous turning with {}!\n".format(self.car_number, self.angle))
 
         # Autonomous control
         elif self.control_type == 2:
             self.angle, self.speed, self.frame = run(self.capture, self.car_number)
-            safe_write(self.file, "Autonomous speed of {} and turning with {}!\n".format(self.speed, self.angle))
+            safe_write(self.file1, "[Minicar {}] Autonomous speed of {} and turning with {}!\n".format(self.car_number, self.speed, self.angle))
 
         # LEDs brightness control
         if keyboard.is_pressed(self.binds.lights_off):
             self.turned_on = False
-            self.brightness = 0.
+            self.brightness = 0.0
             
-            safe_write(self.file,"All lights full off!\n")
+            safe_write(self.file,"[Minicar {}] All lights full off!\n".format(self.car_number))
         elif keyboard.is_pressed(self.binds.lights_on):
             self.turned_on = True
-            self.brightness = 1.
+            self.brightness = 1.0
             
-            safe_write(self.file,"All lights full on!\n")
+            safe_write(self.file,"[Minicar {}] All lights full on!\n".format(self.car_number))
 
         if self.turned_on:
             if keyboard.is_pressed(self.binds.decrease_brightness) and not keyboard.is_pressed(self.binds.lights_on):
                 self.brightness = round(max(0., self.brightness - 0.05), 2)
                 
-                if self.brightness > 0.:
-                    safe_write(self.file,"Decrease brightness - LEDs value: {}!\n".format(self.brightness))
+                if self.brightness> 0.0:
+                    safe_write(self.file,"[Minicar {}] Decrease brightness - LEDs value: {}!\n".format(self.car_number, self.brightness))
             elif keyboard.is_pressed(self.binds.increase_brightness) and not keyboard.is_pressed(self.binds.lights_on):
                 self.brightness = round(min(1., self.brightness + 0.05), 2)
                 
-                if self.brightness < 1.:
-                    safe_write(self.file,"Increase brightness - LEDs value: {}!\n".format(self.brightness))
+                if self.brightness < 1.0:
+                    safe_write(self.file,"[Minicar {}] Increase brightness - LEDs value: {}!\n".format(self.car_number, self.brightness))
 
 
 class Joystick(object):

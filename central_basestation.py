@@ -4,6 +4,7 @@ import numpy as np
 import time
 import random
 
+
 ARUCO_IDS = [0, 2]
 PROXIMITY_THRESHOLD = 300 
 SPEED_THRESHOLD = 15       
@@ -22,6 +23,15 @@ tracker = {
 
 detected = {}
 
+file = open('./player/console_prints/camera-console-log.txt', 'w')
+
+
+def safe_write(file, msg):
+    """Displays on console and writes to a .txt file safely"""
+    if file and not file.closed:
+        print(msg)
+        file.write(msg)
+        file.flush()
 
 def estimate_speed(curr_pos, prev_pos, dt):
     if prev_pos is None or dt == 0:
@@ -38,10 +48,6 @@ def run(frame: np.ndarray, car_id: int):
     frame   : BGR image already read by the camera producer thread
     car_id  : integer marker ID for this car
     """
-    # Validate incoming frame
-    # if frame is None or frame.size == 0:
-    #     print(f"[Car {car_id}] Empty frame received.")
-    #     return 0.0, 0.0, np.zeros((720, 1280, 3), dtype=np.uint8)
 
     # Work on a copy so the producer's shared frame is never mutated
     car_frame = frame.copy()
@@ -106,8 +112,7 @@ def run(frame: np.ndarray, car_id: int):
             for marker_id in ARUCO_IDS:
                 last_sent = tracker[marker_id]['last_sent']
                 if not last_sent.get("proximity_alert"):
-                    # send_command(marker_id, "proximity_alert")
-                    print(f"Car {car_id}: Proximity alert received!")
+                    safe_write(file, f"Car {car_id}: Proximity alert received!")
                     last_sent["proximity_alert"] = True
 
 
@@ -117,32 +122,29 @@ def run(frame: np.ndarray, car_id: int):
 
             if speed_0 > speed_1 and tracker[0]['status'] == "moving":
                 if not tracker[0]['last_sent'].get("0.25"):
-                    # send_command(1, "50")
                     if car_id == 0:
                         servo, motor = random.choice([MAX_SERVO / 2, -MAX_SERVO / 2]), MIN_SPEED
                         tracker[0]['last_sent']["0.25"] = True
-                        print(f"0 change track with turning angle {servo} and motor speed {motor}")
+                        safe_write(file, f"0 change track with turning angle {servo} and motor speed {motor}")
             elif speed_1 > speed_0 and tracker[2]['status'] == "moving":
                 if not tracker[2]['last_sent'].get("0.25"):
-                    # send_command(3, "50")
                     if car_id == 2:
                         servo, motor = random.choice([MAX_SERVO / 2, -MAX_SERVO / 2]), MIN_SPEED
                         tracker[2]['last_sent']["0.25"] = True
-                        print(f"2 change track with turning angle {servo} and motor speed {motor}")
+                        safe_write(file, f"2 change track with turning angle {servo} and motor speed {motor}")
         else:
             for marker_id in ARUCO_IDS:
                 last_sent = tracker[marker_id]['last_sent']
                 if last_sent.get("proximity_alert") or last_sent.get("0.25"):
-                    print(f"Reset Proximity cleared for Car {marker_id}")
+                    safe_write(file, f"Reset Proximity cleared for Car {marker_id}")
                     last_sent.pop("proximity_alert", None)
                     last_sent.pop("0.25", None)
                 
                 if not last_sent.get("0.0"):
-                    # send_command(marker_id, "90")
                     if car_id == 2:
                         servo, motor = 0.0, MAX_SPEED
                         last_sent["0.0"] = True
-                        print(f"2 continue with turning angle {servo} and motor speed {motor}")
+                        safe_write(file, f"2 continue with turning angle {servo} and motor speed {motor}")
                 else:
                     last_sent.pop("0.0", None)
 
@@ -152,7 +154,6 @@ def run(frame: np.ndarray, car_id: int):
     # if cv2.waitKey(1) & 0xFF == ord('q'):
     #     sys.exit("\nQuitting the car_frame!")
     return round(servo, 2), round(motor, 2), car_frame
-
 
 # # Just for testing purposes
 # def init_camera(cam_index=0):
