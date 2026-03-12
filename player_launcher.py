@@ -14,22 +14,59 @@ import os
 import sys
 import keyboard
 import cv2
+
 from threading import Thread, Lock
 
 from player import controllers, binds
-from auto_control_diag import init_camera
 
-#TODO see if here some changes are needed also
+# Shared camera state
+frame_lock   = Lock()
+latest_frame = None          # raw camera frame (producer writes, consumers read)
+result_lock  = Lock()
+car_results  = {}            # {car_id: annotated_frame}  (consumers write, display reads)
+
+
+# Producer: one camera thread
+def camera_producer(capture):
+    """Continuously reads frames from the camera and stores the latest one."""
+    global latest_frame
+    while True:
+        ret, frame = capture.read()
+        if not ret or frame is None:
+            continue
+        with frame_lock:
+            latest_frame = frame.copy()
+
+# Consumer helper: get the latest raw frame
+def get_latest_frame():
+    with frame_lock:
+        return latest_frame.copy() if latest_frame is not None else None
+    
+def init_camera(cam_index=0):
+    if os.name == "nt":
+        cap = cv2.VideoCapture(cam_index)
+    elif os.name == "posix":
+        cap = cv2.VideoCapture(cam_index, cv2.CAP_V4L2)
+
+    if not cap.isOpened():
+        sys.exit("Camera not found!\n")
+
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH,  1280)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT,  720)
+
+    print("Camera opened successfully!\n")
+    return cap
+
+
 class Player(object):
     """ 
         Defines the player object to be controlled externally by keyboard/controller to run the car in
         manual, semi-autonomous or autonomous mode
     """
 
-    def __init__(self, number, controller, mode, capture, ideal_speed=0.55, max_angle=0.5):
+    def __init__(self, number, controller, mode, ideal_speed=0.55, max_angle=0.5):
         # Import variables
         self.car_number = number
-        self.capture = capture
 
         # Calculate IP and slicing car_number from IP to copy the log file
         if self.car_number in range(0,10):
@@ -44,10 +81,10 @@ class Player(object):
         # Assign controller
         if controller == 'keyboard':
             print("Keyboard connected!")
-            self.controller = controllers.Keyboard(mode, self.car_number, self.capture, ideal_speed, max_angle)
+            self.controller = controllers.Keyboard(mode, self.car_number, ideal_speed, max_angle)
         elif controller == 'joystick':
             print("Joystick connected!")
-            self.controller = controllers.Joystick(mode, self.car_number, self.capture, ideal_speed, max_angle)
+            self.controller = controllers.Joystick(mode, self.car_number, ideal_speed, max_angle)
         else:
             raise ValueError('Invalid controller')
 
@@ -66,19 +103,22 @@ class Player(object):
         return os.system('ping -n 1 -w 200 {} | find "Reply"'.format(self.ip))
 
     def transfer_data(self):
-        global latest_frame
+        global car_results
         """Initiates the Pi and transfers incoming data to the Pi board at 100Hz"""
         th = Thread(target=self.boot)
         th.start()
         print('Listening...')
 
         while self.controller.running:
-            # listening for controller commands
-            self.controller.listen()
+            # Give the controller the latest shared frame instead of reading itself
+            # Listening for controller commands
+            shared_frame = get_latest_frame()
+            self.controller.listen(captured_frame=shared_frame)      # pass frame explicitly
 
+            # Store annotated result for this car (for the compositor)
             if self.controller.frame is not None:
-                with frame_lock:
-                    latest_frame = self.controller.frame
+                with result_lock:
+                    car_results[self.car_number] = self.controller.frame.copy()
 
             # Send data at 100Hz
             buffer = bytearray(
@@ -88,7 +128,7 @@ class Player(object):
             time.sleep(1. / 100.)
         
         time.sleep(0.85)
-        print("Copying log file from the Pi board...")
+        print(f"Copying log file from the minicar-{self.car_number}...")
         self.copy_file()
 
         s.close()
@@ -99,13 +139,22 @@ def players_run(car_list):
     """Start and run the listed cars"""
     unresponsive = []
     capture = init_camera(1)
-    global latest_frame
     key_bind = binds.KeyboardBinds()
+
+    # Start the single camera producer thread
+    cam_thread = Thread(target=camera_producer, args=(capture,), daemon=True)
+    cam_thread.start()
+
+    # Wait until at least one frame is available before proceeding
+    print('Waiting for camera...')
+    while get_latest_frame() is None:
+        time.sleep(0.05)
+    print('Camera ready.')
 
     print('Initializing...')
     for car_number in car_list:
         car_number = int(car_number)
-        players[car_number] = Player(car_number, args.controller, args.mode, capture)
+        players[car_number] = Player(car_number, args.controller, args.mode)
 
         response = players[car_number].ping()
         if response == 0:
@@ -119,40 +168,49 @@ def players_run(car_list):
             del players[car_number]
             unresponsive.append(car_number)
     
-    if len(unresponsive) == 0:
-        print('Initializing finished!\nSending...')
-    else:
+    if unresponsive:
         print('Cars {} unresponsive!\nPress R to retry connecting or Q the connection!'.format([*unresponsive]))
-
+        
         while True:
             if keyboard.is_pressed(key_bind.stop):
                 print("Quitting the connection!")
                 s.close()
                 sys.exit(0)
-                break
             elif keyboard.is_pressed(key_bind.retry):
                 print("\n\nRetry connecting to unresponsive car(s)...")
                 players_run(unresponsive)
                 break
 
         time.sleep(0.1)
+    else:
+        print('Initializing finished!\nSending...')
 
+    # Main display loop: composite all car frames into one
     while True:
-        with frame_lock:
-            frame = latest_frame.copy() if latest_frame is not None else None
+        # Start from the latest raw camera frame as the base
+        base = get_latest_frame()
+        if base is None:
+            time.sleep(0.02)
+            continue
 
-        if frame is not None:
-            cv2.imshow("Autonomous Cars View", frame)
-        else:
-            sys.exit("No frame available for visualisation.")
-            break
-        
+        # Overlay each car's annotated result on top of the base frame
+        # (Each car thread writes its own annotated frame into car_results)
+        with result_lock:
+            results = dict(car_results)   # snapshot, don't hold lock during drawing
+
+        display_frame = base.copy()
+        for _, annotated in results.items():
+            if annotated is not None and annotated.shape == display_frame.shape:
+                # Blend annotated overlay (lane lines, circles, telemetry) onto base
+                cv2.addWeighted(annotated, 0.85, display_frame, 0.15, 0, display_frame)
+
+        cv2.imshow("Autonomous Minicars View", display_frame)
         if cv2.waitKey(1) & 0xFF == key_bind.exit_ASCII:
-            sys.exit("Exiting visualisation.")
+            sys.exit("Exiting visualisation!")
             break
 
-        time.sleep(0.02)  # ~50Hz display refresh
-    
+        time.sleep(0.02)   # ~50Hz display refresh
+
     capture.release()
     cv2.destroyAllWindows()
 
@@ -175,8 +233,5 @@ if __name__ == '__main__':
 
     players = {}
     players_thread = {}
-    
-    frame_lock = Lock()
-    latest_frame = None
 
     players_run(args.cars)
