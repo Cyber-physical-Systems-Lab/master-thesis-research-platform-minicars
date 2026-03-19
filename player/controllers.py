@@ -8,7 +8,8 @@ import keyboard
 import pygame
 import sys
 
-from central_basestation import run
+# from central_basestation import run
+from auto_control import run
 from player import binds
 
 def safe_write(file, msg):

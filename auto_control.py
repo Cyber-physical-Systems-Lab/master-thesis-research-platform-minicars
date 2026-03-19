@@ -1,662 +1,451 @@
 import cv2
-import sys
-import os
+import cv2.aruco as aruco
 import numpy as np
-from cv2 import aruco
-from threading import Lock
+import time
+# import sys
+# import os
 
-# ─────────────────────────────────────────────
-# CONFIG / TUNING CONSTANTS
-# ─────────────────────────────────────────────
-CAR_DICT   = aruco.DICT_4X4_50    # 4×4 markers  → RC car (front + rear share same ID)
-LANE_DICT  = aruco.DICT_6X6_250   # 6×6 markers  → lane boundary corners
+#TODO better version, still needs some fine-tuning, but at least is turning on sharp 
+# edges/curves and have the motor speed slowing down
+# going straight for linear curves and almost MAX_SPEED
 
-# Lane boundary marker ID groups
-LANE_GROUP_LEFT  = (198, 199)      # two markers that form the LEFT boundary
-# LANE_GROUP_LEFT  = (196, 197)     # two markers that form the LEFT boundary
-# LANE_GROUP_RIGHT = (198, 199)     # two markers that form the RIGHT boundary
-LANE_GROUP_RIGHT = (196, 197)     # two markers that form the RIGHT boundary
+#  Constants 
+ANGLE_THRESHOLD        = 1       # Min angle change to issue a new command
+LOW_THRESHOLD          = 40      # Distance considered "too close" (px)
+HIGH_THRESHOLD         = 80      # Distance considered "far" (px)
+WEIGHT                 = 0.5     # Exponent for scoring non-linearity
+ANGLE_FAVOR            = 0.7     # Scoring bias toward direction vs. distance
 
-# Speed / servo limits
-MIN_SPEED  = 0.45
-MAX_SPEED  = 0.60
-MAX_SERVO  = 0.50
+SPEED_THRESHOLD        = 15
+STATUS_UPDATE_INTERVAL = 0.1
+SCALING_FACTOR         = 10.3
 
-# Lane-following gains
-CTE_K       = 1.0 / 160.0   # cross-track error (pixels) → servo normalised [-1,1]
-HEADING_K   = 1.0 / 45.0    # heading error (degrees)    → servo normalised [-1,1]
-CTE_W       = 0.45           # weight of CTE    contribution to servo
-HEADING_W   = 0.55           # weight of heading contribution to servo
+N_SAMPLES = 40       # Left-boundary sample count
+MIN_SPEED = 0.45
+MAX_SPEED = 0.60
+# Servo neutral is now 0.0; range is [-0.5, 0.5] → maps to [-45°, +45°] physical rotation
+MAX_SERVO       = 0.5
 
-# Speed reduction near lane edges (fraction of half-lane-width that triggers slow-down)
-EDGE_SLOW_FRACTION = 0.65    # if |CTE| > 65 % of half-width → start slowing
-EDGE_MIN_SPEED_MUL = 0.55    # slowest multiplier when almost at the boundary
+# Threshold scaled proportionally: 1° / 45° ≈ 0.022 in normalized units
+ANGLE_THRESHOLD = 0.02
 
-# Curve shape parameters (tunable)
-CURVE_SAMPLES      = 60      # number of points sampled along each boundary polyline
-CURVE_SMOOTHING    = 0.30    # 0 = straight lines between markers, 1 = very smooth spline
+# Jump-filter upper bound scaled from 70°/90° into the new [-0.5, 0.5] space
+JUMP_FILTER     = 0.78
 
-# Smoothing for output commands
-SMOOTH_ALPHA = 0.40
+# Lane marker IDs (6x6 ArUco)
+RIGHT_END_IDS = [196, 197]
+LEFT_END_IDS  = [198, 199]
+RIGHT_MID_ID  = 200
+LEFT_MID_ID   = 201
 
-CV_LOCK = Lock()
+#  Global state 
+tracker:          dict = {}
+last_sent_angles: dict = {}
 
-# ─────────────────────────────────────────────
-# Per-car persistent state
-# ─────────────────────────────────────────────
-class CarState:
-    def __init__(self):
-        self.last_servo = 0.0
-        self.last_speed = MIN_SPEED
-        self.last_frame = None
+#  Geometric helpers 
+def marker_center(corner) -> tuple:
+    return tuple(np.mean(corner[0], axis=0).astype(int))
 
+def midpoint(p1: tuple, p2: tuple) -> tuple:
+    return ((p1[0] + p2[0]) // 2, (p1[1] + p2[1]) // 2)
 
-_car_states: dict[int, CarState] = {}
-
-
-# ─────────────────────────────────────────────
-# Low-level ArUco detection
-# ─────────────────────────────────────────────
-def _detect_markers(frame, dict_type: int):
-    """Return (corners_list, ids_array) for *dict_type* dictionary."""
-    gray    = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    adict   = aruco.getPredefinedDictionary(dict_type)
-    params  = aruco.DetectorParameters()
-    detector = aruco.ArucoDetector(adict, params)
-    corners, ids, _ = detector.detectMarkers(gray)
-    return corners, ids
-
-
-def detect_car(frame, car_id: int):
+def project_point_to_line(p, a, b) -> tuple:
     """
-    Detect front & rear markers for *car_id* (4x4 dict).
-    Returns (front_xy, rear_xy, midpoint_xy) or (None, None, None).
-    Assumes smaller-y centre = front.
+    Orthogonal projection of point p onto the infinite line through a–b.
+    proj = a + t·(b−a),  t = dot(a→p, a→b) / |a→b|²
     """
-    corners, ids = _detect_markers(frame, CAR_DICT)
-    if ids is None:
-        return None, None, None
+    ap    = np.array(p, dtype=float) - np.array(a, dtype=float)
+    ab    = np.array(b, dtype=float) - np.array(a, dtype=float)
+    denom = np.dot(ab, ab)
+    if denom == 0:
+        return tuple(np.array(a, dtype=int))
+    t = np.dot(ap, ab) / denom
+    return tuple((np.array(a, dtype=float) + t * ab).astype(int))
 
-    centres = []
-    for c, i in zip(corners, ids.flatten()):
-        if int(i) == car_id:
-            centres.append(np.mean(c[0], axis=0))
-
-    if len(centres) < 2:
-        return None, None, None
-
-    p1, p2 = np.array(centres[0]), np.array(centres[1])
-    front, rear = (p1, p2) if p1[1] < p2[1] else (p2, p1)
-    midpoint = 0.5 * (front + rear)
-    return front, rear, midpoint
-
-
-def detect_lane_markers(frame):
+#  Bézier sampling 
+def sample_bezier(p0: np.ndarray, p1: np.ndarray,
+                  p2: np.ndarray = None, n: int = N_SAMPLES) -> list:
     """
-    Detect 6x6 lane markers. Returns dict: marker_id → (x, y).
+    Sample n points on a linear (p2=None) or quadratic Bézier curve.
+      Linear:    B(t) = (1-t)·p0 + t·p1
+      Quadratic: B(t) = (1-t)²·p0 + 2t(1-t)·p1 + t²·p2
+    Returns a list of (x, y) integer tuples.
     """
-    corners, ids = _detect_markers(frame, LANE_DICT)
-    result = {}
-    if ids is None:
-        return result
-    for c, i in zip(corners, ids.flatten()):
-        result[int(i)] = np.mean(c[0], axis=0).astype(np.float32)
-    return result
+    pts = []
+    for i in range(n):
+        t = i / max(n - 1, 1)
+        pt = ((1.0-t)*p0 + t*p1) if p2 is None else \
+             ((1.0-t)**2*p0 + 2*t*(1.0-t)*p1 + t**2*p2)
+        pts.append(tuple(pt.astype(int)))
+    return pts
 
-
-# ─────────────────────────────────────────────
-# Lane geometry
-# ─────────────────────────────────────────────
-def _smooth_polyline(p0: np.ndarray, p1: np.ndarray,
-                     n: int = CURVE_SAMPLES,
-                     smooth: float = CURVE_SMOOTHING) -> np.ndarray:
+#  Marker detection 
+def detect_all_markers(frame: np.ndarray):
     """
-    Generate a smoothly curved polyline between two points.
-
-    *smooth* in [0, 1]:
-      0   → straight line (lerp)
-      >0  → quadratic Bézier where the control point is offset
-             perpendicular to the segment by *smooth* x half-length.
-
-    Returns shape (n, 2).
+    Detect 4x4_50 (car) and 6x6_250 (lane) markers in a single grayscale pass.
+    Returns:
+        car_markers  : {id: corners}  — IDs 0, 1, 2 …
+        lane_markers : {id: corners}  — IDs 196–201
     """
-    t = np.linspace(0.0, 1.0, n)
-    if smooth < 1e-3:
-        pts = np.outer(1 - t, p0) + np.outer(t, p1)
-        return pts.astype(np.float32)
+    gray   = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    params = aruco.DetectorParameters()
 
-    # midpoint control point, offset perpendicularly
-    mid  = 0.5 * (p0 + p1)
-    seg  = p1 - p0
-    perp = np.array([-seg[1], seg[0]], dtype=np.float32)
-    perp_norm = np.linalg.norm(perp)
-    if perp_norm > 1e-6:
-        perp = perp / perp_norm * np.linalg.norm(seg) * smooth * 0.5
-    ctrl = mid + perp
+    def _detect(dictionary):
+        det = aruco.ArucoDetector(aruco.getPredefinedDictionary(dictionary), params)
+        corners, ids, _ = det.detectMarkers(gray)
+        if ids is None:
+            return {}
+        return {int(i): corners[k] for k, i in enumerate(ids.flatten())}
 
-    # Quadratic Bézier: B(t) = (1-t)²·P0 + 2(1-t)t·ctrl + t²·P1
-    pts = (
-        np.outer((1 - t) ** 2, p0)
-        + np.outer(2 * (1 - t) * t, ctrl)
-        + np.outer(t ** 2, p1)
-    )
-    return pts.astype(np.float32)
+    return _detect(aruco.DICT_4X4_50), _detect(aruco.DICT_6X6_250)
 
-
-def build_lane_boundaries(marker_map: dict):
+#  Car geometry 
+def identify_cars(car_markers: dict, car_id: int) -> dict:
     """
-    Given detected marker centres, build left and right boundary polylines.
-
-    Each boundary consists of the two markers from its ID-group ordered
-    by their x-coordinate (left marker first), connected by a smooth curve.
-
-    Returns (left_pts, right_pts) each as np.ndarray of shape (N, 2),
-    or (None, None) if not enough markers are visible.
+    Build per-car geometry from detected 4x4 markers.
+    Convention:
+      Front marker → ID = 0  (shared; assumed to belong to car_id)
+      Rear  marker → ID = X  (unique per car)
+    For the controlled car: heading = front − rear, midpoint = mean(front, rear).
+    For other cars: heading = (0, 0), midpoint = rear center.
     """
-    def group_pts(group_ids):
-        pts = [marker_map[i] for i in group_ids if i in marker_map]
-        if len(pts) < 2:
-            return None
-        pts.sort(key=lambda p: p[0])        # left → right by x
-        return _smooth_polyline(pts[0], pts[1])
+    front_center = marker_center(car_markers[0]) if 0 in car_markers else None
+    cars = {}
+    for mid, corner in car_markers.items():
+        if mid == 0:
+            continue
+        rear_center = marker_center(corner)
+        if mid == car_id and front_center is not None:
+            mid_pt  = midpoint(front_center, rear_center)
+            heading = (front_center[0] - rear_center[0],
+                       front_center[1] - rear_center[1])
+            front   = front_center
+        else:
+            mid_pt  = rear_center
+            heading = (0, 0)
+            front   = None
+        cars[mid] = {'front': front, 'rear': rear_center,
+                     'midpoint': mid_pt, 'heading': heading}
+    return cars
 
-    left_pts  = group_pts(LANE_GROUP_LEFT)
-    right_pts = group_pts(LANE_GROUP_RIGHT)
-    return left_pts, right_pts
+def estimate_speed(curr_pos, prev_pos, dt: float) -> float:
+    if prev_pos is None or dt == 0:
+        return 0.0
+    return float(np.linalg.norm(np.array(curr_pos) - np.array(prev_pos))
+                 / (dt * SCALING_FACTOR))
 
+def update_tracker(cars: dict, current_time: float) -> None:
+    for rear_id, cd in cars.items():
+        if rear_id not in tracker:
+            tracker[rear_id] = {
+                'status': None, 'center': None,
+                'last_time': None, 'heading': None, 'speed': 0.0,
+            }
+        t         = tracker[rear_id]
+        last_time = t['last_time']
+        if last_time is None or (current_time - last_time >= STATUS_UPDATE_INTERVAL):
+            dt     = (current_time - last_time) if last_time else 0.0
+            speed  = estimate_speed(cd['midpoint'], t['center'], dt)
+            status = "moving" if speed > SPEED_THRESHOLD else "stopped"
+            t['speed'] = speed
+            if status != t['status']:
+                print(f"Car {rear_id}: {status.upper()} (Speed: {speed:.2f})")
+                t['status'] = status
+            t['center']    = cd['midpoint']
+            t['last_time'] = current_time
+            t['heading']   = cd['heading']
 
-def lane_centre_at(left_pts: np.ndarray, right_pts: np.ndarray,
-                   query_x: float) -> tuple[np.ndarray | None, float | None]:
+#  Lane detection (Bézier-based) 
+def detect_lane_curves(lane_markers: dict) -> dict:
     """
-    At a given x position, interpolate the lane centre and half-width.
-    Returns (centre_xy, half_width) or (None, None).
+    Build Bézier boundary curves from 6x6 lane markers.
+    Right: [196]→start, [200]→optional apex, [197]→end
+    Left:  [198]→start, [201]→optional apex, [199]→end
     """
-    def interp_y_at_x(pts, x):
-        xs = pts[:, 0]
-        ys = pts[:, 1]
-        if x < xs.min() or x > xs.max():
-            return None
-        return float(np.interp(x, xs, ys))
+    lane = {'right_mode': 'none', 'left_mode': 'none'}
+    if all(i in lane_markers for i in RIGHT_END_IDS):
+        p0 = np.array(marker_center(lane_markers[196]), dtype=float)
+        p2 = np.array(marker_center(lane_markers[197]), dtype=float)
+        if RIGHT_MID_ID in lane_markers:
+            p1 = np.array(marker_center(lane_markers[RIGHT_MID_ID]), dtype=float)
+            lane['right'], lane['right_mode'] = sample_bezier(p0, p1, p2), 'quadratic'
+        else:
+            lane['right'], lane['right_mode'] = sample_bezier(p0, p2), 'linear'
+    if all(i in lane_markers for i in LEFT_END_IDS):
+        p0 = np.array(marker_center(lane_markers[198]), dtype=float)
+        p2 = np.array(marker_center(lane_markers[199]), dtype=float)
+        if LEFT_MID_ID in lane_markers:
+            p1 = np.array(marker_center(lane_markers[LEFT_MID_ID]), dtype=float)
+            lane['left'], lane['left_mode'] = sample_bezier(p0, p1, p2), 'quadratic'
+        else:
+            lane['left'], lane['left_mode'] = sample_bezier(p0, p2), 'linear'
+    return lane
 
-    ly = interp_y_at_x(left_pts,  query_x)
-    ry = interp_y_at_x(right_pts, query_x)
-    if ly is None or ry is None:
-        # fallback: use nearest boundary points by overall distance
-        ly = left_pts[np.argmin(np.abs(left_pts[:, 0] - query_x)), 1]
-        ry = right_pts[np.argmin(np.abs(right_pts[:, 0] - query_x)), 1]
-
-    centre_y   = 0.5 * (ly + ry)
-    half_width = 0.5 * abs(ry - ly)
-    return np.array([query_x, centre_y], dtype=np.float32), half_width
-
-
-def lane_direction_at(left_pts: np.ndarray, right_pts: np.ndarray,
-                      query_x: float) -> np.ndarray:
+#  Heading conversion 
+def heading_to_angle(heading_vec: tuple) -> float:
     """
-    Estimate the lane forward direction (unit vector) at *query_x* by
-    differencing centre positions slightly ahead and behind.
+    Convert (dx, dy) vector to a compass angle in degrees [0, 360).
+      0°→right, 90°→up, 180°→left, 270°→down  (image-space corrected).
     """
-    dx = 20.0
-    c_fwd, _  = lane_centre_at(left_pts, right_pts, query_x + dx)
-    c_bwd, _  = lane_centre_at(left_pts, right_pts, query_x - dx)
-    if c_fwd is None or c_bwd is None:
-        return np.array([1.0, 0.0], dtype=np.float32)   # assume rightward travel
-    vec = c_fwd - c_bwd
-    norm = np.linalg.norm(vec)
-    return vec / norm if norm > 1e-6 else np.array([1.0, 0.0])
+    return np.degrees(np.arctan2(-heading_vec[1], heading_vec[0])) % 360
 
-
-# ─────────────────────────────────────────────
-# Control computation
-# ─────────────────────────────────────────────
-#TODO try to modify to a similar version from Ibrahim's thesis and try out with this markers and the left one as guidance
-def compute_control_v2(front, rear, midpoint,
-                    left_pts, right_pts,
-                    state: CarState):
+#  Scoring logic
+def dynamic_threshold(relative_angle: float) -> float:
     """
-    Compute servo_cmd and speed_cmd from lane geometry + car pose.
-
-    Cross-track error is computed as the signed perpendicular distance from
-    the car's midpoint (between its two 4x4 markers) to the local lane
-    centre line, along the lane normal.
+    Angle-dependent lookahead distance.
+    Straight ahead → look far; sharp turn → look close.
     """
-
-    debug = {'centre': None, 'half_width': None, 'cte': None, 'heading_err': None}
-
-    # Lane centre and half-width at the car's x-position
-    centre, half_width = lane_centre_at(left_pts, right_pts, float(midpoint[0]))
-    if centre is None:
-        return 0.0, MIN_SPEED, debug
-
-    # ── Local lane direction (unit vector, "forward" along corridor)
-    lane_dir = lane_direction_at(left_pts, right_pts, float(midpoint[0]))
-    lane_dir_norm = np.linalg.norm(lane_dir)
-    if lane_dir_norm < 1e-6:
-        lane_dir = np.array([1.0, 0.0], dtype=np.float32)
+    angle = abs(relative_angle)
+    if angle < 15:
+        return HIGH_THRESHOLD
+    elif angle < 30:
+        return LOW_THRESHOLD + (HIGH_THRESHOLD - LOW_THRESHOLD) * 0.5
+    elif angle < 60:
+        return LOW_THRESHOLD + (HIGH_THRESHOLD - LOW_THRESHOLD) * 0.25
     else:
-        lane_dir = lane_dir / lane_dir_norm
+        return LOW_THRESHOLD
 
-    # Left-normal to lane direction (image coordinates)
-    # lane_dir = [dx, dy]; left_normal = [-dy, dx]
-    left_normal = np.array([-lane_dir[1], lane_dir[0]], dtype=np.float32)
-
-    # ── Signed cross-track error:
-    # positive if car is on the left side of the lane centre (w.r.t lane_dir),
-    # negative if on the right.
-    vec_c2m = midpoint.astype(np.float32) - centre.astype(np.float32)
-    cte     = float(np.dot(vec_c2m, left_normal))
-    debug['centre']     = centre
-    debug['half_width'] = half_width
-    debug['cte']        = cte
-
-    # ── Heading error using front/rear line from the two 4×4 markers
-    heading_vec  = front.astype(np.float32) - rear.astype(np.float32)
-    hv_norm      = np.linalg.norm(heading_vec)
-    if hv_norm < 1e-6:
-        return 0.0, MIN_SPEED, debug
-    heading_dir   = heading_vec / hv_norm
-    heading_angle = np.degrees(np.arctan2(-heading_dir[1],  heading_dir[0]))
-    lane_angle    = np.degrees(np.arctan2(-lane_dir[1],     lane_dir[0]))
-    heading_err   = ((lane_angle - heading_angle) + 180.0) % 360.0 - 180.0
-    debug['heading_err'] = heading_err
-
-    # ── Servo command: blend perpendicular CTE and heading error
-    cte_norm        = np.clip(cte * CTE_K,              -1.0, 1.0)
-    heading_norm_ct = np.clip(heading_err * HEADING_K,  -1.0, 1.0)
-
-    # Negative sign because positive CTE (car left of centre) should steer right
-    servo_raw = -(CTE_W * cte_norm + HEADING_W * heading_norm_ct)
-    servo_raw = float(np.clip(servo_raw, -1.0, 1.0)) * MAX_SERVO
-
-    # Small dead-band so it actually tracks the centre line between the two 4×4 markers
-    if abs(heading_err) < 4 and abs(cte) < 5:
-        servo_raw = 0.0
-    elif abs(heading_err) < 2:
-        servo_raw *= 0.2
-
-    # ── Speed: slow near any boundary (using cross-track distance to half-width)
-    if half_width > 1e-3:
-        edge_ratio = abs(cte) / half_width
-    else:
-        edge_ratio = 0.0
-
-    if edge_ratio > EDGE_SLOW_FRACTION:
-        t_edge    = (edge_ratio - EDGE_SLOW_FRACTION) / (1.0 - EDGE_SLOW_FRACTION + 1e-9)
-        speed_mul = 1.0 - t_edge * (1.0 - EDGE_MIN_SPEED_MUL)
-    else:
-        speed_mul = 1.0
-
-    base_speed = MIN_SPEED + (MAX_SPEED - MIN_SPEED) * (1.0 - edge_ratio)
-    speed_raw  = float(np.clip(base_speed, MIN_SPEED, MAX_SPEED)) * speed_mul
-
-    # ── Temporal smoothing
-    servo_sm = SMOOTH_ALPHA * state.last_servo + (1.0 - SMOOTH_ALPHA) * servo_raw
-    speed_sm = SMOOTH_ALPHA * state.last_speed + (1.0 - SMOOTH_ALPHA) * speed_raw
-    state.last_servo = servo_sm
-    state.last_speed = speed_sm
-
-    servo_out = float(np.clip(servo_sm, -MAX_SERVO, MAX_SERVO))
-    speed_out = float(np.clip(speed_sm,  MIN_SPEED,  MAX_SPEED))
-    return servo_out, speed_out, debug
-
-def compute_control(front, rear, midpoint,
-                    left_pts, right_pts,
-                    state: CarState):
+def compute_point_score(relative_angle: float, dist: float) -> float:
     """
-    Compute servo_cmd and speed_cmd from lane geometry + car pose.
-
-    Returns (servo, speed, debug_dict).
+    Weighted score: lower = better candidate.
+    Penalises both sharp angles and close distances (non-linearly).
+    Returns infinity for points outside the ±90° forward field of view.
     """
-    debug = {'centre': None, 'half_width': None, 'cte': None, 'heading_err': None}
+    if abs(relative_angle) > 90:
+        return float('inf')
+    dist = max(LOW_THRESHOLD, min(HIGH_THRESHOLD, dist))
+    normalized_dist  = (dist - LOW_THRESHOLD) / (HIGH_THRESHOLD - LOW_THRESHOLD)
+    normalized_angle = (abs(relative_angle) / 90) ** 2.5
+    return ANGLE_FAVOR * normalized_dist + (1 - ANGLE_FAVOR) * normalized_angle
 
-    centre, half_width = lane_centre_at(left_pts, right_pts, float(midpoint[0]))
-    if centre is None:
-        return 0.0, MIN_SPEED, debug
+def map_angle_to_servo(relative_angle: float, dist: float):
+    """
+    Maps a relative angle and distance to a normalized servo command.
+    Returns a float in [-0.5, 0.5]:
+      -0.5 → full left  (-45° physical)
+       0.0 → straight
+      +0.5 → full right (+45° physical)
+    Returns None for points beyond ±90° (behind the vehicle).
+    """
+    if abs(relative_angle) > 90:
+        return None
+    dist = max(LOW_THRESHOLD, min(HIGH_THRESHOLD, dist))
+    normalized_dist  = (HIGH_THRESHOLD - dist) / (HIGH_THRESHOLD - LOW_THRESHOLD)
+    normalized_angle = (90 - abs(relative_angle)) / 90
+    weight = (normalized_angle * normalized_dist) ** WEIGHT
+    # Positive relative_angle → boundary is left of heading → steer left (negative)
+    servo = -weight * MAX_SERVO if relative_angle > 0 else weight * MAX_SERVO
+    return float(np.clip(servo, -MAX_SERVO, MAX_SERVO))
 
-    # ── Cross-track error (signed: + = car is above/left of centre in image)
-    cte = float(midpoint[1] - centre[1])   # image y increases downward
-    debug['centre']     = centre
-    debug['half_width'] = half_width
-    debug['cte']        = cte
+#  Best boundary-point selection 
+def select_best_boundary_point(car_pos: tuple, car_heading_angle: float,
+                                boundary_points: list):
+    """
+    Replaces the contour-point search from Implementation 1.
+    Iterates over sampled left-boundary points, computes each point's
+    relative angle and distance from the car, applies dynamic_threshold
+    to filter backward/far points, and returns the lowest-score candidate.
 
-    # ── Heading error
-    heading_vec  = front.astype(np.float32) - rear.astype(np.float32)
-    heading_norm = np.linalg.norm(heading_vec)
-    if heading_norm < 1e-6:
-        return 0.0, MIN_SPEED, debug
-    heading_dir   = heading_vec / heading_norm
-    heading_angle = np.degrees(np.arctan2(-heading_dir[1],  heading_dir[0]))
+    Returns (best_point, best_angle, best_dist) or (None, None, None).
+    """
+    best_point = best_angle = best_dist = None
+    best_score = float('inf')
+    center = np.array(car_pos, dtype=float)
 
-    lane_dir   = lane_direction_at(left_pts, right_pts, float(midpoint[0]))
-    lane_angle = np.degrees(np.arctan2(-lane_dir[1], lane_dir[0]))
+    for pt in boundary_points:
+        direction = np.array(pt, dtype=float) - center
+        dist = np.linalg.norm(direction)
+        if dist < 1e-3:
+            continue
 
-    heading_err = ((lane_angle - heading_angle) + 180.0) % 360.0 - 180.0
-    debug['heading_err'] = heading_err
+        point_angle    = np.degrees(np.arctan2(-direction[1], direction[0]))
+        relative_angle = (car_heading_angle - point_angle + 360) % 360
+        if relative_angle > 180:
+            relative_angle -= 360   # Normalize to [-180, 180]
 
-    # ── Servo
-    cte_norm     = np.clip(cte * CTE_K,     -1.0, 1.0)
-    heading_norm_ = np.clip(heading_err * HEADING_K, -1.0, 1.0)
-    servo_raw    = -(CTE_W * cte_norm + HEADING_W * heading_norm_)
-    servo_raw    = float(np.clip(servo_raw, -1.0, 1.0)) * MAX_SERVO
+        if dist < dynamic_threshold(relative_angle):
+            score = compute_point_score(relative_angle, dist)
+            if score < best_score:
+                best_point = pt
+                best_angle = relative_angle
+                best_dist  = dist
+                best_score = score
 
-    # dead-band
-    if abs(heading_err) < 4 and abs(cte) < 8:
-        servo_raw = 0.0
-    elif abs(heading_err) < 2:
-        servo_raw *= 0.15
+    return best_point, best_angle, best_dist
 
-    # ── Speed (reduce near edges)
-    if half_width > 1e-3:
-        edge_ratio = abs(cte) / half_width
-    else:
-        edge_ratio = 0.0
+# Drawing helpers
+def draw_lane(frame: np.ndarray, lane: dict) -> np.ndarray:
+    """
+    Draw:
+      1. Semi-transparent green fill between boundaries (when both present)
+      2. Right boundary curve (cyan)
+      3. Left  boundary curve (yellow)
+    """
+    for side in ['left', 'right']:
+        if side in lane:
+            for i in range(len(lane[side]) - 1):
+                if side == 'right':
+                    cv2.line(frame, lane[side][i], lane[side][i+1], (255, 255, 0), 2)
+                else:
+                    cv2.line(frame, lane[side][i], lane[side][i+1], (0, 255, 255), 2)
+    
+    if 'left' in lane and 'right' in lane:
+        overlay   = frame.copy()
+        right_pts = np.array(lane['right'], dtype=np.int32)
+        left_pts  = np.array(lane['left'],  dtype=np.int32)
+        poly      = np.concatenate([right_pts, left_pts[::-1]])
+        cv2.fillPoly(overlay, [poly], (0, 200, 0))
+        cv2.addWeighted(overlay, 0.25, frame, 0.75, 0, frame)
+    return frame
 
-    if edge_ratio > EDGE_SLOW_FRACTION:
-        t_edge    = (edge_ratio - EDGE_SLOW_FRACTION) / (1.0 - EDGE_SLOW_FRACTION + 1e-9)
-        speed_mul = 1.0 - t_edge * (1.0 - EDGE_MIN_SPEED_MUL)
-    else:
-        speed_mul = 1.0
+def draw_cars(frame: np.ndarray, cars: dict, lane: dict) -> np.ndarray:
+    """Draw rear (red), front (green), heading line (white), midpoint (orange),
+    and orthogonal projection from midpoint to left boundary (magenta)."""
+    for rear_id, cd in cars.items():
+        front, rear, mid = cd['front'], cd['rear'], cd['midpoint']
 
-    speed_raw = float(np.clip(MIN_SPEED + (MAX_SPEED - MIN_SPEED) * (1.0 - edge_ratio),
-                               MIN_SPEED, MAX_SPEED)) * speed_mul
+        cv2.circle(frame, rear, 8, (0, 0, 255), -1)
+        cv2.putText(frame, f"R{rear_id}", (rear[0]+10, rear[1]),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 1)
 
-    # ── Smooth
-    servo_sm = SMOOTH_ALPHA * state.last_servo + (1.0 - SMOOTH_ALPHA) * servo_raw
-    speed_sm = SMOOTH_ALPHA * state.last_speed + (1.0 - SMOOTH_ALPHA) * speed_raw
-    state.last_servo = servo_sm
-    state.last_speed = speed_sm
+        if front is not None:
+            cv2.circle(frame, front, 8, (0, 255, 0), -1)
+            cv2.putText(frame, "F", (front[0]+10, front[1]),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 1)
+            cv2.line(frame, rear, front, (255, 255, 255), 2)
 
-    servo_out = float(np.clip(servo_sm, -MAX_SERVO, MAX_SERVO))
-    speed_out = float(np.clip(speed_sm,  MIN_SPEED,  MAX_SPEED))
-    return servo_out, speed_out, debug
+        cv2.circle(frame, mid, 6, (255, 165, 0), -1)
 
-# ─────────────────────────────────────────────
-# Visualisation
-# ─────────────────────────────────────────────
-def draw_lane_and_debug_v2(frame, left_pts, right_pts,
-                        front, rear, midpoint, debug: dict):
-    vis = frame.copy()
+        #  Projection from midpoint onto left boundary 
+        if 'left' in lane and len(lane['left']) > 1:
+            # Find the nearest sampled boundary point first …
+            left_pts = np.array(lane['left'], dtype=float)
+            idx      = int(np.argmin(np.linalg.norm(left_pts - np.array(mid), axis=1)))
 
-    # ── Draw boundary curves
-    if left_pts is not None:
-        pts = left_pts.astype(np.int32).reshape((-1, 1, 2))
-        cv2.polylines(vis, [pts], False, (0, 255, 0), 2)    # green = left
+            # … then project perpendicularly onto the local segment around it
+            seg_a = lane['left'][max(idx - 1, 0)]
+            seg_b = lane['left'][min(idx + 1, len(lane['left']) - 1)]
+            proj  = project_point_to_line(mid, seg_a, seg_b)
 
-    if right_pts is not None:
-        pts = right_pts.astype(np.int32).reshape((-1, 1, 2))
-        cv2.polylines(vis, [pts], False, (0, 0, 255), 2)    # red   = right
+            cv2.circle(frame, proj, 5, (0, 120, 255), -1)          # ?? dot
+            cv2.line(frame, mid, proj, (255, 0, 255), 1)            # magenta line
 
-    # ── Filled lane overlay (semi-transparent)
-    if left_pts is not None and right_pts is not None:
-        lane_poly = np.vstack([left_pts, right_pts[::-1]]).astype(np.int32)
-        overlay   = vis.copy()
-        cv2.fillPoly(overlay, [lane_poly], (0, 200, 80))
-        cv2.addWeighted(overlay, 0.20, vis, 0.80, 0, vis)
+    return frame
 
-    # ── Draw car markers
-    if front is not None:
-        cv2.circle(vis, tuple(front.astype(int)),    7, (0, 140, 255), -1)   # orange = front
-        cv2.circle(vis, tuple(rear.astype(int)),     7, (255, 0,   0), -1)   # blue   = rear
-        cv2.circle(vis, tuple(midpoint.astype(int)), 7, (0, 255, 255), -1)   # yellow = mid
-        cv2.line(vis, tuple(front.astype(int)), tuple(rear.astype(int)),
-                 (200, 200, 200), 2)
-
-    # ── Draw lane centre point and CTE line
-    if debug.get('centre') is not None and midpoint is not None:
-        c = tuple(debug['centre'].astype(int))
-        cv2.circle(vis, c, 6, (255, 100, 0), -1)                           # teal = centre
-        cv2.line(vis, tuple(midpoint.astype(int)), c, (0, 255, 255), 2)    # CTE line
-
-    # ── Telemetry text
-    cte_val = debug.get('cte')
-    h_err   = debug.get('heading_err')
-    lines   = []
-    if cte_val is not None:
-        lines.append(f"CTE: {cte_val:+.1f}px")
-    if h_err is not None:
-        lines.append(f"Hdg err: {h_err:+.1f}deg")
-
-    for idx, txt in enumerate(lines):
-        cv2.putText(vis, txt, (10, 25 + idx * 22),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.65, (220, 220, 220), 2)
-
-    return vis
-
-def draw_lane_and_debug(frame, left_pts, right_pts,
-                        front, rear, midpoint, debug: dict):
-    vis = frame.copy()
-
-    # ── Filled lane overlay (semi-transparent)
-    if left_pts is not None and right_pts is not None:
-        lane_poly = np.vstack([left_pts, right_pts[::-1]]).astype(np.int32)
-        overlay   = vis.copy()
-        cv2.fillPoly(overlay, [lane_poly], (0, 200, 80))
-        cv2.addWeighted(overlay, 0.20, vis, 0.80, 0, vis)
-
-    # ── Draw boundary curves
-    if left_pts is not None:
-        pts = left_pts.astype(np.int32).reshape((-1, 1, 2))
-        cv2.polylines(vis, [pts], False, (0, 255, 0), 2)        # green = left
-
-    if right_pts is not None:
-        pts = right_pts.astype(np.int32).reshape((-1, 1, 2))
-        cv2.polylines(vis, [pts], False, (0, 0, 255), 2)        # red   = right
-
-    # ── Draw lane centre polyline (midpoints between boundaries)
-    if left_pts is not None and right_pts is not None:
-        centre_pts = (0.5 * (left_pts + right_pts)).astype(np.int32).reshape((-1, 1, 2))
-        cv2.polylines(vis, [centre_pts], False, (255, 255, 0), 1)  # dashed yellow
-
-    # ── Draw car markers & body line
-    if front is not None and rear is not None and midpoint is not None:
-        cv2.line(vis,
-                 tuple(front.astype(int)),
-                 tuple(rear.astype(int)),
-                 (200, 200, 200), 2)
-        cv2.circle(vis, tuple(rear.astype(int)),     8, (255,  60,  60), -1)  # red    = rear
-        cv2.circle(vis, tuple(front.astype(int)),    8, (0,   140, 255), -1)  # orange = front
-        cv2.circle(vis, tuple(midpoint.astype(int)), 8, (0,   255, 255), -1)  # cyan   = mid
-        cv2.putText(vis, "F", tuple(front.astype(int) + np.array([8, -8])),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 140, 255), 2)
-        cv2.putText(vis, "R", tuple(rear.astype(int)  + np.array([8, -8])),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 60,  60), 2)
-    else:
-        # Warn visually when car markers are not found
-        cv2.putText(vis, "CAR NOT DETECTED",
-                    (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-
-    # ── Draw lane centre point + CTE vector line
-    if debug.get('centre') is not None and midpoint is not None:
-        c = debug['centre'].astype(int)
-        cv2.circle(vis, tuple(c), 7, (0, 165, 255), -1)                    # orange = lane centre
-        cv2.line(vis, tuple(midpoint.astype(int)), tuple(c), (0, 255, 255), 2)  # CTE line
-
-    # ── Telemetry HUD
-    cte_val = debug.get('cte')
-    h_err   = debug.get('heading_err')
-    hw      = debug.get('half_width')
-    inside_pct = ""
-    if cte_val is not None and hw is not None and hw > 1e-3:
-        inside_pct = f"  edge={abs(cte_val)/hw*100:.0f}%"
-
-    hud_lines = [
-        f"CTE:     {cte_val:+.1f} px{inside_pct}" if cte_val is not None else "CTE:     --",
-        f"Hdg err: {h_err:+.1f} deg"              if h_err  is not None else "Hdg err: --",
+def draw_telemetry(frame: np.ndarray, car_id: int, cars: dict,
+                   servo: int, motor: float,
+                   right_mode: str, left_mode: str) -> np.ndarray:
+    lines = [
+        f"Car: {car_id}",
+        f"Right: {right_mode}   Left: {left_mode}",
+        f"Servo: {servo:.2f}",
+        f"Motor: {motor:.2f}",
+        f"Detected IDs: {sorted(cars.keys())}",
     ]
-    for idx, txt in enumerate(hud_lines):
-        cv2.putText(vis, txt, (10, 25 + idx * 24),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.60, (220, 220, 220), 2)
+    for idx, text in enumerate(lines):
+        cv2.putText(frame, text, (10, 30 + idx*22),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 2)
+    return frame
 
-    return vis
-
-# ─────────────────────────────────────────────
-# Public entry-point (called by external thread)
-# ─────────────────────────────────────────────
-def run_a(capture, car_id: int):
+# Main function
+def run(frame: np.ndarray, car_id: int):
     """
-    Capture one frame, detect lane + car, compute control, return results.
+    Process one camera frame and return (servo_angle, motor_speed, annotated_frame).
 
-    Returns
-    -------
-    (motor_speed, servo_angle, modified_frame)
-        motor_speed   : float in [MIN_SPEED, MAX_SPEED]
-        servo_angle   : float in [-MAX_SERVO, MAX_SERVO]
-        modified_frame: BGR image with all overlays drawn
+    Control pipeline
+    
+    1.  Detect 4x4 car markers + 6x6 lane markers.
+    2.  Build per-car geometry (midpoint, heading vector).
+    3.  Build Bézier left/right boundaries from lane markers.
+    4.  Sample N_SAMPLES points along the left boundary.
+    5.  For each sample: compute relative angle + distance from car midpoint.
+    6.  Filter with dynamic_threshold (forward-only, angle-dependent range).
+    7.  Score with compute_point_score (angle+distance weighted trade-off).
+    8.  Map the best candidate to a servo command via map_angle_to_servo.
+    9.  Throttle motor speed inversely proportional to steering intensity.
+    10. Draw lane, cars, target point, and telemetry overlay.
     """
-    global _car_states
+    car_frame    = frame.copy()
+    current_time = time.time()
 
-    if car_id not in _car_states:
-        _car_states[car_id] = CarState()
-    state = _car_states[car_id]
+    # Steps 1–3
+    car_markers, lane_markers = detect_all_markers(car_frame)
+    cars = identify_cars(car_markers, car_id)
+    update_tracker(cars, current_time)
+    lane = detect_lane_curves(lane_markers)       
 
-    # ── Grab frame
-    with CV_LOCK:
-        ret, frame = capture.read()
-    if not ret or frame is None:
-        print(f"[Car {car_id}] Frame capture failed.")
-        fallback = state.last_frame if state.last_frame is not None else np.zeros((480, 640, 3), np.uint8)
-        return round(state.last_speed, 2), round(state.last_servo, 2), fallback
+    servo = 0.0         # neutral steering --> straight ahead
+    motor = 0.0         # no speed, if no lane --> still stopped
 
-    # ── Detect ArUco markers
-    marker_map          = detect_lane_markers(frame)
-    front, rear, midpoint = detect_car(frame, car_id)
+    if car_id in cars and 'left' in lane:
+        car_mid           = cars[car_id]['midpoint']
+        car_heading_angle = heading_to_angle(cars[car_id]['heading'])
 
-    # Draw raw ArUco detections (both dictionaries)
-    for dtype in (LANE_DICT, CAR_DICT):
-        c, i = _detect_markers(frame, dtype)
-        if i is not None:
-            aruco.drawDetectedMarkers(frame, c, i, (0, 255, 255))
+        # Steps 4–7: find best left-boundary point
+        best_point, best_angle, best_dist = select_best_boundary_point(
+            car_mid, car_heading_angle, lane['left']
+        )
 
-    # ── Build lane boundaries
-    left_pts, right_pts = build_lane_boundaries(marker_map)
+        if best_point is not None:
+            cv2.circle(car_frame, tuple(best_point), 7, (0, 0, 255), -1)
+            cv2.line(car_frame, car_mid, tuple(best_point), (0, 0, 255), 2)
 
-    # ── Compute control
-    servo, speed, debug = 0.0, MIN_SPEED, {}
-    if left_pts is not None and right_pts is not None and midpoint is not None:
-        servo, speed, debug = compute_control(front, rear, midpoint,
-                                              left_pts, right_pts, state)
-    else:
-        # not enough info → coast straight
-        state.last_servo = 0.0
-        state.last_speed = MIN_SPEED
+            computed = map_angle_to_servo(best_angle, best_dist)
+            if computed is not None:
+                last = last_sent_angles.get(car_id)
+                if (last is None
+                        or (abs(computed - last) >= ANGLE_THRESHOLD
+                            and abs(computed - last) < JUMP_FILTER)):   # was < 70
+                    servo = computed
+                    last_sent_angles[car_id] = servo
+                else:
+                    servo = last if last is not None else 0.0
+        else:
+            servo = 0.0
+            last_sent_angles[car_id] = 0.0
 
-    # ── Annotate frame
-    vis = draw_lane_and_debug(frame, left_pts, right_pts,
-                              front, rear, midpoint, debug)
+        # abs(servo) directly — no longer needs "− 90" offset
+        turn_strength = abs(servo) / MAX_SERVO
+        motor = float(np.clip(
+            MAX_SPEED * (1.0 - 0.5 * turn_strength), MIN_SPEED, MAX_SPEED))
 
-    h = vis.shape[0]
-    cv2.putText(vis, f"Car {car_id} | spd={speed:.2f} servo={servo:+.2f}",
-                (10, h - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.60, (200, 200, 200), 2)
+    # Step 10: visualisation
+    car_frame = draw_lane(car_frame, lane)
+    car_frame = draw_cars(car_frame, cars, lane)
+    car_frame = draw_telemetry(car_frame, car_id, cars, servo, motor,
+                               lane['right_mode'], lane['left_mode'])
 
-    state.last_frame = vis.copy()
+    return round(servo, 2), round(motor, 2), car_frame
 
-    # Just for debug - comment when not needed
-    cv2.imshow("Curve", vis)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        sys.exit("\nQuitting the frame!")
+# # Just for testing purposes
+# def init_camera(cam_index=0):
+#     if os.name == "nt":
+#         cap = cv2.VideoCapture(cam_index)
+#     elif os.name == "posix":
+#         cap = cv2.VideoCapture(cam_index, cv2.CAP_V4L2)
 
-    return round(speed, 2), round(servo, 2), vis
+#     if not cap.isOpened():
+#         sys.exit("Camera not found!\n")
 
-def run(capture, car_id: int):
-    """
-    Returns (motor_speed, servo_angle, modified_frame).
-    """
-    global _car_states
+#     cap.set(cv2.CAP_PROP_FRAME_WIDTH,  1280)
+#     cap.set(cv2.CAP_PROP_FRAME_HEIGHT,  720)
 
-    if car_id not in _car_states:
-        _car_states[car_id] = CarState()
-    state = _car_states[car_id]
-
-    # ── Grab frame
-    with CV_LOCK:
-        ret, frame = capture.read()
-    if not ret or frame is None:
-        print(f"[Car {car_id}] Frame capture failed.")
-        fallback = (state.last_frame
-                    if state.last_frame is not None
-                    else np.zeros((480, 640, 3), np.uint8))
-        return round(state.last_speed, 2), round(state.last_servo, 2), fallback
-
-    # ── Draw raw ArUco detections for BOTH dictionaries onto frame (once)
-    for dtype in (LANE_DICT, CAR_DICT):
-        corners, ids = _detect_markers(frame, dtype)
-        if ids is not None:
-            aruco.drawDetectedMarkers(frame, corners, ids, (0, 255, 255))
-            # Label each marker ID in magenta
-            for c, i in zip(corners, ids.flatten()):
-                cx, cy = np.mean(c[0], axis=0).astype(int)
-                cv2.putText(frame, f"id={int(i)}",
-                            (cx + 8, cy - 8),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 0, 255), 2)
-
-    # ── Detect lane boundaries
-    marker_map          = detect_lane_markers(frame)
-    left_pts, right_pts = build_lane_boundaries(marker_map)
-
-    # ── Detect car
-    front, rear, midpoint = detect_car(frame, car_id)
-
-    # ── Compute control (only when all data available)
-    servo, speed, debug = state.last_servo, state.last_speed, {}
-    if (left_pts is not None and right_pts is not None
-            and front is not None and rear is not None and midpoint is not None):
-        servo, speed, debug = compute_control(front, rear, midpoint,
-                                              left_pts, right_pts, state)
-    else:
-        # Log what's missing to help debug
-        missing = []
-        if left_pts  is None: missing.append("left boundary")
-        if right_pts is None: missing.append("right boundary")
-        if front     is None: missing.append("front marker")
-        if rear      is None: missing.append("rear marker")
-        if missing:
-            print(f"[Car {car_id}] Waiting for: {', '.join(missing)}")
-
-    # ── Annotate frame
-    vis = draw_lane_and_debug(frame, left_pts, right_pts,
-                              front, rear, midpoint, debug)
-
-    # ── Telemetry bar (always shows live values, falls back to last known)
-    h = vis.shape[0]
-    lane_ok  = "OK"  if (left_pts  is not None and right_pts is not None) else "NO LANE"
-    car_ok   = "OK"  if front is not None else "NO CAR"
-    cv2.putText(vis,
-                f"Car {car_id} | spd={speed:.2f}  servo={servo:+.2f} | lane={lane_ok} | car={car_ok}",
-                (10, h - 12),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.55, (200, 200, 200), 2)
-
-    # Just for debug - comment when not needed
-    cv2.imshow("Curve", vis)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        sys.exit("\nQuitting the frame!")
-
-    state.last_frame = vis.copy()
-    return round(speed, 2), round(servo, 2), vis
-
-# ─────────────────────────────────────────────
-# ── PRESERVED EXACTLY AS-IS ──────────────────
-# ─────────────────────────────────────────────
-def init_camera(cam_index=0):
-    if os.name == "nt":
-        cap = cv2.VideoCapture(cam_index)
-    elif os.name == "posix":
-        cap = cv2.VideoCapture(cam_index, cv2.CAP_V4L2)
-
-    if not cap.isOpened():
-        sys.exit("Camera not found!\n")
-
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH,  1280)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT,  720)
-
-    print("Camera opened successfully!\n")
-    return cap
+#     print("Camera opened successfully!\n")
+#     return cap
 
 
-if __name__ == '__main__':
-    capture = init_camera(1)
-    car_idx = 1
-    while 1:
-        run(capture, car_idx)
-        # run_a(capture, car_idx)
-    capture.release()
-    cv2.destroyAllWindows()
+# # Just for testing purposes
+# if __name__ == '__main__':
+#     capture = init_camera(1)
+#     car_idx = 1
+
+#     while True:
+#         ret, frame = capture.read()
+#         if ret and frame is not None:
+#             motor, servo, vis = run(frame, car_idx)
+#             cv2.imshow("Tracking", vis)
+#             if cv2.waitKey(1) & 0xFF == 27:
+#                 break
+
+#     capture.release()
+#     cv2.destroyAllWindows()

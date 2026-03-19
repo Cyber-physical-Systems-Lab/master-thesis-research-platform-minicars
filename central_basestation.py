@@ -151,7 +151,7 @@ def run(frame: np.ndarray, car_id: int):
 
     # # Display - Just for testing purposes
     # cv2.imshow("Tracking", car_frame)
-    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    # if cv2.waitKey(1) & 0xFF == 27:
     #     sys.exit("\nQuitting the car_frame!")
     return round(servo, 2), round(motor, 2), car_frame
 

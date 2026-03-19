@@ -43,18 +43,21 @@ def get_latest_frame():
         return latest_frame.copy() if latest_frame is not None else None
     
 def init_camera(cam_index=0):
+    cam_i = cam_index
+    print('Initializing detecting camera...')
     if os.name == "nt":
-        cap = cv2.VideoCapture(cam_index)
+        cap = cv2.VideoCapture(cam_i)
     elif os.name == "posix":
-        cap = cv2.VideoCapture(cam_index, cv2.CAP_V4L2)
+        cap = cv2.VideoCapture(cam_i, cv2.CAP_V4L2)
 
     if not cap.isOpened():
-        sys.exit("Camera not found!\n")
+        print("Camera not found!\n")
+        init_camera(cam_i)
 
     cap.set(cv2.CAP_PROP_FRAME_WIDTH,  1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT,  720)
 
-    print("Camera detected successfully!")
+    print("\nCamera detected successfully!")
     return cap
 
 
@@ -105,7 +108,7 @@ class Player(object):
     def transfer_data(self):
         global car_results
         """Initiates the Pi and transfers incoming data to the Pi board at 100Hz"""
-        th = Thread(target=self.boot)
+        th = Thread(target=self.boot, daemon=True)
         th.start()
         print('Sending...\n')
 
@@ -138,18 +141,7 @@ class Player(object):
 def players_run(car_list):
     """Start and run the listed cars"""
     unresponsive = []
-    capture = init_camera(1)
     key_bind = binds.KeyboardBinds()
-
-    # Start the single camera producer thread
-    cam_thread = Thread(target=camera_producer, args=(capture,), daemon=True)
-    cam_thread.start()
-
-    # Wait until at least one frame is available before proceeding
-    print('Waiting for camera connection...')
-    while get_latest_frame() is None:
-        time.sleep(0.05)
-    print('Camera ready!\n')
 
     print('Initializing...')
     for car_number in car_list:
@@ -184,6 +176,19 @@ def players_run(car_list):
         time.sleep(0.1)
     else:
         print('Initializing minicar(s) finished!')
+
+    # Start here camera processings
+    capture = init_camera(1)
+
+    # Start the single camera producer thread
+    cam_thread = Thread(target=camera_producer, args=(capture,), daemon=True)
+    cam_thread.start()
+
+    # Wait until at least one frame is available before proceeding
+    print('Waiting for camera connection...')
+    while get_latest_frame() is None:
+        time.sleep(0.05)
+    print('Camera ready!\n')
 
     # Main display loop: composite all car frames into one
     while True:
