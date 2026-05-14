@@ -219,7 +219,7 @@ io.setmode(io.BCM)
 # Setup outputs
 dcmotor = Motor([18, 19], [14, 15])
 i2ciocomps = I2CIOComponents(0)
-servo = Output(23, 13.5, (11., 16.))
+servo = Output(23, 13.25, (10.75, 15.75))
 led1 = Output(17)
 led2 = Output(27)
 
@@ -243,15 +243,18 @@ while not done:
         continue
 
     # Receive data as 3 floats and 1 boolean
-    speed, angle, brightness, done = struct.unpack('fff?', data)
+    speed, angle, brightness, done = struct.unpack('<fff?', data)
 
     # Convert desired values to duty cycles
-    speed_cycle = float(speed) * 115.
+    speed_cycle = round(float(speed) * 120.,2)
     if s_local_ip[-1] == '0':
-        angle_cycle = float(angle) * 90. + 45.
+        angle_cycle = round(float(angle) * 90. + 45.,2)
     else:
-        angle_cycle = float(angle) * 12 + 13.5
-    brightness_cycle = float(brightness) * 100.
+        angle_cycle = round(float(angle) * 10 + 13.25,2)
+    brightness_cycle = round(float(brightness) * 100.,2)
+
+    print(f"Actual received cycles for motor speed {speed_cycle} and servo angle {angle_cycle}\r\n")
+    file.write(f"Actual received cycles for motor speed {speed_cycle} and servo angle {angle_cycle}\r\n")
 
     # Update desired values
     if s_local_ip[-1] == '0':
