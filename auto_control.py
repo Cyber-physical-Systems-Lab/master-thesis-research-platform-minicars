@@ -53,6 +53,7 @@ import math
 import os
 import sys
 import time
+import threading
 
 import cv2
 import numpy as np
@@ -187,6 +188,14 @@ _MARKER_MAX_AGE: float = 2.5
 _log_entries:  list = []   # one dict per frame; flushed to JSON at shutdown
 _frame_cars_data: dict = {}   # {frame_k: {car_id: per-car dict}}
 _cycle_counter: int = 0
+
+# ── Calibration constants (add near the other constants) ─────────────────────
+CALIB_DEFAULT_OUT   = "calib.npz"          # default output path
+CALIB_MIN_FRAMES    = 5                    # minimum captures before computing
+CALIB_CRITERIA      = (
+    cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001
+)
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # LIGHTWEIGHT LOGGER
@@ -621,29 +630,23 @@ def get_track_direction(track_markers: dict) -> np.ndarray:
 # MARKER DETECTION
 # ══════════════════════════════════════════════════════════════════════════════
 
-def detect_all_markers(frame: np.ndarray):
-    """Detect all three ArUco marker types in one camera frame.
-
-    Marker persistence
-    ------------------
-    Track markers (5×5): if a previously seen marker is absent, its last
-    valid corner array is silently substituted so stadium curves stay stable.
-
-    Obstacle markers (6×6): same policy. A dimmed cyan circle + "OBS*" label
-    is drawn at the cached position to distinguish cached from live.
-
-    Car markers (4×4): returned live only; fallback is handled by
-    identify_cars() via _car_marker_cache.
-
-    Returns
-    -------
-    car_markers   : dict {int: corner_array} — live 4×4 detections
-    track_markers : dict {int: corner_array} — live + cached 5×5 detections
-    obs_markers   : dict {int: corner_array} — live + cached 6×6 detections
+def detect_all_markers(frame):
     """
-    global _last_track_markers, _last_obs_positions
+    Detect all three ArUco marker types in one camera frame.
+
+    Caching policy
+    ──────────────
+    Static markers (track 5×5, obstacle 6×6)
+      • Live detection  → overwrite cache, return live corner.
+      • Occluded        → return cached corner unchanged (no reconstruction).
+      • Cache expired   → marker absent from returned dict.
+
+    Movable markers (car 4×4)
+      • Returned live only; fallback handled by identify_cars.
+    """
+    global last_track_markers, last_obs_positions
     now = time.time()
-    gray   = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     params = aruco.DetectorParameters()
 
     def _detect(dictionary, color=None):
@@ -657,129 +660,136 @@ def detect_all_markers(frame: np.ndarray):
             aruco.drawDetectedMarkers(frame, corners, ids, color)
         return {int(i): corners[k] for k, i in enumerate(ids.flatten())}
 
+    # ── Car markers: live only ───────────────────────────────────────────────
     car_markers = _detect(CAR_DICT)
 
-    # ── Track markers: persist across frames ──────────────────────────────
+    # ── Track markers: live → overwrite cache immediately ───────────────────
     live_track = _detect(TRACK_DICT)
     for mid, corner in live_track.items():
-        _last_track_markers[mid] = (corner, now)
-    track_markers = dict(live_track)
-    for mid, (corner, t) in list(_last_track_markers.items()):
-        if mid not in track_markers:
-            if _MARKER_MAX_AGE is None or (now - t) <= _MARKER_MAX_AGE:
-                track_markers[mid] = corner  # substitute cached corner
+        last_track_markers[mid] = (corner, now)      # always refresh with live
 
-    # ── Obstacle markers: persist across frames ───────────────────────────
+    track_markers = dict(live_track)                 # start from live
+    for mid, (corner, t) in list(last_track_markers.items()):
+        if mid not in track_markers:                 # occluded this frame
+            if _MARKER_MAX_AGE is None or now - t < _MARKER_MAX_AGE:
+                track_markers[mid] = corner          # return cached, unchanged
+
+    # ── Obstacle markers: same policy; draw cached as dimmed cyan ────────────
     live_obs = _detect(OBSTACLE_DICT, (0, 0, 255))
     for mid, corner in live_obs.items():
-        _last_obs_positions[mid] = (marker_center(corner), now)
+        last_obs_positions[mid] = (marker_center(corner), now)
+
     obs_markers = dict(live_obs)
-    for mid, (pos, t) in list(_last_obs_positions.items()):
+    for mid, (pos, t) in list(last_obs_positions.items()):
         if mid not in obs_markers:
-            if _MARKER_MAX_AGE is None or (now - t) <= _MARKER_MAX_AGE:
-                # Draw cached obstacle in dimmed cyan (visually distinct from live)
-                cv2.circle(frame, pos, 6, (0, 160, 160), 2)
-                cv2.putText(frame, "OBS*", (pos[0] + 8, pos[1] - 8),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.42, (0, 160, 160), 1)
-                # Synthesise a minimal corner array so downstream code is unchanged
+            if _MARKER_MAX_AGE is None or (now - t) < _MARKER_MAX_AGE:
+                # synthesise a corner array from cached position
                 px, py = pos
-                fake = np.array([[[px - 6, py - 6],
-                                   [px + 6, py - 6],
-                                   [px + 6, py + 6],
-                                   [px - 6, py + 6]]], dtype=np.float32)
+                fake = np.array(
+                    [[px-6, py-6], [px+6, py-6],
+                     [px+6, py+6], [px-6, py+6]], dtype=np.float32)
                 obs_markers[mid] = fake
+                # draw dimmed cyan to signal "cached"
+                cv2.circle(frame, pos, 6, (0, 160, 160), 2)
+                cv2.putText(frame, "OBS", (pos[0]+8, pos[1]-8),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.42,
+                            (0, 160, 160), 1)
 
     return car_markers, track_markers, obs_markers
-
 # ══════════════════════════════════════════════════════════════════════════════
 # CAR IDENTIFICATION & SPEED TRACKING
 # ══════════════════════════════════════════════════════════════════════════════
 
 def identify_cars(car_markers: dict, car_id: int) -> dict:
-    """Build a structured pose dict for every visible car from raw marker data.
-
-    Car marker persistence & front-marker fallback
-    -----------------------------------------------
-    Normal (both visible): rear = axle reference, heading = front−rear.
-    Rear occluded → FRONT FALLBACK: front marker becomes the axle reference
-        ("rear" key set to front_center). Heading reconstructed from cached
-        rear. 'using_front_fallback' = True. HUD shows [F!]. Event logged.
-    Front occluded → REAR ONLY: rear used normally, heading = (0,0).
-    Both expired → car_id absent from dict; run() issues safe stop.
     """
-    global _car_marker_cache
+    Build a structured pose dict for every visible car from raw marker data.
+
+    Reference-point policy
+    ──────────────────────
+    Normal (both live)      rear axle ref, heading = front−rear,
+                            midpoint = midpoint(front, rear)
+    Front fallback          front marker → axle ref, heading from cached rear,
+                            midpoint = front position
+    Rear only               rear → axle ref, heading = (0,0),
+                            midpoint = rear position
+    Both expired            car_id absent from returned dict → safe-stop
+
+    The midpoint snaps back to midpoint(front, rear) on the SAME frame
+    both markers are live again — no lag.
+    """
+    global car_marker_cache
     now = time.time()
 
-    if car_id not in _car_marker_cache:
-        _car_marker_cache[car_id] = {
+    if car_id not in car_marker_cache:
+        car_marker_cache[car_id] = {
             "front_corner": None, "rear_corner": None,
             "front_time":   None, "rear_time":   None,
-            "using_front_fallback": False,
         }
-    cache = _car_marker_cache[car_id]
+    cache = car_marker_cache[car_id]
 
-    # Refresh cache with whatever is live this frame
+    # Update cache ONLY from live detections
     if FRONT_MARKER_ID in car_markers:
         cache["front_corner"] = car_markers[FRONT_MARKER_ID]
         cache["front_time"]   = now
     if car_id in car_markers:
-        cache["rear_corner"] = car_markers[car_id]
-        cache["rear_time"]   = now
+        cache["rear_corner"]  = car_markers[car_id]
+        cache["rear_time"]    = now
 
     def _valid(t):
         if t is None:
             return False
-        return _MARKER_MAX_AGE is None or (now - t) <= _MARKER_MAX_AGE
+        return _MARKER_MAX_AGE is None or (now - t) < _MARKER_MAX_AGE
 
     front_ok = _valid(cache["front_time"])
     rear_ok  = _valid(cache["rear_time"])
 
-    # Other cars — legacy rear-only
     cars = {}
+
+    # Other cars: rear-only, no front marker
     for mid, corner in car_markers.items():
         if mid == FRONT_MARKER_ID or mid == car_id:
             continue
         rc = marker_center(corner)
-        cars[mid] = {"front": None, "rear": rc, "midpoint": rc,
-                     "heading": (0, 0), "using_front_fallback": False}
+        cars[mid] = {
+            "front": None, "rear": rc,
+            "midpoint": rc, "heading": (0, 0),
+            "using_front_fallback": False,
+        }
 
-    if rear_ok and front_ok:
-        # ── NORMAL ───────────────────────────────────────────────────────
+    if front_ok and rear_ok:
+        # ── Normal: both live ───────────────────────────────────────────────
         fc = marker_center(cache["front_corner"])
         rc = marker_center(cache["rear_corner"])
-        cache["using_front_fallback"] = False
         cars[car_id] = {
             "front":    fc,
             "rear":     rc,
-            "midpoint": midpoint(fc, rc),
+            "midpoint": midpoint(fc, rc),   # true midpoint, immediate snap-back
             "heading":  (fc[0] - rc[0], fc[1] - rc[1]),
             "using_front_fallback": False,
         }
 
     elif front_ok and not rear_ok:
-        # ── FRONT FALLBACK ────────────────────────────────────────────────
+        # ── Front fallback: reconstruct heading from cached rear ─────────────
         fc = marker_center(cache["front_corner"])
         if cache["rear_corner"] is not None:
             rc_cached = marker_center(cache["rear_corner"])
             dx, dy = fc[0] - rc_cached[0], fc[1] - rc_cached[1]
-            norm_h = math.hypot(dx, dy)
+            norm_h  = math.hypot(dx, dy)
             heading = (int(dx / norm_h * WHEELBASE_PX),
                        int(dy / norm_h * WHEELBASE_PX)) if norm_h > 1e-4 else (0, 0)
         else:
             heading = (0, 0)
-        cache["using_front_fallback"] = True
         cars[car_id] = {
             "front":    fc,
-            "rear":     fc,        # front marker acts as bicycle-model axle
+            "rear":     fc,                 # front acts as axle reference
             "midpoint": fc,
             "heading":  heading,
             "using_front_fallback": True,
         }
 
     elif rear_ok and not front_ok:
-        # ── REAR ONLY (degraded) ──────────────────────────────────────────
+        # ── Rear only ────────────────────────────────────────────────────────
         rc = marker_center(cache["rear_corner"])
-        cache["using_front_fallback"] = False
         cars[car_id] = {
             "front":    None,
             "rear":     rc,
@@ -787,7 +797,7 @@ def identify_cars(car_markers: dict, car_id: int) -> dict:
             "heading":  (0, 0),
             "using_front_fallback": False,
         }
-    # else: both expired → car_id absent → run() will safe-stop
+    # else: both expired → car_id not in cars → caller issues safe-stop
 
     return cars
 
@@ -1837,7 +1847,7 @@ def init_camera(cam_index: int = 0) -> tuple[cv2.VideoCapture, cv2.VideoWriter]:
     print(f"Height: {frameHeight}")
     print(f"FPS   : {frameRate}")
 
-    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter('output.mp4', fourcc, frameRate, (int(frameWidth), int(frameHeight)))
     return cap, out
 
@@ -1846,63 +1856,864 @@ def boot():
         """Launches car.py in the Pi board"""
         os.system('putty -ssh {}@{} -pw {} -m "./player/launch.txt"'.format(
                 username, ip, password))
+        
 
+# ── Module-level calibration state (already partially defined in the patch
+#    from the previous session; kept here for completeness) ───────────────────
+_CAM_K: "np.ndarray" = np.eye(3, dtype=np.float64)
+_CAM_D: "np.ndarray" = np.zeros(5, dtype=np.float64)
+_CAM_RVEC: "np.ndarray" = np.zeros((3, 1), dtype=np.float64)
+_CAM_TVEC: "np.ndarray" = np.zeros((3, 1), dtype=np.float64)
+_CALIBRATED: bool = False
+_calib_lock = threading.Lock()          # protects _CAM_K/_CAM_D during swap
+_calib_running = threading.Event()      # set while wizard is active
+
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def load_calibration(path: str) -> None:
+    """Load K, D (and optionally rvec, tvec) from an .npz file."""
+    global _CAM_K, _CAM_D, _CAM_RVEC, _CAM_TVEC, _CALIBRATED
+    data = np.load(path)
+    with _calib_lock:
+        _CAM_K    = data["K"]
+        _CAM_D    = data["D"]
+        _CAM_RVEC = data["rvec"] if "rvec" in data else _CAM_RVEC
+        _CAM_TVEC = data["tvec"] if "tvec" in data else _CAM_TVEC
+        _CALIBRATED = True
+    print(f"[calib] loaded from {path}  K=\n{_CAM_K}\nD={_CAM_D.ravel()}")
+
+
+def save_calibration(path: str, mtx: "np.ndarray", dist: "np.ndarray",
+                     rvec: "np.ndarray" = None,
+                     tvec: "np.ndarray" = None) -> None:
+    """Save calibration matrices to .npz and activate them immediately."""
+    global _CAM_K, _CAM_D, _CAM_RVEC, _CAM_TVEC, _CALIBRATED
+    kwargs = dict(K=mtx, D=dist)
+    if rvec is not None:
+        kwargs["rvec"] = rvec
+    if tvec is not None:
+        kwargs["tvec"] = tvec
+    np.savez(path, **kwargs)
+    with _calib_lock:
+        _CAM_K      = mtx
+        _CAM_D      = dist
+        if rvec is not None:
+            _CAM_RVEC = rvec
+        if tvec is not None:
+            _CAM_TVEC = tvec
+        _CALIBRATED = True
+    print(f"[calib] saved → {path}")
+
+
+def undistort_frame(frame: "np.ndarray") -> "np.ndarray":
+    """Undistort one frame using the active calibration. Pass-through if none."""
+    if not _CALIBRATED:
+        return frame
+    with _calib_lock:
+        k, d = _CAM_K.copy(), _CAM_D.copy()
+    return cv2.undistort(frame, k, d)
+
+
+def world_to_pixel(world_pt_m: tuple) -> tuple:
+    """
+    Project a 3-D world point (x, y, z) metres → pixel (u, v).
+    Uses cv2.projectPoints with the stored K, D, rvec, tvec.
+    Returns (0, 0) when not calibrated.
+    """
+    if not _CALIBRATED:
+        return (0, 0)
+    with _calib_lock:
+        k, d, rv, tv = _CAM_K.copy(), _CAM_D.copy(), _CAM_RVEC.copy(), _CAM_TVEC.copy()
+    pts = np.array([[list(world_pt_m)]], dtype=np.float64)
+    uv, _ = cv2.projectPoints(pts, rv, tv, k, d)
+    return (int(uv[0][0][0]), int(uv[0][0][1]))
+
+
+# ── Chessboard wizard ─────────────────────────────────────────────────────────
+
+def _wizard_chess(cap, chess_size: tuple, square_mm: float) -> tuple:
+    """
+    Interactive chessboard calibration.
+
+    Controls
+    --------
+    LEFT CLICK  – capture current frame (replaces SPACE so it is consistent
+                  with the click-to-start interaction model)
+    ESC         – finish and compute calibration
+    """
+    cols, rows = chess_size
+    objp = np.zeros((cols * rows, 3), np.float32)
+    objp[:, :2] = np.mgrid[0:cols, 0:rows].T.reshape(-1, 2) * square_mm
+    obj_pts, img_pts = [], []
+    captured = 0
+    criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+    # Mouse click flag
+    _click = [False]
+    def _on_click(event, x, y, flags, param):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            _click[0] = True
+
+    win = "Calibration – Chessboard"
+    cv2.namedWindow(win)
+    cv2.setMouseCallback(win, _on_click)
+
+    print(f"[calib] Chessboard wizard  {cols}×{rows} inner corners  "
+          f"{square_mm} mm/square")
+    print("[calib] LEFT CLICK to capture frame  |  ESC to finish")
+
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            continue
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        found, corners = cv2.findChessboardCorners(gray, (cols, rows), None)
+        display = frame.copy()
+        if found:
+            cv2.drawChessboardCorners(display, (cols, rows), corners, found)
+            cv2.putText(display, "Board detected  –  click to capture",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        else:
+            cv2.putText(display, "No board found",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        cv2.putText(display, f"Captured: {captured}  (ESC = compute)",
+                    (20, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+        cv2.imshow(win, display)
+
+        key = cv2.waitKey(1) & 0xFF
+        if key == 27:           # ESC
+            break
+        if (key == 32 or _click[0]) and found:   # SPACE or left click
+            _click[0] = False
+            corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+            obj_pts.append(objp)
+            img_pts.append(corners2)
+            captured += 1
+            print(f"[calib] frame captured ({captured})")
+
+    cv2.destroyWindow(win)
+    if captured < 5:
+        print("[calib] Not enough frames (need ≥ 5). Wizard aborted.")
+        return None, None
+
+    h, w = gray.shape
+    print(f"[calib] Computing from {captured} frames …")
+    ret, mtx, dist, _, _ = cv2.calibrateCamera(obj_pts, img_pts, (w, h), None, None)
+    print(f"[calib] RMS reprojection error: {ret:.4f} px")
+    return mtx, dist
+
+
+# ── ChArUco wizard ────────────────────────────────────────────────────────────
+
+def _wizard_charuco(cap, grid_size: tuple, square_mm: float,
+                    marker_mm: float) -> tuple:
+    """
+    Interactive ChArUco calibration.
+
+    Controls
+    --------
+    LEFT CLICK  – capture current frame
+    ESC         – finish and compute calibration
+    """
+    cols, rows = grid_size
+    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
+    board = aruco.CharucoBoard(cols, rows,
+                               square_mm / 1000.0, marker_mm / 1000.0,
+                               aruco_dict)
+    det_params    = aruco.DetectorParameters()
+    charuco_params = aruco.CharucoParameters()
+    detector = aruco.CharucoDetector(board, charuco_params, det_params)
+
+    all_charuco_corners, all_charuco_ids = [], []
+    captured = 0
+
+    _click = [False]
+    def _on_click(event, x, y, flags, param):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            _click[0] = True
+
+    win = "Calibration – ChArUco"
+    cv2.namedWindow(win)
+    cv2.setMouseCallback(win, _on_click)
+
+    print(f"[calib] ChArUco wizard  {cols}×{rows}  sq={square_mm} mm  "
+          f"marker={marker_mm} mm")
+    print("[calib] LEFT CLICK to capture frame  |  ESC to finish")
+
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            continue
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        display = frame.copy()
+        c_corners, c_ids, _, _ = detector.detectBoard(gray)
+        if c_ids is not None and len(c_ids) >= 4:
+            cv2.aruco.drawDetectedCornersCharuco(display, c_corners, c_ids)
+            cv2.putText(display,
+                        f"ChArUco detected ({len(c_ids)} corners)  –  click",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        else:
+            cv2.putText(display, "No ChArUco board found",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        cv2.putText(display, f"Captured: {captured}  (ESC = compute)",
+                    (20, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+        cv2.imshow(win, display)
+
+        key = cv2.waitKey(1) & 0xFF
+        if key == 27:
+            break
+        if (key == 32 or _click[0]) and c_ids is not None and len(c_ids) >= 4:
+            _click[0] = False
+            all_charuco_corners.append(c_corners)
+            all_charuco_ids.append(c_ids)
+            captured += 1
+            print(f"[calib] frame captured ({captured})")
+
+    cv2.destroyWindow(win)
+    if captured < 5:
+        print("[calib] Not enough frames (need ≥ 5). Wizard aborted.")
+        return None, None
+
+    ok2, frame2 = cap.read()
+    h, w = frame2.shape[:2]
+    print(f"[calib] Computing from {captured} frames …")
+    ret, mtx, dist, _, _ = cv2.aruco.calibrateCameraCharuco(
+        all_charuco_corners, all_charuco_ids, board, (w, h), None, None)
+    print(f"[calib] RMS reprojection error: {ret:.4f} px")
+    return mtx, dist
+
+
+# ── Public entry point ────────────────────────────────────────────────────────
+
+def _run_calibration_wizard(cap, board_type: str = "chess",
+                             chess_size: tuple = (8, 6),
+                             square_mm: float = 38.0,
+                             marker_mm: float = 18.0,
+                             save_path: str = "calib.npz") -> None:
+    """
+    Run the calibration wizard on `cap`, save the result to `save_path`,
+    and immediately activate undistortion in the running pipeline.
+
+    Can be called:
+      • At startup  (before the control loop)
+      • Mid-session (from a thread launched by the left-click callback)
+    """
+    _calib_running.set()
+    try:
+        if board_type == "charuco":
+            mtx, dist = _wizard_charuco(cap, chess_size, square_mm, marker_mm)
+        else:
+            mtx, dist = _wizard_chess(cap, chess_size, square_mm)
+        if mtx is not None:
+            save_calibration(save_path, mtx, dist)
+    finally:
+        _calib_running.clear()
+
+
+# ── Left-click callback  (attach to the main display window) ─────────────────
+
+def _click_callback(event, x, y, flags, param) -> None:
+    """
+    cv2 mouse callback for the main "Autonomous Minicars" window.
+
+    A left click spawns a one-shot calibration wizard thread so the display
+    loop keeps running (motors are implicitly stopped because car_worker()
+    checks _calib_running and outputs STOP_SPEED while it is set).
+
+    param  – dict with keys:
+        "cap"        cv2.VideoCapture
+        "board"      "chess" | "charuco"
+        "chess_size" (cols, rows)
+        "square_mm"  float
+        "marker_mm"  float
+        "save_path"  str
+    """
+    if event != cv2.EVENT_LBUTTONDOWN:
+        return
+    if _calib_running.is_set():
+        print("[calib] Wizard already running – ignoring click.")
+        return
+    p = param or {}
+    t = threading.Thread(
+        target=_run_calibration_wizard,
+        kwargs=dict(
+            cap        = p.get("cap"),
+            board_type = p.get("board", "chess"),
+            chess_size = p.get("chess_size", (8, 6)),
+            square_mm  = p.get("square_mm", 38.0),
+            marker_mm  = p.get("marker_mm", 18.0),
+            save_path  = p.get("save_path", "calib.npz"),
+        ),
+        daemon=True,
+    )
+    print("[calib] Left-click detected – launching calibration wizard …")
+    t.start()
+
+
+# ── Shared threading state ────────────────────────────────────────────────────
+# import threading
+
+_frame_lock           = threading.Lock()
+_latest_frame: object = None     # raw frame written by camera_producer
+
+_result_lock          = threading.Lock()
+_car_annotated: dict  = {}       # {car_id: annotated_frame}
+_car_commands: dict   = {}       # {car_id: (servo, motor)}
+
+
+def _get_latest_frame():
+    with _frame_lock:
+        return _latest_frame.copy() if _latest_frame is not None else None
+
+
+def camera_producer(cap) -> None:
+    """Single producer thread: keeps _latest_frame fresh."""
+    global _latest_frame
+    while True:
+        ret, frame = cap.read()
+        if not ret or frame is None:
+            continue
+        frame = undistort_frame(frame)
+        with _frame_lock:
+            _latest_frame = frame
+
+
+def car_worker(car_id: int, ip: str, sock, remote_port: int,
+               clean_flag: list) -> None:
+    """
+    One thread per car.
+    Grabs the latest camera frame, runs the full sense-plan-act cycle,
+    stores the annotated frame, and sends the UDP command packet.
+    """
+    import struct
+    while True:
+        frame = _get_latest_frame()
+        if frame is None:
+            time.sleep(0.005)
+            continue
+
+        try:
+            servo, motor, annotated = run(frame, car_id)
+        except Exception as exc:
+            print(f"[car {car_id}] run() error: {exc}")
+            servo, motor, annotated = 0.0, STOP_SPEED, frame
+
+        with _result_lock:
+            _car_annotated[car_id] = annotated
+            _car_commands[car_id]  = (servo, motor)
+
+        # UDP command packet: motor, servo, brightness=0, clean flag
+        clean = bool(clean_flag[0])
+        buf = bytearray(struct.pack("fff?", motor, servo, 0.0, clean))
+        try:
+            sock.sendto(buf, (ip, remote_port))
+        except OSError as exc:
+            print(f"[car {car_id}] UDP send error: {exc}")
+
+        # time.sleep(1.0 / 100.0)   # 100 Hz command rate
+
+
+def display_loop(window_name: str = "Autonomous Minicars") -> None:
+    """
+    Main-thread display loop.
+    Composites all annotated car frames onto the latest raw frame and
+    shows a single cv2 window at ~50 Hz.
+    """
+    import keyboard
+    while True:
+        base = _get_latest_frame()
+        if base is None:
+            time.sleep(0.02)
+            continue
+
+        display = base.copy()
+        with _result_lock:
+            snapshot = dict(_car_annotated)
+
+        for annotated in snapshot.values():
+            if annotated is not None and annotated.shape == display.shape:
+                # Blend annotated overlay (lane lines, HUD, arrows) onto base
+                cv2.addWeighted(annotated, 0.85, display, 0.15, 0, display)
+
+        cv2.imshow(window_name, display)
+        if cv2.waitKey(1) & 0xFF == 27:   # ESC
+            break
+        time.sleep(0.02)   # ~50 Hz
+
+
+def _car_ip(car_id: int) -> str:
+    """Derive Raspberry Pi IP from car ID, matching player_launcher.py logic."""
+    if car_id in range(0, 10):
+        return f"192.168.0.20{car_id}"
+    return f"192.168.0.2{car_id}"
+
+
+def _ping(ip: str) -> bool:
+    flag = "-n" if os.name == "nt" else "-c"
+    return os.system(f"ping {flag} 1 -w 200 {ip} | find \"Reply\"") == 0
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def save_calibration(path: str, mtx: np.ndarray, dist: np.ndarray,
+                     rvec: np.ndarray | None = None,
+                     tvec: np.ndarray | None = None) -> None:
+    """
+    Save camera intrinsics (and optionally extrinsics) to an .npz file.
+
+    Keys written
+    ------------
+    camera_matrix   : 3×3 float64
+    dist_coeffs     : (5,) or (8,) float64
+    rvec            : (3,1) float64  (only when provided)
+    tvec            : (3,1) float64  (only when provided)
+
+    The file can be loaded back with::
+
+        data = np.load("calib.npz")
+        K, D = data["camera_matrix"], data["dist_coeffs"]
+    """
+    payload = dict(camera_matrix=mtx, dist_coeffs=dist)
+    if rvec is not None:
+        payload["rvec"] = rvec
+    if tvec is not None:
+        payload["tvec"] = tvec
+    np.savez(path, **payload)
+    print(f"[calib] calibration saved → {path}")
+
+
+def _calib_mouse_cb(event, x, y, flags, param):
+    """
+    cv2 mouse callback.  Sets param[0] = True on LEFT BUTTON DOWN.
+    param must be a mutable one-element list: [False].
+    """
+    if event == cv2.EVENT_LBUTTONDOWN:
+        param[0] = True
+
+
+def _wizard_chess(cap, chesssize: tuple = (8, 6),
+                  square_mm: float = 38.0,
+                  out_path: str = CALIB_DEFAULT_OUT) -> tuple:
+    """
+    Interactive chessboard calibration wizard.
+
+    Parameters
+    ----------
+    cap         : cv2.VideoCapture  (already opened)
+    chesssize   : (cols-1, rows-1)  inner corner count
+    square_mm   : physical square side in millimetres
+    out_path    : where to save the .npz
+
+    Returns
+    -------
+    (camera_matrix, dist_coeffs)  both np.ndarray
+    """
+    cols, rows = chesssize
+    objp = np.zeros((cols * rows, 3), np.float32)
+    objp[:, :2] = np.mgrid[0:cols, 0:rows].T.reshape(-1, 2) * square_mm
+
+    obj_points, img_points = [], []
+    captured = 0
+
+    click_flag = [False]          # mutated by mouse callback
+    win = "Calibration – Chessboard (click to capture · ESC done)"
+    cv2.namedWindow(win)
+    cv2.setMouseCallback(win, _calib_mouse_cb, click_flag)
+
+    print("─" * 60)
+    print("CAMERA CALIBRATION WIZARD  –  Chessboard")
+    print(f"  Inner corners : {cols} × {rows}")
+    print(f"  Square size   : {square_mm} mm")
+    print("  LEFT CLICK    : capture detected board")
+    print("  ESC           : finish and compute calibration")
+    print(f"  Target        : ≥{CALIB_MIN_FRAMES} frames from varied angles")
+    print("─" * 60)
+
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            continue
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        found, corners = cv2.findChessboardCorners(gray, (cols, rows), None)
+
+        display = frame.copy()
+        if found:
+            cv2.drawChessboardCorners(display, (cols, rows), corners, found)
+            cv2.putText(display, "Board detected  –  click to capture",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        else:
+            cv2.putText(display, "No board found",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+        cv2.putText(display, f"Captured: {captured}  |  ESC = done",
+                    (20, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+        cv2.imshow(win, display)
+        cv2.waitKey(1)
+
+        # LEFT CLICK capture
+        if click_flag[0]:
+            click_flag[0] = False
+            if found:
+                corners2 = cv2.cornerSubPix(
+                    gray, corners, (11, 11), (-1, -1), CALIB_CRITERIA)
+                obj_points.append(objp)
+                img_points.append(corners2)
+                captured += 1
+                print(f"[calib] chessboard frame captured ({captured})")
+            else:
+                print("[calib] click ignored – board not detected in this frame")
+
+        if cv2.waitKey(1) & 0xFF == 27:   # ESC
+            break
+
+    cv2.destroyWindow(win)
+
+    if captured < CALIB_MIN_FRAMES:
+        raise RuntimeError(
+            f"[calib] Only {captured} frame(s) captured; "
+            f"need at least {CALIB_MIN_FRAMES}.")
+
+    h, w = gray.shape
+    print(f"[calib] Computing calibration from {captured} frames …")
+    rms, mtx, dist, _, _ = cv2.calibrateCamera(
+        obj_points, img_points, (w, h), None, None)
+    print(f"[calib] RMS reprojection error: {rms:.4f} px")
+    save_calibration(out_path, mtx, dist)
+    return mtx, dist
+
+
+def _wizard_charuco(cap, grid_size: tuple = (8, 6),
+                    square_mm: float = 38.0,
+                    marker_mm: float = 18.0,
+                    out_path: str = CALIB_DEFAULT_OUT) -> tuple:
+    """
+    Interactive ChArUco calibration wizard.
+
+    Parameters
+    ----------
+    cap        : cv2.VideoCapture  (already opened)
+    grid_size  : (cols, rows)  number of squares
+    square_mm  : physical square side in millimetres
+    marker_mm  : ArUco marker side in millimetres
+    out_path   : where to save the .npz
+
+    Returns
+    -------
+    (camera_matrix, dist_coeffs)  both np.ndarray
+    """
+    from cv2 import aruco
+    cols, rows = grid_size
+    aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_250)
+    board = aruco.CharucoBoard(
+        (cols, rows),
+        square_mm / 1000.0,
+        marker_mm / 1000.0,
+        aruco_dict,
+    )
+    detector_params  = aruco.DetectorParameters()
+    charuco_params   = aruco.CharucoParameters()
+    charuco_detector = aruco.CharucoDetector(board, charuco_params,
+                                             detector_params)
+
+    all_charuco_corners, all_charuco_ids = [], []
+    captured = 0
+
+    click_flag = [False]
+    win = "Calibration – ChArUco (click to capture · ESC done)"
+    cv2.namedWindow(win)
+    cv2.setMouseCallback(win, _calib_mouse_cb, click_flag)
+
+    print("─" * 60)
+    print("CAMERA CALIBRATION WIZARD  –  ChArUco")
+    print(f"  Grid          : {cols} × {rows}")
+    print(f"  Square size   : {square_mm} mm  |  Marker: {marker_mm} mm")
+    print("  LEFT CLICK    : capture detected board")
+    print("  ESC           : finish and compute calibration")
+    print(f"  Target        : ≥{CALIB_MIN_FRAMES} frames from varied angles")
+    print("─" * 60)
+
+    gray = None
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            continue
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        display = frame.copy()
+
+        charuco_corners, charuco_ids, _, _ = charuco_detector.detectBoard(gray)
+
+        if charuco_ids is not None and len(charuco_ids) >= 4:
+            cv2.aruco.drawDetectedCornersCharuco(
+                display, charuco_corners, charuco_ids)
+            cv2.putText(display,
+                        f"ChArUco detected ({len(charuco_ids)} corners)  –  click to capture",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        else:
+            cv2.putText(display, "No ChArUco board found",
+                        (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+        cv2.putText(display, f"Captured: {captured}  |  ESC = done",
+                    (20, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 1)
+        cv2.imshow(win, display)
+        cv2.waitKey(1)
+
+        if click_flag[0]:
+            click_flag[0] = False
+            if charuco_ids is not None and len(charuco_ids) >= 4:
+                all_charuco_corners.append(charuco_corners)
+                all_charuco_ids.append(charuco_ids)
+                captured += 1
+                print(f"[calib] ChArUco frame captured ({captured})")
+            else:
+                print("[calib] click ignored – board not detected in this frame")
+
+        if cv2.waitKey(1) & 0xFF == 27:
+            break
+
+    cv2.destroyWindow(win)
+
+    if captured < CALIB_MIN_FRAMES:
+        raise RuntimeError(
+            f"[calib] Only {captured} frame(s) captured; "
+            f"need at least {CALIB_MIN_FRAMES}.")
+
+    ok2, frame2 = cap.read()
+    h, w = frame2.shape[:2] if ok2 else gray.shape
+
+    print(f"[calib] Computing calibration from {captured} frames …")
+    rms, mtx, dist, _, _ = cv2.aruco.calibrateCameraCharuco(
+        all_charuco_corners, all_charuco_ids, board, (w, h), None, None)
+    print(f"[calib] RMS reprojection error: {rms:.4f} px")
+    save_calibration(out_path, mtx, dist)
+    return mtx, dist
+
+
+def run_calibration_wizard(cap,
+                           board_type: str = "chess",
+                           chess_size: tuple = (8, 6),
+                           square_mm: float = 38.0,
+                           marker_mm: float = 18.0,
+                           save_path: str = None) -> None:
+    """
+    Run the calibration wizard and immediately activate undistortion.
+
+    Always saves the result; the path defaults to CALIB_DEFAULT_OUT.
+    Dispatches to wizard_chess or wizard_charuco depending on board_type.
+    """
+    if board_type == "charuco":
+        mtx, dist = _wizard_charuco(cap,
+                                   grid_size  = chess_size,
+                                   square_mm  = square_mm,
+                                   marker_mm  = marker_mm,
+                                   out_path   = save_path)
+    else:
+        mtx, dist = _wizard_chess(cap,
+                                 chess_size = chess_size,
+                                 square_mm  = square_mm,
+                                 out_path   = save_path)
+    if mtx is not None:
+        save_calibration(save_path, mtx, dist)   # also sets CALIBRATED = True
+
+
+# ── Entry point ───────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    import argparse; parser = argparse.ArgumentParser(description="Start the control of the minicar(s)")
-    parser.add_argument('-n', '--cars', nargs='+', type=int, default=None,
-                        help='Manual cars: input the ID of each one')
+    import argparse, sys, socket, struct, keyboard
+
+    parser = argparse.ArgumentParser(description="Autonomous minicar controller")
+    parser.add_argument("-n", "--cars", nargs="+", type=int, default=None,
+                        help="Car IDs to control, e.g. -n 1 2")
+    parser.add_argument("--cam", type=int, default=0,
+                        help="Camera device index (default 0)")
+    parser.add_argument("--calibrate",  action="store_true",
+                        help="Run the calibration wizard before starting")
+    parser.add_argument("--calib-file", type=str, default="", metavar="PATH",
+                        help="Path to load/save calibration into a .npz file (default: calib.npz)")
+    parser.add_argument("--board",      type=str, default="chess",
+                        choices=["chess", "charuco"],
+                        help="Calibration board type  (default: chess)")
+    parser.add_argument("--chess-size", type=int, nargs=2, default=[8, 6],
+                        metavar=("COLS", "ROWS"),
+                        help="Inner corner count for chessboard  (default: 8 6)")
+    parser.add_argument("--square-mm",  type=float, default=38.0,
+                        help="Square size in mm  (default: 38.0)")
+    parser.add_argument("--marker-mm",  type=float, default=18.0,
+                        help="ChArUco marker size in mm  (default: 18.0)")
     args = parser.parse_args()
 
-    if args.cars is None:
-        print('No minicar selected!')
+    if not args.cars:
+        print("No minicar selected. Use -n <id> [<id> ...]")
         sys.exit(0)
 
-    ip = f"192.168.0.201"
     username = 'cpslab1'
     password = 'cpslab1'
-    print(ip)
 
-    remote_port = 6789
-    response = os.system('ping -n 1 -w 200 {} | find "Reply"'.format(ip))
-    if response == 0:
-        import socket; s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        import struct, keyboard
-        from threading import Thread
-        
-        th = Thread(target=boot)
-        th.start()
-        
-        car_idx = 1
-        cap, recorder     = init_camera(0)
-        running = True
-        clean = False
+    # ── Camera ───────────────────────────────────────────────────────────────
+    cap, recorder = init_camera(args.cam)
 
-        while running:
-            ret, frame = cap.read()
-            if ret and frame is not None:
-                servo, motor, vis = run(frame, car_idx)
-                if keyboard.is_pressed("esc"):
-                    running = False
-                    clean = True
-                # Send actuation commands at 100 Hz
-                buffer = bytearray(
-                    struct.pack('<fff?',
-                                motor,
-                                servo,
-                                0,
-                                clean))
-                s.sendto(buffer, (ip, remote_port))
-                print(f"Actual send values for motor speed {motor} and servo angle {servo}\r\n")
-                # time.sleep(1. / 100.)
-                cv2.imshow("Lane Controller", vis)
-                # recorder.write(vis)
-                if cv2.waitKey(1) & 0xFF == 27:
-                    break
-        cap.release()
-        # recorder.release()
-        s.close()
-        save_log()
-        cv2.destroyAllWindows()
+    cam_thread = threading.Thread(target=camera_producer, args=(cap,), daemon=True)
+    cam_thread.start()
+
+    print("Waiting for first camera frame …")
+    while _get_latest_frame() is None:
+        time.sleep(0.05)
+    print("Camera ready.")
+
+    # Calibration mode selection and activation
+    """
+    Decide calibration mode from args and activate it once.
+
+    Three mutually exclusive flows:
+    ─────────────────────────────────────────────────────────
+    1.  --calib-file PATH          (no --calibrate)
+        Load an existing .npz.  Activates undistortion immediately.
+        Use this for a normal run after a previous calibration session.
+
+    2.  --calibrate                (no --calib-file)
+        Run the wizard, save to calib.npz (default), activate undistortion.
+        Use this the first time you calibrate a camera.
+
+    3.  --calibrate --calib-file PATH
+        Run the wizard AND save the result to PATH instead of calib.npz.
+        Use this to save a named file, e.g. --calib-file lab_cam_2026.npz.
+
+    If neither flag is given the pipeline runs without undistortion (RAW mode).
+    """
+    if args.calib_file and not args.calibrate:
+        # ── Flow 1: load only ────────────────────────────────────────────────
+        if not os.path.isfile(args.calib_file):
+            print(f"[calib] ERROR: {args.calib_file} not found. "
+                  "Run with --calibrate first.")
+            sys.exit(1)
+        load_calibration(args.calib_file)
+        print(f"[calib] Mode: LOAD  →  {args.calib_file}")
+
+    elif args.calibrate:
+        # ── Flow 2 / 3: run wizard, save ────────────────────────────────────
+        save_path = args.calib_file or CALIB_DEFAULT_OUT
+        print(f"[calib] Mode: WIZARD  →  will save to {save_path}")
+        run_calibration_wizard(
+            cap,
+            board_type = args.board,
+            chess_size = tuple(args.chess_size),
+            square_mm  = args.square_mm,
+            marker_mm  = args.marker_mm,
+            save_path  = save_path,
+        )
+        # run_calibration_wizard calls save_calibration internally,
+        # which also activates undistortion via the global flags.
     else:
-        print("No connection")
-    sys.exit(0)
+        print("[calib] Mode: RAW (no undistortion)")
+
+    # ── UDP socket (shared across all cars) ──────────────────────────────────
+    REMOTE_PORT = 6789
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    # ── Per-car threads ───────────────────────────────────────────────────────
+    clean_flag = [False]   # mutable so car_worker can read updates
+    car_threads = {}
+    unresponsive = []
+
+    for car_id in args.cars:
+        ip = _car_ip(car_id)
+        print(f"[car {car_id}]  IP {ip}  pinging …", end=" ", flush=True)
+        if not _ping(ip):
+            print("UNRESPONSIVE – skipping")
+            unresponsive.append(car_id)
+            continue
+        print("OK")
+
+        # Launch car.py on the Pi
+        boot_t = threading.Thread(target=boot, daemon=True)
+        boot_t.start()
+
+        t = threading.Thread(
+            target=car_worker,
+            args=(car_id, ip, sock, REMOTE_PORT, clean_flag),
+            daemon=True,
+        )
+        car_threads[car_id] = t
+        t.start()
+
+    if unresponsive:
+        print(f"Unresponsive cars: {unresponsive}")
+
+    if not car_threads:
+        print("No responsive cars. Exiting.")
+        # sock.close() -- uncomment later 
+        # cap.release()
+        # sys.exit(0)
+
+    # ── Main display loop (blocking until ESC) ────────────────────────────────
+    try:
+        display_loop()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        clean_flag[0] = True
+        time.sleep(0.2)   # let workers send one final clean=True packet
+        sock.close()
+        recorder.release()
+        cap.release()
+        cv2.destroyAllWindows()
+        save_log()
+        print("Shutdown complete.")
+        sys.exit(0)
+# if __name__ == "__main__":
+#     import argparse; parser = argparse.ArgumentParser(description="Start the control of the minicar(s)")
+#     parser.add_argument('-n', '--cars', nargs='+', type=int, default=None,
+#                         help='Manual cars: input the ID of each one')
+#     args = parser.parse_args()
+
+#     if args.cars is None:
+#         print('No minicar selected!')
+#         sys.exit(0)
+
+#     ip = f"192.168.0.201"
+#     username = 'cpslab1'
+#     password = 'cpslab1'
+#     print(ip)
+
+#     remote_port = 6789
+#     response = os.system('ping -n 1 -w 200 {} | find "Reply"'.format(ip))
+#     if response == 0:
+#         import socket; s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#         import struct, keyboard
+#         from threading import Thread
+        
+#         th = Thread(target=boot)
+#         th.start()
+        
+#         car_idx = 1
+#         cap, recorder     = init_camera(0)
+#         running = True
+#         clean = False
+
+#         while running:
+#             ret, frame = cap.read()
+#             if ret and frame is not None:
+#                 servo, motor, vis = run(frame, car_idx)
+#                 if keyboard.is_pressed("esc"):
+#                     running = False
+#                     clean = True
+#                 # Send actuation commands at 100 Hz
+#                 buffer = bytearray(
+#                     struct.pack('<fff?',
+#                                 motor,
+#                                 servo,
+#                                 0,
+#                                 clean))
+#                 s.sendto(buffer, (ip, remote_port))
+#                 print(f"Actual send values for motor speed {motor} and servo angle {servo}\r\n")
+#                 # time.sleep(1. / 100.)
+#                 cv2.imshow("Lane Controller", vis)
+#                 # recorder.write(vis)
+#                 if cv2.waitKey(1) & 0xFF == 27:
+#                     break
+#         cap.release()
+#         # recorder.release()
+#         s.close()
+#         save_log()
+#         cv2.destroyAllWindows()
+#     else:
+#         print("No connection")
+#     sys.exit(0)
