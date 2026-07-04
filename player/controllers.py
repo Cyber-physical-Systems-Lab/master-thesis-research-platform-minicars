@@ -1,6 +1,19 @@
-"""class Autonomous(object):
-This file provides the keyboard and Joystick control for the player.
-Along with the semi and autonomous control of the car.
+"""
+controllers.py — Keyboard and Joystick controllers for minicar player mode.
+
+Autonomous control delegates entirely to auto_control.run():
+    servo, motor, draw_data, car_log_data = run(frame, car_id)
+
+After each listen() call the caller (player_launcher) can read:
+    ctrl.draw_data      — lightweight overlay geometry dict for this car
+    ctrl.last_log_data  — car_log_data dict returned by the last run() call
+                          (None in manual mode, populated in semi/autonomous)
+
+Drawing itself now happens ONLY in the display thread (player_launcher.py),
+which draws lane fills and obstacles once per frame, then iterates over
+every connected car's draw_data in a fixed order to render markers, guide
+lines, and per-car HUD boxes. Worker threads (and this controller) never
+touch a shared canvas.
 """
 
 import time
@@ -32,7 +45,8 @@ class Keyboard(object):
         # Define variables
         self.speed = 0.0
         self.angle = 0.0
-        self.frame = None
+        self.draw_data = None   # overlay geometry from last run() call
+        self.last_log_data = None   # car_log_data from last run() call
         self.brightness = 0.0
         self.turned_on = False
 
@@ -43,25 +57,20 @@ class Keyboard(object):
         self.binds = binds.KeyboardBinds()
         self.file = open('./player/console_prints/keyboard-console-log.txt', 'w')
         self.file1 = open('./player/console_prints/camera-console-log.txt', 'w')
-
+        _MODE_LABELS = {0: "Manual", 1: "Semi-Autonomous", 2: "Autonomous"}
         safe_write(self.file, "Turning on the control functionality...")
-
-        if self.control_type == 0:
-            safe_write(self.file,"[Minicar {}] Launching  in mode {} - Manual Control!\r\n".format(self.car_number, self.control_type))
-        elif self.control_type == 1:
-            safe_write(self.file,"[Minicar {}] Launching minicar {} in mode {} - Semi-Autonomous Control!\r\n".format(self.car_number, self.control_type))
-        elif self.control_type == 2:
-            safe_write(self.file,"[Minicar {}] Launching minicar {} in mode {} - Autonomous Control!\r\n".format(self.car_number, self.control_type))
+        safe_write(self.file,
+                   f"[Minicar {self.car_number}] Mode {self.control_type} — "
+                   f"{_MODE_LABELS.get(self.control_type, '?')} Control\r\n")
 
     def break_until_stop(self):
         """Gradually brakes until the car's motor stops"""
         brake_force = 0.1  # units to gradually break
 
         while abs(self.speed) > 0.:
-            if self.speed > 0.:
-                self.speed = max(0., self.speed - brake_force)
-            else:
-                self.speed = min(0., self.speed + brake_force)
+            self.speed = (max(0., self.speed - brake_force)
+                          if self.speed > 0.
+                          else min(0., self.speed + brake_force))
             time.sleep(0.05)
 
     def motor_stop(self):
@@ -80,11 +89,11 @@ class Keyboard(object):
             
             safe_write(self.file,f"[Minicar {self.car_number}] is stopping...\nNeutral steering position...\n")
 
-    def accelerate(self, accel):
+    def accelerate(self, accel: float):
         """Increases/decreases the speed up to the max speed"""
         self.speed = min(self.ideal_speed, max(self.speed + accel, -self.ideal_speed))
 
-    def turn(self, turn):
+    def turn(self, turn: float):
         """Increases/decreases the turning angle up to the max angle"""
         self.angle = min(self.max_angle, max(self.angle + turn, -self.max_angle))
 
@@ -92,6 +101,9 @@ class Keyboard(object):
         """Interprets bound inputs"""
 
         self.capture = captured_frame
+        # Guard: run() will crash if passed a None frame
+        if self.capture is None:
+            return
 
         forward_pressed = keyboard.is_pressed(self.binds.forwards)
         backward_pressed = keyboard.is_pressed(self.binds.backwards)
@@ -129,8 +141,8 @@ class Keyboard(object):
 
         # Manual control
         if self.control_type == 0:
-            moved = False
-            turned = False
+            self.last_log_data = None   # no EKF data in manual mode
+            moved = turned = False
 
             if forward_pressed and backward_pressed:
                 self.motor_stop()
@@ -188,12 +200,15 @@ class Keyboard(object):
             if not moved:
                 self.break_until_stop()      
 
-            self.angle, _, self.frame = run(self.capture, self.car_number)
+            # run() returns (servo, motor, annotated_frame, car_log_data)
+            self.angle, _, self.draw_data, self.last_log_data = run(
+                self.capture, self.car_number)
             safe_write(self.file1, "[Minicar {}] Autonomous turning with {}!\n".format(self.car_number, self.angle))
 
         # Autonomous control
         elif self.control_type == 2:
-            self.angle, self.speed, self.frame = run(self.capture, self.car_number)
+            self.angle, self.speed, self.draw_data, self.last_log_data = run(
+                self.capture, self.car_number)
             safe_write(self.file1, "[Minicar {}] Autonomous speed of {} and turning with {}!\n".format(self.car_number, self.speed, self.angle))
 
         # LEDs brightness control
@@ -235,6 +250,8 @@ class Joystick(object):
         self.speed = 0.
         self.angle = 90.
         self.brightness = 0.
+        self.draw_data      = None   # overlay geometry from last run() call
+        self.last_log_data = None   # car_log_data from last run() call
 
         self.control_type = 0
         self.clean = False
@@ -302,11 +319,11 @@ class Joystick(object):
         elif input_type == 'hat':
             return self.joystick.get_hat(input_location[0])[input_location[1]]
 
-    def accelerate(self, accel):
+    def accelerate(self, accel: float):
         """Increases/decreases the speed up to the max speed"""
         self.speed = min(self.ideal_speed, max(self.speed + accel, -self.ideal_speed))
 
-    def turn(self, turn):
+    def turn(self, turn: float):
         """Increases/decreases the turning angle up to the max angle"""
         self.angle = min(self.max_angle, max(self.angle + turn, -self.max_angle))
 
@@ -327,7 +344,14 @@ class Joystick(object):
             safe_write(self.file,"Car is stopping...\nNeutral steering position...\n")
 
     def listen(self, captured_frame):
-        """Interprets bound inputs"""
+        """Process one control tick.
+
+        Side-effects
+        ------------
+        self.draw_data      — updated with overlay geometry dict from run()
+        self.last_log_data — updated with car_log_data from run() (None in manual)
+        """
+         
         pygame.event.pump()
         self.capture = captured_frame
 
@@ -361,6 +385,7 @@ class Joystick(object):
 
         # Manual control
         if self.control_type == 0:
+            self.last_log_data = None   # no EKF data in manual mode
             self.speed = self.ideal_speed * -self.check(self.binds.speed)
             self.angle = self.max_angle * -self.check(self.binds.angle)
             
@@ -371,12 +396,14 @@ class Joystick(object):
             self.accelerate(self.ideal_speed * self.check(self.binds.accelerate) / 10.)
             safe_write(self.file,"Manual moving forward with {}!\n".format(self.speed))
 
-            self.angle, _, self.frame = run(self.capture, self.car_number)
+            self.angle, _, self.draw_data, self.last_log_data = run(
+                self.capture, self.car_number)
             safe_write(self.file, "Autonomous turning with {}!\n".format(self.angle))
 
         # Autonomous control
         elif self.control_type == 2:
-            self.angle, self.speed, self.frame = run(self.capture, self.car_number)
+            self.angle, self.speed, self.draw_data, self.last_log_data = run(
+                self.capture, self.car_number)
             safe_write(self.file, "Autonomous speed of {} and turning with {}!\n".format(self.speed, self.angle))
 
         # LEDs brightness control

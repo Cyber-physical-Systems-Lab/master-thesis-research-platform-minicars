@@ -1,0 +1,8916 @@
+{
+  "meta": {
+    "scenario": "S1",
+    "policy": "cooperative",
+    "calibration": "non-calib",
+    "dfov": "90",
+    "camera_height_cm": 170.0,
+    "coordinate_origin": "track_centroid",
+    "unit": "cm",
+    "px_per_cm": 4.5676,
+    "track_long_axis_cm": 148.5,
+    "cross_check": {
+      "long_axis_9_10_px": 678.29,
+      "long_axis_9_10_cm": 148.5,
+      "short_axis_2_6_px": 108.04,
+      "short_axis_2_6_cm": 23.65
+    },
+    "saved_at": "2026-07-04T12:08:16",
+    "n_frames": 141,
+    "n_exp": 1
+  },
+  "frames": [
+    {
+      "t": 1783159681.63159,
+      "k": 3,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            812,
+            181,
+            184.65
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -4.0,
+          "heading_error": -4.65,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159681.72452,
+      "k": 5,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            810,
+            180,
+            184.69
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.69,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159681.82109,
+      "k": 7,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            808,
+            180,
+            184.72
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.72,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159681.9359,
+      "k": 8,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            806,
+            180,
+            184.76
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.76,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.04133,
+      "k": 10,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            805,
+            180,
+            184.79
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.79,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.15033,
+      "k": 12,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            803,
+            180,
+            184.78
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.78,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.2629,
+      "k": 13,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            801,
+            180,
+            184.66
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.66,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.36963,
+      "k": 15,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            799,
+            180,
+            184.65
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.49
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.65,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.47422,
+      "k": 17,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            799,
+            180,
+            184.66
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.66,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.56442,
+      "k": 19,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            797,
+            180,
+            184.58
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.58,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.66124,
+      "k": 21,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            795,
+            180,
+            184.53
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.53,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.76403,
+      "k": 22,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            794,
+            180,
+            184.51
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -4.51,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159682.89532,
+      "k": 24,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            793,
+            179,
+            184.52
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -4.52,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.00419,
+      "k": 26,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            791,
+            179,
+            184.59
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.02,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -4.59,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.10342,
+      "k": 28,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            790,
+            179,
+            184.68
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.02,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -4.68,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.21717,
+      "k": 30,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            789,
+            179,
+            184.79
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -4.79,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.34579,
+      "k": 31,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            184.91
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -4.91,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.46783,
+      "k": 33,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            184.99
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -4.99,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.60757,
+      "k": 35,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.13
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.13,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.71952,
+      "k": 36,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.29
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.29,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.86383,
+      "k": 38,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.35
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.35,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159683.99697,
+      "k": 40,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.48
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.48,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.09628,
+      "k": 41,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            785,
+            179,
+            185.64
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.64,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.21169,
+      "k": 43,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.73
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.73,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.31503,
+      "k": 45,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.78
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.78,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.41589,
+      "k": 47,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.84
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.84,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.5379,
+      "k": 49,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.91
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.91,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.64746,
+      "k": 50,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.98
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.98,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.768,
+      "k": 53,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            186.02
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.02,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.87984,
+      "k": 55,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.05
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.05,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159684.97502,
+      "k": 56,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.07
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.07,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.06579,
+      "k": 58,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.08
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.08,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.18502,
+      "k": 60,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.08
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.45
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.08,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.28853,
+      "k": 63,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            186.08
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.08,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.40461,
+      "k": 65,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            186.07
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.07,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.51562,
+      "k": 67,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            186.06
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.06,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.62583,
+      "k": 69,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            186.05
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.05,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.7338,
+      "k": 71,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            186.05
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.05,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.85043,
+      "k": 73,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.05
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.05,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159685.9413,
+      "k": 75,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.04
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.04,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.04423,
+      "k": 77,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.03
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.03,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.14259,
+      "k": 79,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.02
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.02,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.24779,
+      "k": 81,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            186.0
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.0,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.34644,
+      "k": 83,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            186.0
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -6.0,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.43698,
+      "k": 84,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.99
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.99,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.52965,
+      "k": 86,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.99
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.99,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.62265,
+      "k": 88,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.97
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.52
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.97,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.71349,
+      "k": 90,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.97
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.97,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.81018,
+      "k": 92,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.95
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.95,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159686.91515,
+      "k": 94,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.95
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.95,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.01538,
+      "k": 96,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.96
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.96,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.11528,
+      "k": 98,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.96
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.96,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.21525,
+      "k": 99,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.94
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.94,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.3122,
+      "k": 101,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.94
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.94,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.41173,
+      "k": 103,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.93
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.93,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.5061,
+      "k": 105,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.93
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.93,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.59544,
+      "k": 107,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.93
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.93,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.69841,
+      "k": 109,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.93
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.93,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.80494,
+      "k": 111,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.94
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.94,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159687.9049,
+      "k": 113,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.94
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.94,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.01863,
+      "k": 115,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.94
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.94,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.10718,
+      "k": 117,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.95
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.95,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.19719,
+      "k": 118,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.95
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.95,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.2957,
+      "k": 120,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.95
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.95,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.39081,
+      "k": 122,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            788,
+            179,
+            185.95
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.95,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.48354,
+      "k": 124,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.95
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.95,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.5777,
+      "k": 126,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.9
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.9,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.6728,
+      "k": 127,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            787,
+            179,
+            185.68
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.52
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.68,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.77507,
+      "k": 129,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            786,
+            179,
+            185.25
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.25,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.8728,
+      "k": 131,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            784,
+            179,
+            185.42
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.42,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159688.98208,
+      "k": 133,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            781,
+            179,
+            185.22
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -5.22,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.07623,
+      "k": 135,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            778,
+            179,
+            184.9
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -4.9,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.17472,
+      "k": 137,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            774,
+            179,
+            184.42
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.03,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -4.42,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.29401,
+      "k": 139,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            769,
+            179,
+            183.99
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.02,
+            "motor": 0.44
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -3.99,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.39922,
+      "k": 141,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            763,
+            179,
+            183.5
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.02,
+            "motor": 0.44
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -3.5,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.49964,
+      "k": 143,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            755,
+            179,
+            182.73
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.02,
+            "motor": 0.44
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -2.73,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.61664,
+      "k": 146,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            748,
+            180,
+            182.13
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.01,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -2.13,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.71616,
+      "k": 148,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            739,
+            180,
+            181.64
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.01,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": -5.0,
+          "heading_error": -1.64,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.81406,
+      "k": 150,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            729,
+            181,
+            180.76
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": -4.0,
+          "heading_error": -0.76,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159689.92274,
+      "k": 152,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            719,
+            181,
+            180.51
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": -4.0,
+          "heading_error": -0.51,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.01806,
+      "k": 154,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            708,
+            182,
+            180.38
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": -3.0,
+          "heading_error": -0.38,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.1114,
+      "k": 155,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            696,
+            183,
+            179.48
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.0,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": -2.0,
+          "heading_error": 0.52,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.21274,
+      "k": 157,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            689,
+            184,
+            178.88
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.0,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": -1.0,
+          "heading_error": 1.12,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.30822,
+      "k": 159,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            676,
+            186,
+            178.14
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.01,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": 1.0,
+          "heading_error": 1.86,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.41136,
+      "k": 161,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            661,
+            188,
+            176.93
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.01,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": 3.0,
+          "heading_error": 3.07,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.51176,
+      "k": 163,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            646,
+            191,
+            175.61
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.02,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": 6.0,
+          "heading_error": 4.39,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.60927,
+      "k": 165,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            630,
+            194,
+            175.02
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.03,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": 9.0,
+          "heading_error": 4.98,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.7115,
+      "k": 167,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            615,
+            197,
+            174.48
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.03,
+            "motor": 0.43
+          },
+          "waiting": false,
+          "lateral_error": 12.0,
+          "heading_error": 5.52,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.81603,
+      "k": 169,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            591,
+            203,
+            173.36
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.04,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 18.0,
+          "heading_error": 6.64,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159690.93356,
+      "k": 172,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            574,
+            207,
+            172.1
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.05,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 22.0,
+          "heading_error": 7.9,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.04855,
+      "k": 174,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            558,
+            213,
+            167.17
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.07,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 28.0,
+          "heading_error": 12.83,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.13164,
+      "k": 176,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            540,
+            220,
+            166.94
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.09,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 35.0,
+          "heading_error": 13.06,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.22826,
+      "k": 178,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            521,
+            228,
+            165.16
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.1,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 43.0,
+          "heading_error": 14.84,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.3267,
+      "k": 180,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            503,
+            237,
+            163.87
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.12,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 52.0,
+          "heading_error": 16.13,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.41254,
+      "k": 182,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            486,
+            249,
+            150.13
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": -0.16,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 64.0,
+          "heading_error": 29.87,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "REAR_ONLY",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.5071,
+      "k": 183,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            468,
+            260,
+            154.18
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.03,
+          "command": {
+            "servo": -0.19,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 75.0,
+          "heading_error": 25.82,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.59745,
+      "k": 185,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            451,
+            272,
+            157.41
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.03,
+          "command": {
+            "servo": -0.21,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 85.98,
+          "heading_error": 26.99,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.68958,
+      "k": 187,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            436,
+            285,
+            156.2
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.064,
+          "command": {
+            "servo": -0.22,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 98.32,
+          "heading_error": 27.89,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.78239,
+      "k": 189,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            421,
+            301,
+            151.01
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.095,
+          "command": {
+            "servo": -0.25,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 112.61,
+          "heading_error": 38.45,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.87526,
+      "k": 191,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            409,
+            317,
+            148.34
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.067,
+          "command": {
+            "servo": -0.29,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 125.7,
+          "heading_error": 44.65,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159691.97208,
+      "k": 193,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            398,
+            334,
+            144.26
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.071,
+          "command": {
+            "servo": -0.34,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 139.08,
+          "heading_error": 58.36,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.07249,
+      "k": 196,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            389,
+            352,
+            141.2
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.068,
+          "command": {
+            "servo": -0.39,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 152.69,
+          "heading_error": 63.25,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.16249,
+      "k": 197,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            382,
+            370,
+            136.42
+          ],
+          "lane": 1,
+          "segment": "light_curve",
+          "curvature": 0.15,
+          "command": {
+            "servo": -0.32,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 157.68,
+          "heading_error": -1.42,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.24625,
+      "k": 199,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            378,
+            389,
+            133.79
+          ],
+          "lane": 1,
+          "segment": "light_curve",
+          "curvature": 0.187,
+          "command": {
+            "servo": -0.29,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 138.82,
+          "heading_error": 27.78,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.34177,
+      "k": 201,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            375,
+            406,
+            131.87
+          ],
+          "lane": 1,
+          "segment": "light_curve",
+          "curvature": 0.187,
+          "command": {
+            "servo": -0.27,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 121.75,
+          "heading_error": 29.7,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.43857,
+      "k": 203,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            374,
+            415,
+            131.73
+          ],
+          "lane": 1,
+          "segment": "light_curve",
+          "curvature": 0.153,
+          "command": {
+            "servo": -0.33,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 112.65,
+          "heading_error": 35.28,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.53659,
+      "k": 205,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            379,
+            444,
+            71.07
+          ],
+          "lane": 1,
+          "segment": "light_curve",
+          "curvature": 0.148,
+          "command": {
+            "servo": -0.2,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 84.6,
+          "heading_error": -75.47,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.62931,
+      "k": 207,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            384,
+            459,
+            39.96
+          ],
+          "lane": 1,
+          "segment": "light_curve",
+          "curvature": 0.143,
+          "command": {
+            "servo": 0.04,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 70.48,
+          "heading_error": -44.36,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.7137,
+      "k": 209,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            389,
+            471,
+            28.88
+          ],
+          "lane": 1,
+          "segment": "light_curve",
+          "curvature": 0.12,
+          "command": {
+            "servo": 0.15,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 58.42,
+          "heading_error": -32.97,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.80376,
+      "k": 211,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            394,
+            482,
+            28.0
+          ],
+          "lane": 1,
+          "segment": "light_curve",
+          "curvature": 0.121,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 48.0,
+          "heading_error": -28.0,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.89991,
+      "k": 213,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            398,
+            488,
+            338.23
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.092,
+          "command": {
+            "servo": 0.14,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 42.0,
+          "heading_error": 21.77,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159692.98717,
+      "k": 215,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            405,
+            501,
+            2.65
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.061,
+          "command": {
+            "servo": 0.09,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 29.07,
+          "heading_error": 1.75,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.07981,
+      "k": 217,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            409,
+            507,
+            12.87
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.11,
+            "motor": 0.55
+          },
+          "waiting": false,
+          "lateral_error": 22.32,
+          "heading_error": -8.47,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "FRONT_ONLY",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.17103,
+      "k": 219,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            418,
+            521,
+            0.26
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.031,
+          "command": {
+            "servo": 0.05,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": 8.0,
+          "heading_error": -0.26,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.26308,
+      "k": 221,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            428,
+            535,
+            26.63
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.03,
+          "command": {
+            "servo": 0.09,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -6.0,
+          "heading_error": -26.63,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.35609,
+      "k": 223,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            437,
+            548,
+            41.01
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.03,
+          "command": {
+            "servo": 0.16,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -19.0,
+          "heading_error": -41.01,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.45891,
+      "k": 225,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            446,
+            560,
+            44.2
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -31.0,
+          "heading_error": -44.2,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.55794,
+      "k": 227,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            456,
+            571,
+            40.91
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.21,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -42.0,
+          "heading_error": -40.91,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.65223,
+      "k": 229,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            467,
+            583,
+            35.82
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -54.0,
+          "heading_error": -35.82,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.73873,
+      "k": 231,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            472,
+            589,
+            33.63
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.18,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -60.0,
+          "heading_error": -33.63,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_VISIBLE",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.83255,
+      "k": 233,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            483,
+            602,
+            38.31
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.16,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -73.0,
+          "heading_error": -38.31,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "REAR_ONLY",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159693.92546,
+      "k": 235,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            495,
+            617,
+            49.36
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.17,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -88.0,
+          "heading_error": -49.36,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "REAR_ONLY",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.01485,
+      "k": 236,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            506,
+            633,
+            57.29
+          ],
+          "lane": 1,
+          "segment": "straight",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.19,
+            "motor": 0.42
+          },
+          "waiting": false,
+          "lateral_error": -104.0,
+          "heading_error": -57.29,
+          "obstacle": {
+            "driving_state": "clear",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "follow_start_lane"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "REAR_ONLY",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.10522,
+      "k": 239,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            513.02,
+            642.71,
+            59.46
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.357
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.18984,
+      "k": 240,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            513.88,
+            644.16,
+            59.69
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.258
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.27707,
+      "k": 243,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.24,
+            644.78,
+            59.78
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.186
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.38498,
+      "k": 245,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.31,
+            644.9,
+            59.8
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.135
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.49259,
+      "k": 247,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.31,
+            644.91,
+            59.8
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.097
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.59233,
+      "k": 249,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            59.8
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.07
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.67752,
+      "k": 251,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            59.8
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.051
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.76754,
+      "k": 253,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            59.8
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.037
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.86787,
+      "k": 255,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            59.8
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.027
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159694.96124,
+      "k": 257,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            59.8
+          ],
+          "lane": 1,
+          "segment": "occluded",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.2,
+            "motor": 0.019
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159695.07539,
+      "k": 259,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            0.0
+          ],
+          "lane": 1,
+          "segment": "occluded_hardstop",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.0
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded_hardstop"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159695.1757,
+      "k": 262,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            0.0
+          ],
+          "lane": 1,
+          "segment": "occluded_hardstop",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.0
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded_hardstop"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159695.27891,
+      "k": 264,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            0.0
+          ],
+          "lane": 1,
+          "segment": "occluded_hardstop",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.0
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded_hardstop"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159695.38202,
+      "k": 266,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            0.0
+          ],
+          "lane": 1,
+          "segment": "occluded_hardstop",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.0
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded_hardstop"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159695.47694,
+      "k": 268,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            0.0
+          ],
+          "lane": 1,
+          "segment": "occluded_hardstop",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.0
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded_hardstop"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159695.57599,
+      "k": 270,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            0.0
+          ],
+          "lane": 1,
+          "segment": "occluded_hardstop",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.0
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded_hardstop"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159695.65961,
+      "k": 271,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            0.0
+          ],
+          "lane": 1,
+          "segment": "occluded_hardstop",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.0
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded_hardstop"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    },
+    {
+      "t": 1783159695.7513,
+      "k": 273,
+      "distances": {},
+      "cars": {
+        "2": {
+          "policy": "cooperative",
+          "pose": [
+            514.32,
+            644.91,
+            0.0
+          ],
+          "lane": 1,
+          "segment": "occluded_hardstop",
+          "curvature": 0.0,
+          "command": {
+            "servo": 0.0,
+            "motor": 0.0
+          },
+          "waiting": false,
+          "lateral_error": 0.0,
+          "heading_error": 0.0,
+          "obstacle": {
+            "driving_state": "unknown",
+            "distance_px": null
+          },
+          "obstacle_interactions": [],
+          "events": {
+            "minicar_events": [
+              "occluded_hardstop"
+            ],
+            "safety_events": {
+              "car": [
+                "no_collision"
+              ],
+              "object": [
+                "no_collision"
+              ]
+            }
+          },
+          "occlusion_tier": "BOTH_OCCLUDED",
+          "emergency_stop": false,
+          "maneuvering": false
+        }
+      }
+    }
+  ],
+  "track_ground_truth": {
+    "lane1_ref": [
+      [
+        833,
+        185
+      ],
+      [
+        826,
+        185
+      ],
+      [
+        820,
+        185
+      ],
+      [
+        813,
+        185
+      ],
+      [
+        807,
+        185
+      ],
+      [
+        800,
+        185
+      ],
+      [
+        794,
+        185
+      ],
+      [
+        787,
+        185
+      ],
+      [
+        781,
+        185
+      ],
+      [
+        774,
+        185
+      ],
+      [
+        768,
+        185
+      ],
+      [
+        761,
+        185
+      ],
+      [
+        755,
+        185
+      ],
+      [
+        748,
+        185
+      ],
+      [
+        741,
+        185
+      ],
+      [
+        735,
+        185
+      ],
+      [
+        728,
+        185
+      ],
+      [
+        722,
+        185
+      ],
+      [
+        716,
+        185
+      ],
+      [
+        709,
+        185
+      ],
+      [
+        702,
+        185
+      ],
+      [
+        696,
+        185
+      ],
+      [
+        689,
+        185
+      ],
+      [
+        683,
+        185
+      ],
+      [
+        676,
+        185
+      ],
+      [
+        670,
+        185
+      ],
+      [
+        663,
+        185
+      ],
+      [
+        657,
+        185
+      ],
+      [
+        650,
+        185
+      ],
+      [
+        643,
+        185
+      ],
+      [
+        637,
+        185
+      ],
+      [
+        631,
+        185
+      ],
+      [
+        624,
+        185
+      ],
+      [
+        618,
+        185
+      ],
+      [
+        611,
+        185
+      ],
+      [
+        604,
+        185
+      ],
+      [
+        598,
+        185
+      ],
+      [
+        591,
+        185
+      ],
+      [
+        585,
+        185
+      ],
+      [
+        579,
+        185
+      ],
+      [
+        572,
+        185
+      ],
+      [
+        565,
+        185
+      ],
+      [
+        559,
+        185
+      ],
+      [
+        552,
+        185
+      ],
+      [
+        546,
+        185
+      ],
+      [
+        539,
+        185
+      ],
+      [
+        533,
+        185
+      ],
+      [
+        526,
+        185
+      ],
+      [
+        520,
+        185
+      ],
+      [
+        513,
+        185
+      ],
+      [
+        507,
+        185
+      ],
+      [
+        500,
+        185
+      ],
+      [
+        493,
+        185
+      ],
+      [
+        487,
+        185
+      ],
+      [
+        481,
+        185
+      ],
+      [
+        474,
+        185
+      ],
+      [
+        468,
+        185
+      ],
+      [
+        461,
+        185
+      ],
+      [
+        454,
+        185
+      ],
+      [
+        448,
+        186
+      ],
+      [
+        441,
+        186
+      ],
+      [
+        435,
+        186
+      ],
+      [
+        428,
+        187
+      ],
+      [
+        421,
+        187
+      ],
+      [
+        415,
+        188
+      ],
+      [
+        408,
+        189
+      ],
+      [
+        402,
+        190
+      ],
+      [
+        396,
+        191
+      ],
+      [
+        389,
+        192
+      ],
+      [
+        383,
+        194
+      ],
+      [
+        377,
+        195
+      ],
+      [
+        370,
+        197
+      ],
+      [
+        364,
+        199
+      ],
+      [
+        358,
+        200
+      ],
+      [
+        352,
+        202
+      ],
+      [
+        346,
+        205
+      ],
+      [
+        340,
+        207
+      ],
+      [
+        334,
+        209
+      ],
+      [
+        328,
+        212
+      ],
+      [
+        323,
+        214
+      ],
+      [
+        317,
+        217
+      ],
+      [
+        312,
+        220
+      ],
+      [
+        306,
+        222
+      ],
+      [
+        301,
+        225
+      ],
+      [
+        296,
+        228
+      ],
+      [
+        291,
+        231
+      ],
+      [
+        286,
+        235
+      ],
+      [
+        281,
+        239
+      ],
+      [
+        276,
+        243
+      ],
+      [
+        271,
+        247
+      ],
+      [
+        267,
+        251
+      ],
+      [
+        263,
+        256
+      ],
+      [
+        259,
+        261
+      ],
+      [
+        255,
+        265
+      ],
+      [
+        251,
+        270
+      ],
+      [
+        247,
+        276
+      ],
+      [
+        244,
+        281
+      ],
+      [
+        241,
+        286
+      ],
+      [
+        238,
+        292
+      ],
+      [
+        235,
+        297
+      ],
+      [
+        232,
+        303
+      ],
+      [
+        230,
+        310
+      ],
+      [
+        228,
+        316
+      ],
+      [
+        226,
+        322
+      ],
+      [
+        225,
+        328
+      ],
+      [
+        224,
+        334
+      ],
+      [
+        222,
+        341
+      ],
+      [
+        222,
+        347
+      ],
+      [
+        221,
+        354
+      ],
+      [
+        220,
+        360
+      ],
+      [
+        221,
+        366
+      ],
+      [
+        221,
+        373
+      ],
+      [
+        221,
+        379
+      ],
+      [
+        222,
+        386
+      ],
+      [
+        223,
+        392
+      ],
+      [
+        224,
+        399
+      ],
+      [
+        226,
+        405
+      ],
+      [
+        228,
+        411
+      ],
+      [
+        229,
+        418
+      ],
+      [
+        232,
+        424
+      ],
+      [
+        234,
+        430
+      ],
+      [
+        237,
+        436
+      ],
+      [
+        240,
+        442
+      ],
+      [
+        243,
+        448
+      ],
+      [
+        247,
+        453
+      ],
+      [
+        251,
+        459
+      ],
+      [
+        255,
+        464
+      ],
+      [
+        259,
+        469
+      ],
+      [
+        263,
+        474
+      ],
+      [
+        268,
+        479
+      ],
+      [
+        272,
+        484
+      ],
+      [
+        277,
+        488
+      ],
+      [
+        282,
+        493
+      ],
+      [
+        287,
+        497
+      ],
+      [
+        293,
+        500
+      ],
+      [
+        299,
+        504
+      ],
+      [
+        304,
+        507
+      ],
+      [
+        310,
+        511
+      ],
+      [
+        316,
+        514
+      ],
+      [
+        323,
+        516
+      ],
+      [
+        329,
+        519
+      ],
+      [
+        335,
+        521
+      ],
+      [
+        341,
+        523
+      ],
+      [
+        348,
+        525
+      ],
+      [
+        354,
+        526
+      ],
+      [
+        361,
+        527
+      ],
+      [
+        368,
+        528
+      ],
+      [
+        374,
+        529
+      ],
+      [
+        381,
+        529
+      ],
+      [
+        388,
+        530
+      ],
+      [
+        394,
+        530
+      ],
+      [
+        401,
+        530
+      ],
+      [
+        407,
+        530
+      ],
+      [
+        414,
+        529
+      ],
+      [
+        420,
+        529
+      ],
+      [
+        427,
+        529
+      ],
+      [
+        433,
+        529
+      ],
+      [
+        440,
+        529
+      ],
+      [
+        446,
+        529
+      ],
+      [
+        453,
+        529
+      ],
+      [
+        460,
+        529
+      ],
+      [
+        466,
+        529
+      ],
+      [
+        473,
+        529
+      ],
+      [
+        479,
+        529
+      ],
+      [
+        485,
+        529
+      ],
+      [
+        492,
+        529
+      ],
+      [
+        498,
+        529
+      ],
+      [
+        505,
+        529
+      ],
+      [
+        512,
+        529
+      ],
+      [
+        518,
+        529
+      ],
+      [
+        525,
+        529
+      ],
+      [
+        531,
+        529
+      ],
+      [
+        537,
+        529
+      ],
+      [
+        544,
+        529
+      ],
+      [
+        551,
+        529
+      ],
+      [
+        557,
+        529
+      ],
+      [
+        564,
+        529
+      ],
+      [
+        570,
+        529
+      ],
+      [
+        577,
+        529
+      ],
+      [
+        583,
+        529
+      ],
+      [
+        590,
+        529
+      ],
+      [
+        596,
+        529
+      ],
+      [
+        603,
+        529
+      ],
+      [
+        610,
+        529
+      ],
+      [
+        616,
+        529
+      ],
+      [
+        622,
+        529
+      ],
+      [
+        629,
+        529
+      ],
+      [
+        635,
+        529
+      ],
+      [
+        642,
+        529
+      ],
+      [
+        649,
+        529
+      ],
+      [
+        655,
+        529
+      ],
+      [
+        662,
+        529
+      ],
+      [
+        668,
+        529
+      ],
+      [
+        675,
+        529
+      ],
+      [
+        681,
+        529
+      ],
+      [
+        688,
+        529
+      ],
+      [
+        694,
+        529
+      ],
+      [
+        701,
+        529
+      ],
+      [
+        707,
+        529
+      ],
+      [
+        714,
+        529
+      ],
+      [
+        720,
+        529
+      ],
+      [
+        727,
+        529
+      ],
+      [
+        733,
+        529
+      ],
+      [
+        740,
+        529
+      ],
+      [
+        747,
+        529
+      ],
+      [
+        753,
+        529
+      ],
+      [
+        760,
+        529
+      ],
+      [
+        766,
+        529
+      ],
+      [
+        772,
+        529
+      ],
+      [
+        779,
+        529
+      ],
+      [
+        786,
+        529
+      ],
+      [
+        792,
+        528
+      ],
+      [
+        799,
+        528
+      ],
+      [
+        805,
+        527
+      ],
+      [
+        812,
+        527
+      ],
+      [
+        818,
+        526
+      ],
+      [
+        825,
+        525
+      ],
+      [
+        831,
+        524
+      ],
+      [
+        838,
+        522
+      ],
+      [
+        844,
+        521
+      ],
+      [
+        850,
+        519
+      ],
+      [
+        856,
+        518
+      ],
+      [
+        863,
+        516
+      ],
+      [
+        869,
+        514
+      ],
+      [
+        875,
+        512
+      ],
+      [
+        881,
+        510
+      ],
+      [
+        887,
+        508
+      ],
+      [
+        893,
+        505
+      ],
+      [
+        898,
+        503
+      ],
+      [
+        904,
+        500
+      ],
+      [
+        910,
+        498
+      ],
+      [
+        915,
+        495
+      ],
+      [
+        921,
+        492
+      ],
+      [
+        926,
+        489
+      ],
+      [
+        931,
+        486
+      ],
+      [
+        936,
+        483
+      ],
+      [
+        941,
+        479
+      ],
+      [
+        946,
+        476
+      ],
+      [
+        951,
+        472
+      ],
+      [
+        956,
+        467
+      ],
+      [
+        960,
+        463
+      ],
+      [
+        965,
+        459
+      ],
+      [
+        969,
+        454
+      ],
+      [
+        973,
+        449
+      ],
+      [
+        976,
+        444
+      ],
+      [
+        980,
+        439
+      ],
+      [
+        983,
+        434
+      ],
+      [
+        987,
+        428
+      ],
+      [
+        989,
+        422
+      ],
+      [
+        992,
+        417
+      ],
+      [
+        995,
+        411
+      ],
+      [
+        997,
+        405
+      ],
+      [
+        999,
+        399
+      ],
+      [
+        1001,
+        393
+      ],
+      [
+        1002,
+        387
+      ],
+      [
+        1004,
+        380
+      ],
+      [
+        1004,
+        374
+      ],
+      [
+        1006,
+        367
+      ],
+      [
+        1006,
+        361
+      ],
+      [
+        1006,
+        355
+      ],
+      [
+        1007,
+        348
+      ],
+      [
+        1006,
+        342
+      ],
+      [
+        1005,
+        335
+      ],
+      [
+        1005,
+        329
+      ],
+      [
+        1004,
+        322
+      ],
+      [
+        1002,
+        316
+      ],
+      [
+        1001,
+        310
+      ],
+      [
+        999,
+        303
+      ],
+      [
+        997,
+        297
+      ],
+      [
+        995,
+        291
+      ],
+      [
+        992,
+        284
+      ],
+      [
+        990,
+        279
+      ],
+      [
+        987,
+        273
+      ],
+      [
+        984,
+        267
+      ],
+      [
+        980,
+        261
+      ],
+      [
+        976,
+        256
+      ],
+      [
+        972,
+        251
+      ],
+      [
+        968,
+        245
+      ],
+      [
+        964,
+        240
+      ],
+      [
+        960,
+        235
+      ],
+      [
+        955,
+        231
+      ],
+      [
+        950,
+        227
+      ],
+      [
+        945,
+        222
+      ],
+      [
+        939,
+        218
+      ],
+      [
+        934,
+        214
+      ],
+      [
+        929,
+        210
+      ],
+      [
+        923,
+        207
+      ],
+      [
+        917,
+        204
+      ],
+      [
+        911,
+        201
+      ],
+      [
+        905,
+        198
+      ],
+      [
+        899,
+        196
+      ],
+      [
+        892,
+        193
+      ],
+      [
+        885,
+        191
+      ],
+      [
+        879,
+        190
+      ],
+      [
+        873,
+        188
+      ],
+      [
+        866,
+        187
+      ],
+      [
+        860,
+        186
+      ],
+      [
+        853,
+        185
+      ],
+      [
+        846,
+        185
+      ],
+      [
+        839,
+        185
+      ]
+    ],
+    "lane2_ref": [
+      [
+        831,
+        75
+      ],
+      [
+        822,
+        75
+      ],
+      [
+        813,
+        75
+      ],
+      [
+        805,
+        76
+      ],
+      [
+        796,
+        76
+      ],
+      [
+        787,
+        76
+      ],
+      [
+        778,
+        76
+      ],
+      [
+        769,
+        76
+      ],
+      [
+        760,
+        76
+      ],
+      [
+        752,
+        76
+      ],
+      [
+        743,
+        76
+      ],
+      [
+        734,
+        76
+      ],
+      [
+        726,
+        76
+      ],
+      [
+        717,
+        76
+      ],
+      [
+        708,
+        76
+      ],
+      [
+        699,
+        76
+      ],
+      [
+        690,
+        76
+      ],
+      [
+        681,
+        76
+      ],
+      [
+        673,
+        76
+      ],
+      [
+        664,
+        76
+      ],
+      [
+        655,
+        76
+      ],
+      [
+        647,
+        76
+      ],
+      [
+        638,
+        76
+      ],
+      [
+        629,
+        76
+      ],
+      [
+        620,
+        76
+      ],
+      [
+        611,
+        76
+      ],
+      [
+        602,
+        76
+      ],
+      [
+        594,
+        76
+      ],
+      [
+        585,
+        76
+      ],
+      [
+        576,
+        76
+      ],
+      [
+        568,
+        76
+      ],
+      [
+        559,
+        76
+      ],
+      [
+        550,
+        76
+      ],
+      [
+        541,
+        76
+      ],
+      [
+        532,
+        76
+      ],
+      [
+        523,
+        76
+      ],
+      [
+        515,
+        76
+      ],
+      [
+        506,
+        76
+      ],
+      [
+        497,
+        76
+      ],
+      [
+        489,
+        76
+      ],
+      [
+        480,
+        76
+      ],
+      [
+        471,
+        76
+      ],
+      [
+        462,
+        76
+      ],
+      [
+        453,
+        76
+      ],
+      [
+        445,
+        76
+      ],
+      [
+        436,
+        76
+      ],
+      [
+        427,
+        76
+      ],
+      [
+        418,
+        77
+      ],
+      [
+        409,
+        77
+      ],
+      [
+        400,
+        77
+      ],
+      [
+        392,
+        78
+      ],
+      [
+        383,
+        79
+      ],
+      [
+        374,
+        80
+      ],
+      [
+        365,
+        81
+      ],
+      [
+        356,
+        82
+      ],
+      [
+        348,
+        84
+      ],
+      [
+        339,
+        86
+      ],
+      [
+        330,
+        87
+      ],
+      [
+        322,
+        89
+      ],
+      [
+        313,
+        92
+      ],
+      [
+        305,
+        94
+      ],
+      [
+        296,
+        97
+      ],
+      [
+        288,
+        100
+      ],
+      [
+        280,
+        103
+      ],
+      [
+        272,
+        106
+      ],
+      [
+        264,
+        110
+      ],
+      [
+        255,
+        114
+      ],
+      [
+        248,
+        118
+      ],
+      [
+        241,
+        122
+      ],
+      [
+        233,
+        127
+      ],
+      [
+        225,
+        132
+      ],
+      [
+        218,
+        137
+      ],
+      [
+        211,
+        143
+      ],
+      [
+        204,
+        148
+      ],
+      [
+        198,
+        154
+      ],
+      [
+        191,
+        160
+      ],
+      [
+        185,
+        166
+      ],
+      [
+        179,
+        173
+      ],
+      [
+        173,
+        180
+      ],
+      [
+        167,
+        187
+      ],
+      [
+        162,
+        194
+      ],
+      [
+        157,
+        201
+      ],
+      [
+        152,
+        208
+      ],
+      [
+        147,
+        216
+      ],
+      [
+        142,
+        223
+      ],
+      [
+        139,
+        231
+      ],
+      [
+        134,
+        239
+      ],
+      [
+        131,
+        247
+      ],
+      [
+        127,
+        255
+      ],
+      [
+        124,
+        264
+      ],
+      [
+        121,
+        272
+      ],
+      [
+        119,
+        281
+      ],
+      [
+        116,
+        289
+      ],
+      [
+        114,
+        298
+      ],
+      [
+        112,
+        306
+      ],
+      [
+        111,
+        315
+      ],
+      [
+        109,
+        324
+      ],
+      [
+        108,
+        333
+      ],
+      [
+        107,
+        342
+      ],
+      [
+        107,
+        351
+      ],
+      [
+        107,
+        360
+      ],
+      [
+        107,
+        369
+      ],
+      [
+        107,
+        378
+      ],
+      [
+        108,
+        387
+      ],
+      [
+        109,
+        395
+      ],
+      [
+        111,
+        404
+      ],
+      [
+        112,
+        413
+      ],
+      [
+        114,
+        422
+      ],
+      [
+        116,
+        431
+      ],
+      [
+        118,
+        439
+      ],
+      [
+        121,
+        448
+      ],
+      [
+        124,
+        456
+      ],
+      [
+        127,
+        465
+      ],
+      [
+        131,
+        473
+      ],
+      [
+        135,
+        481
+      ],
+      [
+        139,
+        489
+      ],
+      [
+        143,
+        497
+      ],
+      [
+        148,
+        505
+      ],
+      [
+        152,
+        512
+      ],
+      [
+        157,
+        520
+      ],
+      [
+        163,
+        527
+      ],
+      [
+        168,
+        534
+      ],
+      [
+        174,
+        541
+      ],
+      [
+        180,
+        548
+      ],
+      [
+        186,
+        554
+      ],
+      [
+        192,
+        561
+      ],
+      [
+        199,
+        567
+      ],
+      [
+        206,
+        573
+      ],
+      [
+        213,
+        578
+      ],
+      [
+        220,
+        584
+      ],
+      [
+        227,
+        589
+      ],
+      [
+        234,
+        594
+      ],
+      [
+        242,
+        599
+      ],
+      [
+        250,
+        603
+      ],
+      [
+        258,
+        607
+      ],
+      [
+        266,
+        612
+      ],
+      [
+        274,
+        615
+      ],
+      [
+        282,
+        619
+      ],
+      [
+        290,
+        622
+      ],
+      [
+        299,
+        625
+      ],
+      [
+        308,
+        628
+      ],
+      [
+        316,
+        630
+      ],
+      [
+        325,
+        632
+      ],
+      [
+        334,
+        634
+      ],
+      [
+        342,
+        635
+      ],
+      [
+        351,
+        637
+      ],
+      [
+        361,
+        638
+      ],
+      [
+        370,
+        639
+      ],
+      [
+        378,
+        639
+      ],
+      [
+        387,
+        639
+      ],
+      [
+        396,
+        639
+      ],
+      [
+        405,
+        639
+      ],
+      [
+        414,
+        639
+      ],
+      [
+        423,
+        639
+      ],
+      [
+        431,
+        639
+      ],
+      [
+        440,
+        639
+      ],
+      [
+        449,
+        639
+      ],
+      [
+        458,
+        639
+      ],
+      [
+        466,
+        639
+      ],
+      [
+        475,
+        639
+      ],
+      [
+        484,
+        639
+      ],
+      [
+        493,
+        639
+      ],
+      [
+        502,
+        639
+      ],
+      [
+        510,
+        639
+      ],
+      [
+        519,
+        639
+      ],
+      [
+        528,
+        639
+      ],
+      [
+        536,
+        639
+      ],
+      [
+        545,
+        639
+      ],
+      [
+        554,
+        639
+      ],
+      [
+        563,
+        639
+      ],
+      [
+        572,
+        639
+      ],
+      [
+        581,
+        639
+      ],
+      [
+        589,
+        639
+      ],
+      [
+        598,
+        639
+      ],
+      [
+        607,
+        639
+      ],
+      [
+        615,
+        639
+      ],
+      [
+        624,
+        638
+      ],
+      [
+        633,
+        638
+      ],
+      [
+        642,
+        638
+      ],
+      [
+        651,
+        638
+      ],
+      [
+        660,
+        638
+      ],
+      [
+        668,
+        638
+      ],
+      [
+        677,
+        638
+      ],
+      [
+        686,
+        638
+      ],
+      [
+        694,
+        638
+      ],
+      [
+        703,
+        638
+      ],
+      [
+        712,
+        638
+      ],
+      [
+        721,
+        638
+      ],
+      [
+        730,
+        638
+      ],
+      [
+        739,
+        638
+      ],
+      [
+        747,
+        638
+      ],
+      [
+        756,
+        638
+      ],
+      [
+        765,
+        638
+      ],
+      [
+        773,
+        638
+      ],
+      [
+        782,
+        638
+      ],
+      [
+        791,
+        638
+      ],
+      [
+        800,
+        638
+      ],
+      [
+        809,
+        638
+      ],
+      [
+        818,
+        638
+      ],
+      [
+        826,
+        637
+      ],
+      [
+        836,
+        636
+      ],
+      [
+        845,
+        635
+      ],
+      [
+        853,
+        634
+      ],
+      [
+        862,
+        633
+      ],
+      [
+        871,
+        632
+      ],
+      [
+        879,
+        631
+      ],
+      [
+        888,
+        629
+      ],
+      [
+        897,
+        627
+      ],
+      [
+        905,
+        625
+      ],
+      [
+        914,
+        623
+      ],
+      [
+        922,
+        621
+      ],
+      [
+        931,
+        618
+      ],
+      [
+        939,
+        615
+      ],
+      [
+        947,
+        612
+      ],
+      [
+        955,
+        609
+      ],
+      [
+        963,
+        605
+      ],
+      [
+        971,
+        601
+      ],
+      [
+        979,
+        597
+      ],
+      [
+        987,
+        592
+      ],
+      [
+        994,
+        587
+      ],
+      [
+        1001,
+        582
+      ],
+      [
+        1008,
+        577
+      ],
+      [
+        1015,
+        572
+      ],
+      [
+        1022,
+        566
+      ],
+      [
+        1029,
+        561
+      ],
+      [
+        1036,
+        554
+      ],
+      [
+        1042,
+        548
+      ],
+      [
+        1048,
+        541
+      ],
+      [
+        1054,
+        535
+      ],
+      [
+        1059,
+        528
+      ],
+      [
+        1065,
+        521
+      ],
+      [
+        1070,
+        514
+      ],
+      [
+        1075,
+        506
+      ],
+      [
+        1080,
+        499
+      ],
+      [
+        1084,
+        491
+      ],
+      [
+        1089,
+        483
+      ],
+      [
+        1092,
+        475
+      ],
+      [
+        1096,
+        467
+      ],
+      [
+        1100,
+        459
+      ],
+      [
+        1103,
+        451
+      ],
+      [
+        1106,
+        442
+      ],
+      [
+        1109,
+        434
+      ],
+      [
+        1111,
+        425
+      ],
+      [
+        1113,
+        417
+      ],
+      [
+        1115,
+        408
+      ],
+      [
+        1117,
+        399
+      ],
+      [
+        1118,
+        390
+      ],
+      [
+        1119,
+        381
+      ],
+      [
+        1119,
+        372
+      ],
+      [
+        1120,
+        364
+      ],
+      [
+        1120,
+        355
+      ],
+      [
+        1120,
+        346
+      ],
+      [
+        1119,
+        337
+      ],
+      [
+        1119,
+        328
+      ],
+      [
+        1118,
+        319
+      ],
+      [
+        1116,
+        310
+      ],
+      [
+        1115,
+        301
+      ],
+      [
+        1113,
+        292
+      ],
+      [
+        1111,
+        284
+      ],
+      [
+        1108,
+        275
+      ],
+      [
+        1106,
+        267
+      ],
+      [
+        1103,
+        258
+      ],
+      [
+        1099,
+        250
+      ],
+      [
+        1096,
+        242
+      ],
+      [
+        1092,
+        233
+      ],
+      [
+        1088,
+        226
+      ],
+      [
+        1084,
+        218
+      ],
+      [
+        1079,
+        210
+      ],
+      [
+        1075,
+        202
+      ],
+      [
+        1069,
+        195
+      ],
+      [
+        1064,
+        187
+      ],
+      [
+        1059,
+        181
+      ],
+      [
+        1053,
+        174
+      ],
+      [
+        1047,
+        167
+      ],
+      [
+        1041,
+        160
+      ],
+      [
+        1035,
+        154
+      ],
+      [
+        1028,
+        148
+      ],
+      [
+        1021,
+        142
+      ],
+      [
+        1015,
+        136
+      ],
+      [
+        1008,
+        131
+      ],
+      [
+        1000,
+        125
+      ],
+      [
+        992,
+        121
+      ],
+      [
+        985,
+        116
+      ],
+      [
+        977,
+        111
+      ],
+      [
+        969,
+        107
+      ],
+      [
+        962,
+        103
+      ],
+      [
+        953,
+        99
+      ],
+      [
+        945,
+        96
+      ],
+      [
+        936,
+        92
+      ],
+      [
+        928,
+        90
+      ],
+      [
+        920,
+        87
+      ],
+      [
+        911,
+        85
+      ],
+      [
+        902,
+        82
+      ],
+      [
+        893,
+        80
+      ],
+      [
+        884,
+        79
+      ],
+      [
+        875,
+        78
+      ],
+      [
+        867,
+        77
+      ],
+      [
+        858,
+        76
+      ],
+      [
+        849,
+        76
+      ],
+      [
+        840,
+        75
+      ]
+    ]
+  }
+}
