@@ -1,41 +1,42 @@
-S1-90-nocalib/S1-90-calib
-S1-78-nocalib/S1-78-calib
+S1-90-nocalib✅/S1-90-calib✅
+S1-78-nocalib✅/S1-78-calib✅
 --rep 1 - start from up straight part, going CCW, lane1
 --rep 2 - start from down straight part, going CCW, lane1
---rep 3 - start from right curve part, going CCW, lane1
+--rep 3 - start from right/left curve part, going CCW, lane1
 --rep 4 - start from up straight part, going CCW, lane2
 --rep 5 - start from down straight part, going CW, lane2
---rep 6 - start from right curve part, going CCW, lane2
+--rep 6 - start from right/left curve part, going CCW, lane2
 
 
-S2-90-nocalib/S2-90-calib
-S2-78-nocalib/S2-78-calib
+S2-90-nocalib✅/S2-90-calib✅
+S2-78-nocalib✅/S2-78-calib✅
 --rep 1 - start from up straight part, going CCW, both lane1
 --rep 2 - one start from down straight part;
-            one from curve part, going CCW, both lane2
+            one from left curve part, going CCW, both lane2
 --rep 3 - one start from right curve part
             one from straight down, going CCW, diff lanes
+            for exp-log-S2-r3-90fov-170cm-non-calib-cooperative - collide from diff lane, no check, write about this limitation
 --rep 4 - start from up straight part, going CCW, both lane1
 --rep 5 - one start from down straight part;
-            one from curve part, going CCW, both lane2
+            one from left curve part, going CCW, both lane2
 --rep 6 - one start from left curve part
             one from straight up, going CCW, diff lanes
 
 
-S3-90-nocalib/S3-90-calib
-S3-78-nocalib/S3-78-calib
---rep 1 - object lane1 - straight, going CW, two cars - same lane
---rep 2 - object lane1 - curve, going CW, two cars - same lane
---rep 3 - object both lanes - straight, going CW, two cars - same lane
---rep 4 - object lane2 - straight, going CW, two cars
---rep 5 - object lane2 - curve, going CW, two cars
---rep 6 - object both lanes - straight, going CW, two cars - diff lanes
+S3-90-nocalib✅/S3-90-calib✅
+S3-78-nocalib✅/S3-78-calib✅
+--rep 1 - object lane1 - straight, going CCW, two cars - same lane
+--rep 2 - object lane1 - curve, going CCW, two cars - same lane
+--rep 3 - object both lanes - straight, going CCW, two cars - same lane
+--rep 4 - object lane2 - straight, going CCW, two cars - same lane
+--rep 5 - object lane2 - curve, going CCW, two cars - same lane
+--rep 6 - object both lanes - straight, going CCW, two cars - diff lanes
 
 
-S4-90-nocalib/S4-90-calib-coop
-S4-90-nocalib/S4-90-calib-coop
-S4-78-nocalib/S4-78-calib-nocoop
-S4-78-nocalib/S4-78-calib-nocoop
+S4-90-nocalib-coop✅/S4-90-calib-coop
+S4-90-nocalib-nocoop✅/S4-90-calib-nocoop
+S4-78-nocalib-coop✅/S4-78-calib-coop
+S4-78-nocalib-nocoop✅/S4-78-calib-nocoop
 --rep 1 - object lane1 - straight, going CCW, two cars - lane1, one car - lane2
 --rep 2 - object lane2 - straight, going CCW, two cars - lane1, one car - lane2
 --rep 3 - object lane1 - curve, going CCW, two cars - lane1, one car - lane2

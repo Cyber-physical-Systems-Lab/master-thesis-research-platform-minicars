@@ -87,9 +87,9 @@ LANE_HYSTERESIS  = 10    # px — dead-band to prevent classification chattering
 #   d > OBSTACLE_D_SAFE                     -> "clear"     (continue nominal motion)
 OBSTACLE_LOOKAHEAD        = 120
 OBSTACLE_TRACK_HALF_WIDTH = 52    # fallback corridor only — real checks use each lane's own half-width
-OBSTACLE_D_COL  = 30    # px — physical-contact radius (car-to-object), safety-metric only
-OBSTACLE_D_WARN = 70    # px — hard stop radius (was OBSTACLE_D_SAFE's value)
-OBSTACLE_D_SAFE = 170   # px — decision/yield radius, most permissive (was OBSTACLE_D_WARN's value)
+OBSTACLE_D_COL  = 120    # px — physical-contact radius (car-to-object), safety-metric only
+OBSTACLE_D_WARN = 400    # px — hard stop radius (was OBSTACLE_D_SAFE's value)
+OBSTACLE_D_SAFE = 500   # px — decision/yield radius, most permissive (was OBSTACLE_D_WARN's value)
 
 # Speed levels (normalised PWM, 0–1)
 MAX_SPEED    = 0.50
@@ -114,9 +114,9 @@ _RAD_TO_SERVO   = math.pi / 4.0
 # decision boundary, d_warn is the stricter near-miss boundary, matching
 # the paper's d_col < d_warn < d_safe ordering (previously D_SAFE held the
 # smaller/stricter value and D_WARN the larger/lenient one — inverted).
-D_COL                  = 25    # px — physical-contact radius (car-to-car), safety-metric only
-D_WARN                 = 57    # px — near-miss boundary (was D_SAFE's value)
-D_SAFE                 = 115   # px — decision boundary, most permissive (was D_WARN's value)
+D_COL                  = 187    # px — physical-contact radius (car-to-car), safety-metric only
+D_WARN                 = 350    # px — near-miss boundary (was D_SAFE's value)
+D_SAFE                 = 450   # px — decision boundary, most permissive (was D_WARN's value)
 COOP_MIN_GAP           = 290
 COOP_MAX_CLOSING_SPEED = 30
 LANE_CHANGE_HOLD       = 2.5
@@ -348,7 +348,7 @@ def _leader_follower_gap(car_a: int, car_b: int, cars: dict):
     # Follower's front reference: real front marker if visible, else fall
     # back to its own rear/midpoint (a conservative underestimate of the
     # true gap, which is the safe direction to err for a safety check).
-    follower_front = fd.get("front") or fd.get("rear") or fd.get("midpoint")
+    follower_front = fd.get("front") or fd.get("midpoint")
     if leader_rear is None or follower_front is None:
         return None
 

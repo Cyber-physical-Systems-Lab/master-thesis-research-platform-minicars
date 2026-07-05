@@ -50,7 +50,7 @@ switch ($Command) {
 
     # ── SCENARIO S1  (car: 2) ─────────────────────────────────────────────────
     "s1-coop-90"            { Invoke-Launch "-n","2","--scenario","S1","--policy","cooperative","--fov","90","--run-name","90" }
-    "s1-coop-90-vid"        { Invoke-Launch "-n","2","--scenario","S1","--policy","cooperative","--fov","90","--run-name","90", "--video-name","S1-coop-90-nocalib"}
+    "s1-coop-90-vid"        { Invoke-Launch "-n","2","--scenario","S1","--policy","cooperative","--fov","90","--run-name","90", "--video-name","S1-coop-90-nocalib" }
     "s1-coop-90-calib"      { Invoke-Launch "-n","2","--scenario","S1","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90 }
     "s1-coop-90-calib-vid"  { Invoke-Launch "-n","2","--scenario","S1","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S1-coop-90" }
     "s1-coop-78"            { Invoke-Launch "-n","2","--scenario","S1","--policy","cooperative","--fov","78","--run-name","78" }
@@ -65,43 +65,47 @@ switch ($Command) {
 
     # ── SCENARIO S2  (cars: 0 2) ──────────────────────────────────────────────
     "s2-coop-90"            { Invoke-Launch "-n","1","2","--scenario","S2","--policy","cooperative","--fov","90","--run-name","90" }
-    "s2-coop-90-calib"      { Invoke-Launch "-n","0","2","--scenario","S2","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90 }
-    "s2-coop-90-calib-vid"  { Invoke-Launch "-n","0","2","--scenario","S2","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S2-coop-90" }
-    "s2-coop-78"            { Invoke-Launch "-n","0","2","--scenario","S2","--policy","cooperative","--fov","78","--run-name","78" }
-    "s2-coop-78-calib"      { Invoke-Launch "-n","0","2","--scenario","S2","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78 }
-    "s2-coop-78-calib-vid"  { Invoke-Launch "-n","0","2","--scenario","S2","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S2-coop-78" }
-    "s2-ncoop-90"           { Invoke-Launch "-n","0","2","--scenario","S2","--policy","non_cooperative","--fov","90","--run-name","90" }
-    "s2-ncoop-90-calib"     { Invoke-Launch "-n","0","2","--scenario","S2","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90 }
-    "s2-ncoop-90-calib-vid" { Invoke-Launch "-n","0","2","--scenario","S2","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S2-ncoop-90" }
-    "s2-ncoop-78"           { Invoke-Launch "-n","0","2","--scenario","S2","--policy","non_cooperative","--fov","78","--run-name","78" }
-    "s2-ncoop-78-calib"     { Invoke-Launch "-n","0","2","--scenario","S2","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78 }
-    "s2-ncoop-78-calib-vid" { Invoke-Launch "-n","0","2","--scenario","S2","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S2-ncoop-78" }
+    "s2-coop-90-calib"      { Invoke-Launch "-n","1","2","--scenario","S2","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90 }
+    "s2-coop-90-calib-vid"  { Invoke-Launch "-n","1","2","--scenario","S2","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S2-coop-90" }
+    "s2-coop-78"            { Invoke-Launch "-n","1","2","--scenario","S2","--policy","cooperative","--fov","78","--run-name","78" }
+    "s2-coop-78-calib"      { Invoke-Launch "-n","1","2","--scenario","S2","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78 }
+    "s2-coop-78-calib-vid"  { Invoke-Launch "-n","1","2","--scenario","S2","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S2-coop-78" }
+    "s2-ncoop-90"           { Invoke-Launch "-n","1","2","--scenario","S2","--policy","non_cooperative","--fov","90","--run-name":"90" }
+    "s2-ncoop-90-calib"     { Invoke-Launch "-n","1","2","--scenario","S2","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90 }
+    "s2-ncoop-90-calib-vid" { Invoke-Launch "-n","1","2","--scenario","S2","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S2-ncoop-90" }
+    "s2-ncoop-78"           { Invoke-Launch "-n","1","2","--scenario","S2","--policy","non_cooperative","--fov","78","--run-name","78" }
+    "s2-ncoop-78-calib"     { Invoke-Launch "-n","1","2","--scenario","S2","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78 }
+    "s2-ncoop-78-calib-vid" { Invoke-Launch "-n","1","2","--scenario","S2","--policy","non_cooperative","--run-name":"78","--calib-file",$CALIB_78,"--video-name","S2-ncoop-78" }
 
     # ── SCENARIO S3  (cars: 0 2) ──────────────────────────────────────────────
-    "s3-coop-90"            { Invoke-Launch "-n","0","2","--scenario","S3","--policy","cooperative","--fov","90","--run-name","90" }
-    "s3-coop-90-calib"      { Invoke-Launch "-n","0","2","--scenario","S3","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90 }
-    "s3-coop-90-calib-vid"  { Invoke-Launch "-n","0","2","--scenario","S3","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S3-coop-90" }
-    "s3-coop-78"            { Invoke-Launch "-n","0","2","--scenario","S3","--policy","cooperative","--fov","78","--run-name","78" }
-    "s3-coop-78-calib"      { Invoke-Launch "-n","0","2","--scenario","S3","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78 }
-    "s3-coop-78-calib-vid"  { Invoke-Launch "-n","0","2","--scenario","S3","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S3-coop-78" }
-    "s3-ncoop-90"           { Invoke-Launch "-n","0","2","--scenario","S3","--policy","non_cooperative","--fov","90","--run-name","90" }
-    "s3-ncoop-90-calib"     { Invoke-Launch "-n","0","2","--scenario","S3","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90 }
-    "s3-ncoop-90-calib-vid" { Invoke-Launch "-n","0","2","--scenario","S3","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S3-ncoop-90" }
-    "s3-ncoop-78"           { Invoke-Launch "-n","0","2","--scenario","S3","--policy","non_cooperative","--fov","78","--run-name","78" }
-    "s3-ncoop-78-calib"     { Invoke-Launch "-n","0","2","--scenario","S3","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78 }
-    "s3-ncoop-78-calib-vid" { Invoke-Launch "-n","0","2","--scenario","S3","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S3-ncoop-78" }
+    "s3-coop-90"            { Invoke-Launch "-n","1","2","--scenario","S3","--policy","cooperative","--fov","90","--run-name","90" }
+    "s3-coop-90-calib"      { Invoke-Launch "-n","1","2","--scenario","S3","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90 }
+    "s3-coop-90-calib-vid"  { Invoke-Launch "-n","1","2","--scenario","S3","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S3-coop-90" }
+    "s3-coop-78"            { Invoke-Launch "-n","1","2","--scenario","S3","--policy","cooperative","--fov","78","--run-name","78" }
+    "s3-coop-78-calib"      { Invoke-Launch "-n","1","2","--scenario","S3","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78 }
+    "s3-coop-78-calib-vid"  { Invoke-Launch "-n","1","2","--scenario","S3","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S3-coop-78" }
+    "s3-ncoop-90"           { Invoke-Launch "-n","1","2","--scenario","S3","--policy","non_cooperative","--fov","90","--run-name","90" }
+    "s3-ncoop-90-calib"     { Invoke-Launch "-n","1","2","--scenario","S3","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90 }
+    "s3-ncoop-90-calib-vid" { Invoke-Launch "-n","1","2","--scenario","S3","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S3-ncoop-90" }
+    "s3-ncoop-78"           { Invoke-Launch "-n","1","2","--scenario","S3","--policy","non_cooperative","--fov","78","--run-name","78" }
+    "s3-ncoop-78-calib"     { Invoke-Launch "-n","1","2","--scenario","S3","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78 }
+    "s3-ncoop-78-calib-vid" { Invoke-Launch "-n","1","2","--scenario","S3","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S3-ncoop-78" }
 
-    # ── SCENARIO S4  (cars: 0 1 2) ────────────────────────────────────────────
+    # ── SCENARIO S4  (cars, 0 1 2) ────────────────────────────────────────────
     "s4-coop-90"            { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","cooperative","--fov","90","--run-name","90" }
+    "s4-coop-90-vid"        { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","cooperative","--fov","90","--run-name","90", "--video-name","S4-coop-90-nocalib" }
     "s4-coop-90-calib"      { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90 }
     "s4-coop-90-calib-vid"  { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S4-coop-90" }
     "s4-coop-78"            { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","cooperative","--fov","78","--run-name","78" }
+    "s4-coop-78-vid"        { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","cooperative","--fov","78","--run-name","78", "--video-name","S4-coop-78-nocalib" }
     "s4-coop-78-calib"      { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78 }
     "s4-coop-78-calib-vid"  { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S4-coop-78" }
     "s4-ncoop-90"           { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","non_cooperative","--fov","90","--run-name","90" }
+    "s4-ncoop-90-vid"       { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","non_cooperative","--fov","90","--run-name","90", "--video-name","S4-ncoop-90-nocalib" }
     "s4-ncoop-90-calib"     { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90 }
     "s4-ncoop-90-calib-vid" { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","non_cooperative","--run-name","90","--calib-file",$CALIB_90,"--video-name","S4-ncoop-90" }
     "s4-ncoop-78"           { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","non_cooperative","--fov","78","--run-name","78" }
+    "s4-ncoop-78-vid"       { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","non_cooperative","--fov","78","--run-name","78", "--video-name","S4-ncoop-78-nocalib" }
     "s4-ncoop-78-calib"     { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78 }
     "s4-ncoop-78-calib-vid" { Invoke-Launch "-n","0","1","2","--scenario","S4","--policy","non_cooperative","--run-name","78","--calib-file",$CALIB_78,"--video-name","S4-ncoop-78" }
 

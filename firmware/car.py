@@ -58,7 +58,8 @@ class I2CIOComponents(object):
             self.rc_car_servo = servo.Servo(self.pca.channels[self.channel], actuation_range=90, min_pulse=1250, max_pulse=1750)
                
     def setservomotor(self, desired_value):
-        self.rc_car_servo.angle = desired_value
+        clamped = max(0., min(90., desired_value))
+        self.rc_car_servo.angle = clamped
     
     def runimusensor(self):
         if any(code in self.devices for code in ("0x28","0x29","0x4a","0x4b")):
