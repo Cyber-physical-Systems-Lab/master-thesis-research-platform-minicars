@@ -3371,7 +3371,7 @@
             "servo": -0.33,
             "motor": 0.42
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.89,
           "heading_error": 7.74,
           "obstacle": {
@@ -3462,7 +3462,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.12,
           "obstacle": {
@@ -3549,7 +3549,7 @@
             "servo": -0.32,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.05,
           "heading_error": 8.37,
           "obstacle": {
@@ -3640,7 +3640,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.16,
           "obstacle": {
@@ -3727,7 +3727,7 @@
             "servo": -0.33,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.89,
           "heading_error": 7.74,
           "obstacle": {
@@ -3818,7 +3818,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": 2.6,
           "obstacle": {
@@ -3905,7 +3905,7 @@
             "servo": -0.32,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.89,
           "heading_error": 7.41,
           "obstacle": {
@@ -3996,7 +3996,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.12,
           "obstacle": {
@@ -4083,7 +4083,7 @@
             "servo": -0.31,
             "motor": 0.46
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.58,
           "heading_error": 7.74,
           "obstacle": {
@@ -4174,7 +4174,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": 2.64,
           "obstacle": {
@@ -4261,7 +4261,7 @@
             "servo": -0.31,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.81,
           "heading_error": 7.74,
           "obstacle": {
@@ -4352,7 +4352,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.16,
           "obstacle": {
@@ -4439,7 +4439,7 @@
             "servo": -0.31,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -11.35,
           "heading_error": 7.13,
           "obstacle": {
@@ -4530,7 +4530,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.16,
           "obstacle": {
@@ -4617,7 +4617,7 @@
             "servo": -0.31,
             "motor": 0.46
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -11.35,
           "heading_error": 7.13,
           "obstacle": {
@@ -4708,7 +4708,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.12,
           "obstacle": {
@@ -4795,7 +4795,7 @@
             "servo": -0.31,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -11.35,
           "heading_error": 7.13,
           "obstacle": {
@@ -4886,7 +4886,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.12,
           "obstacle": {
@@ -4973,7 +4973,7 @@
             "servo": -0.31,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.81,
           "heading_error": 7.74,
           "obstacle": {
@@ -5064,7 +5064,7 @@
             "servo": 0.01,
             "motor": 0.425
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -5145,7 +5145,7 @@
             "servo": -0.31,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.81,
           "heading_error": 7.13,
           "obstacle": {
@@ -5230,7 +5230,7 @@
             "servo": 0.01,
             "motor": 0.361
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -5311,7 +5311,7 @@
             "servo": -0.31,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.81,
           "heading_error": 10.26,
           "obstacle": {
@@ -5402,7 +5402,7 @@
             "servo": 0.0,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 11.0,
           "heading_error": 2.6,
           "obstacle": {
@@ -5489,7 +5489,7 @@
             "servo": -0.31,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -11.35,
           "heading_error": 7.13,
           "obstacle": {
@@ -5580,7 +5580,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": 2.6,
           "obstacle": {
@@ -5667,7 +5667,7 @@
             "servo": -0.31,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -11.35,
           "heading_error": 7.13,
           "obstacle": {
@@ -5758,7 +5758,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": 2.64,
           "obstacle": {
@@ -5845,7 +5845,7 @@
             "servo": -0.3,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -11.35,
           "heading_error": 7.13,
           "obstacle": {
@@ -5936,7 +5936,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.12,
           "obstacle": {
@@ -6023,7 +6023,7 @@
             "servo": -0.3,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -10.51,
           "heading_error": 7.74,
           "obstacle": {
@@ -6114,7 +6114,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.16,
           "obstacle": {
@@ -6201,7 +6201,7 @@
             "servo": -0.34,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -37.68,
           "heading_error": 30.35,
           "obstacle": {
@@ -6292,7 +6292,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.16,
           "obstacle": {
@@ -6379,7 +6379,7 @@
             "servo": -0.37,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -37.04,
           "heading_error": 32.87,
           "obstacle": {
@@ -6470,7 +6470,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": 2.6,
           "obstacle": {
@@ -6557,7 +6557,7 @@
             "servo": -0.39,
             "motor": 0.44
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -40.5,
           "heading_error": 32.87,
           "obstacle": {
@@ -6648,7 +6648,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": 2.6,
           "obstacle": {
@@ -6735,7 +6735,7 @@
             "servo": -0.39,
             "motor": 0.42
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -12.27,
           "heading_error": 6.21,
           "obstacle": {
@@ -6826,7 +6826,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": 2.6,
           "obstacle": {
@@ -6913,7 +6913,7 @@
             "servo": -0.38,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -13.04,
           "heading_error": 5.6,
           "obstacle": {
@@ -7004,7 +7004,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.3,
           "heading_error": -2.12,
           "obstacle": {
@@ -7091,7 +7091,7 @@
             "servo": -0.39,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -13.5,
           "heading_error": 5.29,
           "obstacle": {
@@ -7182,7 +7182,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.8,
           "heading_error": -2.16,
           "obstacle": {
@@ -7269,7 +7269,7 @@
             "servo": -0.39,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -14.37,
           "heading_error": 10.87,
           "obstacle": {
@@ -7360,7 +7360,7 @@
             "servo": 0.02,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.22,
           "heading_error": -3.0,
           "obstacle": {
@@ -7447,7 +7447,7 @@
             "servo": -0.39,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -15.46,
           "heading_error": 9.34,
           "obstacle": {
@@ -7538,7 +7538,7 @@
             "servo": 0.02,
             "motor": 0.46
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": 1.74,
           "obstacle": {
@@ -7625,7 +7625,7 @@
             "servo": -0.37,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -15.79,
           "heading_error": 8.55,
           "obstacle": {
@@ -7716,7 +7716,7 @@
             "servo": 0.01,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 9.0,
           "heading_error": 0.88,
           "obstacle": {
@@ -7803,7 +7803,7 @@
             "servo": -0.38,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -49.64,
           "heading_error": 33.06,
           "obstacle": {
@@ -7894,7 +7894,7 @@
             "servo": 0.0,
             "motor": 0.44
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 8.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -7981,7 +7981,7 @@
             "servo": -0.4,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -49.08,
           "heading_error": 31.01,
           "obstacle": {
@@ -8072,7 +8072,7 @@
             "servo": -0.01,
             "motor": 0.42
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 7.0,
           "heading_error": -0.88,
           "obstacle": {
@@ -8159,7 +8159,7 @@
             "servo": -0.41,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -50.09,
           "heading_error": 33.06,
           "obstacle": {
@@ -8250,7 +8250,7 @@
             "servo": -0.02,
             "motor": 0.42
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 7.0,
           "heading_error": -0.88,
           "obstacle": {
@@ -8337,7 +8337,7 @@
             "servo": -0.41,
             "motor": 0.348
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -8422,7 +8422,7 @@
             "servo": -0.03,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 6.0,
           "heading_error": -1.76,
           "obstacle": {
@@ -8509,7 +8509,7 @@
             "servo": -0.41,
             "motor": 0.296
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -8594,7 +8594,7 @@
             "servo": -0.03,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 5.0,
           "heading_error": -3.52,
           "obstacle": {
@@ -8681,7 +8681,7 @@
             "servo": -0.41,
             "motor": 0.214
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -8766,7 +8766,7 @@
             "servo": -0.03,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 5.0,
           "heading_error": -4.47,
           "obstacle": {
@@ -8853,7 +8853,7 @@
             "servo": -0.41,
             "motor": 0.182
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -8938,7 +8938,7 @@
             "servo": -0.02,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 6.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -9025,7 +9025,7 @@
             "servo": -0.41,
             "motor": 0.155
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -9110,7 +9110,7 @@
             "servo": -0.03,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 6.23,
           "heading_error": -11.78,
           "obstacle": {
@@ -9197,7 +9197,7 @@
             "servo": -0.41,
             "motor": 0.112
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -9283,7 +9283,7 @@
             "servo": -0.04,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 8.0,
           "heading_error": -8.88,
           "obstacle": {
@@ -9370,7 +9370,7 @@
             "servo": -0.41,
             "motor": 0.112
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -9456,7 +9456,7 @@
             "servo": -0.05,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 10.0,
           "heading_error": -10.78,
           "obstacle": {
@@ -9543,7 +9543,7 @@
             "servo": -0.41,
             "motor": 0.095
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -15175,7 +15175,7 @@
             "servo": -0.49,
             "motor": 0.46
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -15345,7 +15345,7 @@
             "servo": -0.49,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -15521,7 +15521,7 @@
             "servo": -0.5,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -15697,7 +15697,7 @@
             "servo": -0.5,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -15874,7 +15874,7 @@
             "servo": -0.5,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -16052,7 +16052,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -16230,7 +16230,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -16408,7 +16408,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -16586,7 +16586,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -16764,7 +16764,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -16942,7 +16942,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -17120,7 +17120,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -17298,7 +17298,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -17476,7 +17476,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -17654,7 +17654,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -17787,7 +17787,7 @@
             "servo": 0.06,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 56.08,
           "heading_error": -5.23,
           "obstacle": {
@@ -17832,7 +17832,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -17965,7 +17965,7 @@
             "servo": -0.01,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 52.33,
           "heading_error": -1.4,
           "obstacle": {
@@ -18010,7 +18010,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -18143,7 +18143,7 @@
             "servo": -0.06,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 48.5,
           "heading_error": 2.89,
           "obstacle": {
@@ -18188,7 +18188,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -18275,7 +18275,7 @@
             "servo": -0.33,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -221.42,
           "heading_error": 32.47,
           "obstacle": {
@@ -18321,7 +18321,7 @@
             "servo": -0.08,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 47.51,
           "heading_error": 1.95,
           "obstacle": {
@@ -18366,7 +18366,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -18453,7 +18453,7 @@
             "servo": -0.36,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -253.37,
           "heading_error": 0.0,
           "obstacle": {
@@ -18499,7 +18499,7 @@
             "servo": -0.1,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.8,
           "heading_error": 1.01,
           "obstacle": {
@@ -18544,7 +18544,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -18631,7 +18631,7 @@
             "servo": -0.39,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -262.42,
           "heading_error": 0.0,
           "obstacle": {
@@ -18677,7 +18677,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 38.08,
           "heading_error": 7.26,
           "obstacle": {
@@ -18722,7 +18722,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -18809,7 +18809,7 @@
             "servo": -0.39,
             "motor": 0.275
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -18849,7 +18849,7 @@
             "servo": -0.11,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 32.65,
           "heading_error": 6.57,
           "obstacle": {
@@ -18894,7 +18894,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -18981,7 +18981,7 @@
             "servo": -0.39,
             "motor": 0.233
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -19021,7 +19021,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 30.45,
           "heading_error": 6.85,
           "obstacle": {
@@ -19066,7 +19066,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -19154,7 +19154,7 @@
             "servo": -0.39,
             "motor": 0.169
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -19194,7 +19194,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 25.51,
           "heading_error": 7.48,
           "obstacle": {
@@ -19239,7 +19239,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -19327,7 +19327,7 @@
             "servo": -0.39,
             "motor": 0.143
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -19367,7 +19367,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 21.54,
           "heading_error": 4.82,
           "obstacle": {
@@ -19412,7 +19412,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -19499,7 +19499,7 @@
             "servo": -0.39,
             "motor": 0.122
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -19539,7 +19539,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 20.25,
           "heading_error": 2.73,
           "obstacle": {
@@ -19584,7 +19584,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -19671,7 +19671,7 @@
             "servo": -0.39,
             "motor": 0.088
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -19711,7 +19711,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 18.12,
           "heading_error": 6.03,
           "obstacle": {
@@ -19756,7 +19756,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -19843,7 +19843,7 @@
             "servo": -0.39,
             "motor": 0.064
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -19883,7 +19883,7 @@
             "servo": -0.11,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 15.41,
           "heading_error": 3.93,
           "obstacle": {
@@ -19928,7 +19928,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -20015,7 +20015,7 @@
             "servo": -0.39,
             "motor": 0.054
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -20056,7 +20056,7 @@
             "servo": -0.18,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -93.99,
           "heading_error": 2.95,
           "obstacle": {
@@ -20103,7 +20103,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -20191,7 +20191,7 @@
             "servo": -0.39,
             "motor": 0.039
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -20232,7 +20232,7 @@
             "servo": -0.21,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -95.04,
           "heading_error": 2.32,
           "obstacle": {
@@ -20279,7 +20279,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -20367,7 +20367,7 @@
             "servo": -0.39,
             "motor": 0.033
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -20408,7 +20408,7 @@
             "servo": -0.25,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -96.84,
           "heading_error": 0.4,
           "obstacle": {
@@ -20455,7 +20455,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -20543,7 +20543,7 @@
             "servo": -0.39,
             "motor": 0.024
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -20584,7 +20584,7 @@
             "servo": -0.26,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.74,
           "heading_error": -1.58,
           "obstacle": {
@@ -20631,7 +20631,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -20719,7 +20719,7 @@
             "servo": -0.39,
             "motor": 0.02
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -20760,7 +20760,7 @@
             "servo": -0.27,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -98.47,
           "heading_error": -2.21,
           "obstacle": {
@@ -20807,7 +20807,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -20895,7 +20895,7 @@
             "servo": -0.39,
             "motor": 0.017
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -20936,7 +20936,7 @@
             "servo": -0.28,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -98.23,
           "heading_error": -2.08,
           "obstacle": {
@@ -20983,7 +20983,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -21071,7 +21071,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -21112,7 +21112,7 @@
             "servo": -0.29,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -21159,7 +21159,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -21247,7 +21247,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -21288,7 +21288,7 @@
             "servo": -0.29,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -98.23,
           "heading_error": -2.08,
           "obstacle": {
@@ -21335,7 +21335,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -21423,7 +21423,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -21464,7 +21464,7 @@
             "servo": -0.29,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -21511,7 +21511,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -21599,7 +21599,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -21640,7 +21640,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.74,
           "heading_error": -2.08,
           "obstacle": {
@@ -21687,7 +21687,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -21775,7 +21775,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -21816,7 +21816,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.74,
           "heading_error": -2.08,
           "obstacle": {
@@ -21863,7 +21863,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -21951,7 +21951,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -21992,7 +21992,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.74,
           "heading_error": -2.08,
           "obstacle": {
@@ -22039,7 +22039,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -22127,7 +22127,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -22168,7 +22168,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -22215,7 +22215,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -22303,7 +22303,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -22344,7 +22344,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -98.23,
           "heading_error": -2.08,
           "obstacle": {
@@ -22391,7 +22391,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -22479,7 +22479,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -22520,7 +22520,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -22567,7 +22567,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -22655,7 +22655,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -22696,7 +22696,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -98.23,
           "heading_error": -2.08,
           "obstacle": {
@@ -22743,7 +22743,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -22831,7 +22831,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -22872,7 +22872,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -98.23,
           "heading_error": -2.08,
           "obstacle": {
@@ -22919,7 +22919,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -23007,7 +23007,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -23048,7 +23048,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -23095,7 +23095,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -23183,7 +23183,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -23224,7 +23224,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -23271,7 +23271,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -23359,7 +23359,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -23400,7 +23400,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -23447,7 +23447,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -23535,7 +23535,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -23576,7 +23576,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -23623,7 +23623,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -23711,7 +23711,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -23752,7 +23752,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -23799,7 +23799,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -23887,7 +23887,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -23928,7 +23928,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.74,
           "heading_error": -2.08,
           "obstacle": {
@@ -23975,7 +23975,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -24063,7 +24063,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -24104,7 +24104,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -24151,7 +24151,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -24239,7 +24239,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -24280,7 +24280,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -24327,7 +24327,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -24415,7 +24415,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -24456,7 +24456,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.89,
           "heading_error": -1.04,
           "obstacle": {
@@ -24503,7 +24503,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -24591,7 +24591,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -24632,7 +24632,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.74,
           "heading_error": -2.08,
           "obstacle": {
@@ -24679,7 +24679,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -24767,7 +24767,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -24808,7 +24808,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.74,
           "heading_error": -2.08,
           "obstacle": {
@@ -24855,7 +24855,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -24943,7 +24943,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -24984,7 +24984,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -98.23,
           "heading_error": -2.08,
           "obstacle": {
@@ -25031,7 +25031,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -25119,7 +25119,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -25160,7 +25160,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -98.23,
           "heading_error": -2.08,
           "obstacle": {
@@ -25207,7 +25207,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -25295,7 +25295,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -25336,7 +25336,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -97.74,
           "heading_error": -2.08,
           "obstacle": {
@@ -25383,7 +25383,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -25471,7 +25471,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -25512,7 +25512,7 @@
             "servo": -0.3,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -99.68,
           "heading_error": -4.89,
           "obstacle": {
@@ -25559,7 +25559,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -25647,7 +25647,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -25688,7 +25688,7 @@
             "servo": -0.29,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -101.09,
           "heading_error": 2.16,
           "obstacle": {
@@ -25735,7 +25735,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -25823,7 +25823,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -25864,7 +25864,7 @@
             "servo": -0.29,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -103.72,
           "heading_error": -0.86,
           "obstacle": {
@@ -25911,7 +25911,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -25999,7 +25999,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -26040,7 +26040,7 @@
             "servo": -0.28,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -105.15,
           "heading_error": -3.1,
           "obstacle": {
@@ -26087,7 +26087,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -26175,7 +26175,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -26216,7 +26216,7 @@
             "servo": -0.22,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -106.46,
           "heading_error": -6.72,
           "obstacle": {
@@ -26263,7 +26263,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -26351,7 +26351,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -26392,7 +26392,7 @@
             "servo": -0.19,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.38,
           "heading_error": -7.0,
           "obstacle": {
@@ -26439,7 +26439,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -26527,7 +26527,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -26568,7 +26568,7 @@
             "servo": -0.16,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.22,
           "heading_error": -7.65,
           "obstacle": {
@@ -26615,7 +26615,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -26703,7 +26703,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -26744,7 +26744,7 @@
             "servo": -0.15,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.21,
           "heading_error": -8.02,
           "obstacle": {
@@ -26791,7 +26791,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -26879,7 +26879,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -26920,7 +26920,7 @@
             "servo": -0.14,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.21,
           "heading_error": -8.02,
           "obstacle": {
@@ -26967,7 +26967,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -27055,7 +27055,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -27096,7 +27096,7 @@
             "servo": -0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.22,
           "heading_error": -7.65,
           "obstacle": {
@@ -27143,7 +27143,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -27231,7 +27231,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -27272,7 +27272,7 @@
             "servo": -0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.22,
           "heading_error": -7.65,
           "obstacle": {
@@ -27319,7 +27319,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -27407,7 +27407,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -27448,7 +27448,7 @@
             "servo": -0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.22,
           "heading_error": -7.65,
           "obstacle": {
@@ -27495,7 +27495,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -27583,7 +27583,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -27624,7 +27624,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.21,
           "heading_error": -8.02,
           "obstacle": {
@@ -27671,7 +27671,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -27759,7 +27759,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -27800,7 +27800,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.21,
           "heading_error": -7.37,
           "obstacle": {
@@ -27847,7 +27847,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -27935,7 +27935,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -27976,7 +27976,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.21,
           "heading_error": -7.37,
           "obstacle": {
@@ -28023,7 +28023,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -28111,7 +28111,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -28152,7 +28152,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.21,
           "heading_error": -7.37,
           "obstacle": {
@@ -28199,7 +28199,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -28287,7 +28287,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -28328,7 +28328,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.21,
           "heading_error": -8.02,
           "obstacle": {
@@ -28375,7 +28375,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -28463,7 +28463,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -28504,7 +28504,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.15,
           "heading_error": -7.65,
           "obstacle": {
@@ -28551,7 +28551,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -28639,7 +28639,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -28680,7 +28680,7 @@
             "servo": -0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.05,
           "heading_error": -8.05,
           "obstacle": {
@@ -28727,7 +28727,7 @@
             "servo": -0.5,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -181.2,
           "heading_error": 0.0,
           "obstacle": {
@@ -28815,7 +28815,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -28856,7 +28856,7 @@
             "servo": -0.14,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.88,
           "heading_error": 0.0,
           "obstacle": {
@@ -28903,7 +28903,7 @@
             "servo": -0.5,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -28991,7 +28991,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -29032,7 +29032,7 @@
             "servo": -0.13,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.88,
           "heading_error": -9.36,
           "obstacle": {
@@ -29079,7 +29079,7 @@
             "servo": -0.5,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -29167,7 +29167,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -29208,7 +29208,7 @@
             "servo": -0.14,
             "motor": 0.42
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.91,
           "heading_error": 0.0,
           "obstacle": {
@@ -29255,7 +29255,7 @@
             "servo": -0.5,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -29343,7 +29343,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -29384,7 +29384,7 @@
             "servo": -0.13,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.88,
           "heading_error": -9.36,
           "obstacle": {
@@ -29431,7 +29431,7 @@
             "servo": -0.5,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -29519,7 +29519,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -29560,7 +29560,7 @@
             "servo": -0.15,
             "motor": 0.43
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.88,
           "heading_error": 0.0,
           "obstacle": {
@@ -29607,7 +29607,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -29695,7 +29695,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -29736,7 +29736,7 @@
             "servo": -0.16,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.91,
           "heading_error": 0.0,
           "obstacle": {
@@ -29783,7 +29783,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -29871,7 +29871,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -29912,7 +29912,7 @@
             "servo": -0.15,
             "motor": 0.44
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.88,
           "heading_error": -8.71,
           "obstacle": {
@@ -29959,7 +29959,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -30047,7 +30047,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -30088,7 +30088,7 @@
             "servo": -0.16,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.88,
           "heading_error": 0.0,
           "obstacle": {
@@ -30135,7 +30135,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -30223,7 +30223,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -30264,7 +30264,7 @@
             "servo": -0.15,
             "motor": 0.44
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -106.88,
           "heading_error": -8.71,
           "obstacle": {
@@ -30311,7 +30311,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -30399,7 +30399,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -30440,7 +30440,7 @@
             "servo": -0.14,
             "motor": 0.42
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -106.91,
           "heading_error": -8.34,
           "obstacle": {
@@ -30487,7 +30487,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -30575,7 +30575,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -30616,7 +30616,7 @@
             "servo": -0.13,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.68,
           "heading_error": -9.59,
           "obstacle": {
@@ -30663,7 +30663,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -30751,7 +30751,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -30792,7 +30792,7 @@
             "servo": -0.13,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.46,
           "heading_error": -10.6,
           "obstacle": {
@@ -30839,7 +30839,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -30927,7 +30927,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -30968,7 +30968,7 @@
             "servo": -0.14,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -109.0,
           "heading_error": -8.5,
           "obstacle": {
@@ -31015,7 +31015,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -31103,7 +31103,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -31144,7 +31144,7 @@
             "servo": -0.13,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -110.0,
           "heading_error": -9.78,
           "obstacle": {
@@ -31191,7 +31191,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -31279,7 +31279,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -31320,7 +31320,7 @@
             "servo": -0.11,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -109.62,
           "heading_error": -16.72,
           "obstacle": {
@@ -31367,7 +31367,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -31455,7 +31455,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -31496,7 +31496,7 @@
             "servo": -0.09,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -109.06,
           "heading_error": -18.91,
           "obstacle": {
@@ -31543,7 +31543,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -31631,7 +31631,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -31672,7 +31672,7 @@
             "servo": -0.08,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -108.76,
           "heading_error": -19.71,
           "obstacle": {
@@ -31719,7 +31719,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -31807,7 +31807,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -31848,7 +31848,7 @@
             "servo": -0.07,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -108.45,
           "heading_error": -20.97,
           "obstacle": {
@@ -31895,7 +31895,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -31983,7 +31983,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -32024,7 +32024,7 @@
             "servo": -0.09,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -109.0,
           "heading_error": -17.82,
           "obstacle": {
@@ -32071,7 +32071,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -32159,7 +32159,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -32200,7 +32200,7 @@
             "servo": -0.06,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -108.0,
           "heading_error": -18.64,
           "obstacle": {
@@ -32247,7 +32247,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -32335,7 +32335,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -32376,7 +32376,7 @@
             "servo": -0.05,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -108.0,
           "heading_error": -19.87,
           "obstacle": {
@@ -32423,7 +32423,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -32511,7 +32511,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -32554,7 +32554,7 @@
             "servo": -0.04,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.0,
           "heading_error": -20.1,
           "obstacle": {
@@ -32601,7 +32601,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -32689,7 +32689,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -32732,7 +32732,7 @@
             "servo": -0.04,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -107.0,
           "heading_error": -20.71,
           "obstacle": {
@@ -32779,7 +32779,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -32867,7 +32867,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -32908,7 +32908,7 @@
             "servo": -0.03,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -106.0,
           "heading_error": -22.17,
           "obstacle": {
@@ -32955,7 +32955,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -33043,7 +33043,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -33084,7 +33084,7 @@
             "servo": -0.02,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -106.0,
           "heading_error": -22.77,
           "obstacle": {
@@ -33131,7 +33131,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -33219,7 +33219,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -33260,7 +33260,7 @@
             "servo": -0.01,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -103.0,
           "heading_error": -24.23,
           "obstacle": {
@@ -33307,7 +33307,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -33395,7 +33395,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -33436,7 +33436,7 @@
             "servo": 0.01,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -99.0,
           "heading_error": -27.45,
           "obstacle": {
@@ -33485,7 +33485,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -33575,7 +33575,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -33616,7 +33616,7 @@
             "servo": 0.01,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -99.0,
           "heading_error": -27.45,
           "obstacle": {
@@ -33665,7 +33665,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -33755,7 +33755,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -33796,7 +33796,7 @@
             "servo": 0.03,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -94.49,
           "heading_error": -33.9,
           "obstacle": {
@@ -33843,7 +33843,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -33931,7 +33931,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -33972,7 +33972,7 @@
             "servo": 0.04,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -92.01,
           "heading_error": -34.59,
           "obstacle": {
@@ -34019,7 +34019,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -34107,7 +34107,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -34148,7 +34148,7 @@
             "servo": 0.06,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -87.0,
           "heading_error": -30.96,
           "obstacle": {
@@ -34195,7 +34195,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -34283,7 +34283,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -34324,7 +34324,7 @@
             "servo": 0.08,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -83.0,
           "heading_error": -31.87,
           "obstacle": {
@@ -34371,7 +34371,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -34459,7 +34459,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -34500,7 +34500,7 @@
             "servo": 0.08,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -80.0,
           "heading_error": -32.77,
           "obstacle": {
@@ -34547,7 +34547,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -34635,7 +34635,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -34676,7 +34676,7 @@
             "servo": 0.09,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -78.0,
           "heading_error": -32.42,
           "obstacle": {
@@ -34723,7 +34723,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -34811,7 +34811,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -34851,7 +34851,7 @@
             "servo": 0.04,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -70.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -34897,7 +34897,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -34985,7 +34985,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35025,7 +35025,7 @@
             "servo": 0.0,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -68.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35071,7 +35071,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -35159,7 +35159,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35199,7 +35199,7 @@
             "servo": -0.03,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -65.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35245,7 +35245,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -35333,7 +35333,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35373,7 +35373,7 @@
             "servo": -0.05,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -61.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35419,7 +35419,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -35507,7 +35507,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35547,7 +35547,7 @@
             "servo": -0.09,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -54.76,
           "heading_error": 0.0,
           "obstacle": {
@@ -35593,7 +35593,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.27,
           "heading_error": 0.0,
           "obstacle": {
@@ -35681,7 +35681,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35721,7 +35721,7 @@
             "servo": -0.09,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -51.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35767,7 +35767,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -35855,7 +35855,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -35895,7 +35895,7 @@
             "servo": 0.03,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -44.0,
           "heading_error": -39.81,
           "obstacle": {
@@ -35941,7 +35941,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -36029,7 +36029,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -36069,7 +36069,7 @@
             "servo": 0.11,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 20.0,
           "heading_error": -40.79,
           "obstacle": {
@@ -36115,7 +36115,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -36203,7 +36203,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -36243,7 +36243,7 @@
             "servo": 0.15,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 25.0,
           "heading_error": -40.79,
           "obstacle": {
@@ -36288,7 +36288,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -36375,7 +36375,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -36415,7 +36415,7 @@
             "servo": 0.19,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 31.0,
           "heading_error": -40.79,
           "obstacle": {
@@ -36460,7 +36460,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -36547,7 +36547,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -36587,7 +36587,7 @@
             "servo": 0.2,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 33.0,
           "heading_error": -40.79,
           "obstacle": {
@@ -36632,7 +36632,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -36719,7 +36719,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -36759,7 +36759,7 @@
             "servo": 0.22,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 41.0,
           "heading_error": -38.93,
           "obstacle": {
@@ -36804,7 +36804,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -36891,7 +36891,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -36931,7 +36931,7 @@
             "servo": 0.22,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.0,
           "heading_error": -37.72,
           "obstacle": {
@@ -36976,7 +36976,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -37063,7 +37063,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -37103,7 +37103,7 @@
             "servo": 0.23,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 47.0,
           "heading_error": -37.72,
           "obstacle": {
@@ -37148,7 +37148,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.57,
           "heading_error": 0.0,
           "obstacle": {
@@ -37235,7 +37235,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -37275,7 +37275,7 @@
             "servo": 0.27,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 51.0,
           "heading_error": -36.53,
           "obstacle": {
@@ -37320,7 +37320,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -37407,7 +37407,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -37447,7 +37447,7 @@
             "servo": 0.25,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 2.0,
           "heading_error": -37.41,
           "obstacle": {
@@ -37493,7 +37493,7 @@
             "servo": -0.5,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -37581,7 +37581,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -37621,7 +37621,7 @@
             "servo": 0.22,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 8.0,
           "heading_error": -35.54,
           "obstacle": {
@@ -37667,7 +37667,7 @@
             "servo": -0.45,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.38,
           "heading_error": 0.0,
           "obstacle": {
@@ -37755,7 +37755,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -37795,7 +37795,7 @@
             "servo": 0.2,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 13.0,
           "heading_error": -32.94,
           "obstacle": {
@@ -37840,7 +37840,7 @@
             "servo": -0.46,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.38,
           "heading_error": 0.0,
           "obstacle": {
@@ -37927,7 +37927,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -37967,7 +37967,7 @@
             "servo": 0.19,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 14.0,
           "heading_error": -32.57,
           "obstacle": {
@@ -38012,7 +38012,7 @@
             "servo": -0.43,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -181.69,
           "heading_error": 0.0,
           "obstacle": {
@@ -38099,7 +38099,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -38139,7 +38139,7 @@
             "servo": 0.18,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 17.0,
           "heading_error": -31.65,
           "obstacle": {
@@ -38184,7 +38184,7 @@
             "servo": -0.45,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -181.31,
           "heading_error": 0.0,
           "obstacle": {
@@ -38271,7 +38271,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -38311,7 +38311,7 @@
             "servo": 0.17,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 22.0,
           "heading_error": -29.58,
           "obstacle": {
@@ -38356,7 +38356,7 @@
             "servo": -0.47,
             "motor": 0.43
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -180.85,
           "heading_error": 0.0,
           "obstacle": {
@@ -38443,7 +38443,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -38483,7 +38483,7 @@
             "servo": 0.2,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 23.0,
           "heading_error": -29.25,
           "obstacle": {
@@ -38528,7 +38528,7 @@
             "servo": -0.48,
             "motor": 0.357
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -38609,7 +38609,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -38649,7 +38649,7 @@
             "servo": 0.18,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 27.0,
           "heading_error": -27.76,
           "obstacle": {
@@ -38694,7 +38694,7 @@
             "servo": -0.48,
             "motor": 0.303
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -38775,7 +38775,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -38815,7 +38815,7 @@
             "servo": 0.18,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 27.0,
           "heading_error": -27.76,
           "obstacle": {
@@ -38860,7 +38860,7 @@
             "servo": -0.43,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -183.11,
           "heading_error": 0.0,
           "obstacle": {
@@ -38947,7 +38947,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -38987,7 +38987,7 @@
             "servo": 0.15,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 33.0,
           "heading_error": -26.27,
           "obstacle": {
@@ -39032,7 +39032,7 @@
             "servo": -0.43,
             "motor": 0.296
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -39113,7 +39113,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -39153,7 +39153,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 33.0,
           "heading_error": -26.27,
           "obstacle": {
@@ -39199,7 +39199,7 @@
             "servo": -0.37,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -172.15,
           "heading_error": -4.76,
           "obstacle": {
@@ -39287,7 +39287,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -39327,7 +39327,7 @@
             "servo": 0.16,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 36.12,
           "heading_error": -29.17,
           "obstacle": {
@@ -39373,7 +39373,7 @@
             "servo": -0.33,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -172.9,
           "heading_error": -4.76,
           "obstacle": {
@@ -39461,7 +39461,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -39501,7 +39501,7 @@
             "servo": 0.14,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 37.0,
           "heading_error": -24.17,
           "obstacle": {
@@ -39547,7 +39547,7 @@
             "servo": -0.26,
             "motor": 0.42
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -169.58,
           "heading_error": -5.62,
           "obstacle": {
@@ -39635,7 +39635,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -39675,7 +39675,7 @@
             "servo": 0.09,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 41.19,
           "heading_error": -17.91,
           "obstacle": {
@@ -39720,7 +39720,7 @@
             "servo": -0.27,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -181.33,
           "heading_error": 0.0,
           "obstacle": {
@@ -39807,7 +39807,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -39847,7 +39847,7 @@
             "servo": 0.07,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 41.02,
           "heading_error": -18.52,
           "obstacle": {
@@ -39893,7 +39893,7 @@
             "servo": -0.25,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -170.66,
           "heading_error": -8.18,
           "obstacle": {
@@ -39981,7 +39981,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -40021,7 +40021,7 @@
             "servo": 0.06,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 41.61,
           "heading_error": -17.91,
           "obstacle": {
@@ -40067,7 +40067,7 @@
             "servo": -0.23,
             "motor": 0.43
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -170.16,
           "heading_error": -8.18,
           "obstacle": {
@@ -40155,7 +40155,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -40195,7 +40195,7 @@
             "servo": 0.03,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 43.56,
           "heading_error": -18.02,
           "obstacle": {
@@ -40241,7 +40241,7 @@
             "servo": -0.21,
             "motor": 0.44
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -170.16,
           "heading_error": -8.18,
           "obstacle": {
@@ -40329,7 +40329,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -40369,7 +40369,7 @@
             "servo": 0.02,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 43.43,
           "heading_error": -17.91,
           "obstacle": {
@@ -40415,7 +40415,7 @@
             "servo": -0.2,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -170.0,
           "heading_error": -3.42,
           "obstacle": {
@@ -40503,7 +40503,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -40543,7 +40543,7 @@
             "servo": 0.0,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.18,
           "heading_error": -18.02,
           "obstacle": {
@@ -40588,7 +40588,7 @@
             "servo": -0.2,
             "motor": 0.43
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -177.78,
           "heading_error": -11.73,
           "obstacle": {
@@ -40675,7 +40675,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -40715,7 +40715,7 @@
             "servo": -0.0,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.09,
           "heading_error": -17.91,
           "obstacle": {
@@ -40760,7 +40760,7 @@
             "servo": -0.2,
             "motor": 0.365
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -40841,7 +40841,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -40881,7 +40881,7 @@
             "servo": -0.01,
             "motor": 0.43
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.56,
           "heading_error": -18.02,
           "obstacle": {
@@ -40926,7 +40926,7 @@
             "servo": -0.2,
             "motor": 0.311
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -41007,7 +41007,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -41047,7 +41047,7 @@
             "servo": 0.04,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.48,
           "heading_error": -18.63,
           "obstacle": {
@@ -41092,7 +41092,7 @@
             "servo": -0.14,
             "motor": 0.42
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -67.12,
           "heading_error": -21.36,
           "obstacle": {
@@ -41179,7 +41179,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -41219,7 +41219,7 @@
             "servo": 0.02,
             "motor": 0.45
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -41264,7 +41264,7 @@
             "servo": -0.06,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -64.0,
           "heading_error": -22.25,
           "obstacle": {
@@ -41351,7 +41351,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -41391,7 +41391,7 @@
             "servo": 0.0,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -41437,7 +41437,7 @@
             "servo": -0.02,
             "motor": 0.4
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -59.96,
           "heading_error": -27.41,
           "obstacle": {
@@ -41525,7 +41525,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -41565,7 +41565,7 @@
             "servo": -0.01,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -41611,7 +41611,7 @@
             "servo": -0.02,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -57.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -41699,7 +41699,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -41739,7 +41739,7 @@
             "servo": -0.01,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -18.26,
           "obstacle": {
@@ -41785,7 +41785,7 @@
             "servo": 0.01,
             "motor": 0.39
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -56.0,
           "heading_error": -26.57,
           "obstacle": {
@@ -41873,7 +41873,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -41913,7 +41913,7 @@
             "servo": -0.02,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.65,
           "obstacle": {
@@ -41959,7 +41959,7 @@
             "servo": 0.06,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -53.0,
           "heading_error": -27.65,
           "obstacle": {
@@ -42047,7 +42047,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -42087,7 +42087,7 @@
             "servo": -0.02,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.71,
           "heading_error": -18.63,
           "obstacle": {
@@ -42133,7 +42133,7 @@
             "servo": 0.07,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -52.15,
           "heading_error": -31.72,
           "obstacle": {
@@ -42221,7 +42221,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -42261,7 +42261,7 @@
             "servo": 0.02,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -42307,7 +42307,7 @@
             "servo": 0.09,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -51.03,
           "heading_error": -31.72,
           "obstacle": {
@@ -42395,7 +42395,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -42435,7 +42435,7 @@
             "servo": 0.01,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.02,
           "heading_error": -18.27,
           "obstacle": {
@@ -42481,7 +42481,7 @@
             "servo": 0.1,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -51.0,
           "heading_error": -28.35,
           "obstacle": {
@@ -42569,7 +42569,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -42609,7 +42609,7 @@
             "servo": -0.0,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -42655,7 +42655,7 @@
             "servo": 0.11,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -51.0,
           "heading_error": -28.35,
           "obstacle": {
@@ -42743,7 +42743,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -42783,7 +42783,7 @@
             "servo": -0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -42829,7 +42829,7 @@
             "servo": 0.11,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -51.0,
           "heading_error": -27.98,
           "obstacle": {
@@ -42917,7 +42917,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -42957,7 +42957,7 @@
             "servo": -0.02,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.09,
           "heading_error": -17.65,
           "obstacle": {
@@ -43003,7 +43003,7 @@
             "servo": 0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -50.0,
           "heading_error": -28.35,
           "obstacle": {
@@ -43091,7 +43091,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -43131,7 +43131,7 @@
             "servo": 0.03,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.48,
           "heading_error": -18.63,
           "obstacle": {
@@ -43177,7 +43177,7 @@
             "servo": 0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -49.97,
           "heading_error": -31.72,
           "obstacle": {
@@ -43265,7 +43265,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -43305,7 +43305,7 @@
             "servo": 0.01,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.48,
           "heading_error": -18.89,
           "obstacle": {
@@ -43351,7 +43351,7 @@
             "servo": 0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -49.0,
           "heading_error": -27.28,
           "obstacle": {
@@ -43439,7 +43439,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -43479,7 +43479,7 @@
             "servo": 0.0,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.02,
           "heading_error": -18.89,
           "obstacle": {
@@ -43525,7 +43525,7 @@
             "servo": 0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -45.0,
           "heading_error": -26.57,
           "obstacle": {
@@ -43613,7 +43613,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -43653,7 +43653,7 @@
             "servo": -0.01,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -43699,7 +43699,7 @@
             "servo": 0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -44.0,
           "heading_error": -26.57,
           "obstacle": {
@@ -43787,7 +43787,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -43827,7 +43827,7 @@
             "servo": -0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -43873,7 +43873,7 @@
             "servo": 0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -43.0,
           "heading_error": -26.93,
           "obstacle": {
@@ -43961,7 +43961,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -44001,7 +44001,7 @@
             "servo": -0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -44047,7 +44047,7 @@
             "servo": 0.12,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -41.0,
           "heading_error": -25.84,
           "obstacle": {
@@ -44135,7 +44135,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -44175,7 +44175,7 @@
             "servo": -0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.02,
           "heading_error": -18.27,
           "obstacle": {
@@ -44221,7 +44221,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -36.0,
           "heading_error": -26.2,
           "obstacle": {
@@ -44309,7 +44309,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -44349,7 +44349,7 @@
             "servo": -0.02,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.56,
           "heading_error": -18.63,
           "obstacle": {
@@ -44395,7 +44395,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -35.0,
           "heading_error": -26.2,
           "obstacle": {
@@ -44483,7 +44483,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -44523,7 +44523,7 @@
             "servo": 0.03,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.48,
           "heading_error": -18.63,
           "obstacle": {
@@ -44569,7 +44569,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -33.0,
           "heading_error": -24.38,
           "obstacle": {
@@ -44657,7 +44657,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -44697,7 +44697,7 @@
             "servo": 0.01,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -44743,7 +44743,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -30.0,
           "heading_error": -24.38,
           "obstacle": {
@@ -44831,7 +44831,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -44871,7 +44871,7 @@
             "servo": -0.0,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -44917,7 +44917,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -27.01,
           "heading_error": -27.21,
           "obstacle": {
@@ -45005,7 +45005,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -45045,7 +45045,7 @@
             "servo": -0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.02,
           "heading_error": -18.27,
           "obstacle": {
@@ -45091,7 +45091,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -25.02,
           "heading_error": -27.0,
           "obstacle": {
@@ -45179,7 +45179,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -45219,7 +45219,7 @@
             "servo": -0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.51,
           "heading_error": -18.52,
           "obstacle": {
@@ -45265,7 +45265,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -24.39,
           "heading_error": -27.21,
           "obstacle": {
@@ -45353,7 +45353,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -45393,7 +45393,7 @@
             "servo": -0.02,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.56,
           "heading_error": -18.63,
           "obstacle": {
@@ -45439,7 +45439,7 @@
             "servo": 0.13,
             "motor": 0.38
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -23.14,
           "heading_error": -26.24,
           "obstacle": {
@@ -45527,7 +45527,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -45567,7 +45567,7 @@
             "servo": -0.02,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.56,
           "heading_error": -18.63,
           "obstacle": {
@@ -45613,7 +45613,7 @@
             "servo": 0.13,
             "motor": 0.41
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -23.08,
           "heading_error": -26.24,
           "obstacle": {
@@ -45701,7 +45701,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -45741,7 +45741,7 @@
             "servo": 0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.65,
           "obstacle": {
@@ -45787,7 +45787,7 @@
             "servo": 0.13,
             "motor": 0.43
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -23.02,
           "heading_error": -26.57,
           "obstacle": {
@@ -45875,7 +45875,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -45915,7 +45915,7 @@
             "servo": 0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.02,
           "heading_error": -18.63,
           "obstacle": {
@@ -45961,7 +45961,7 @@
             "servo": 0.13,
             "motor": 0.46
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -22.0,
           "heading_error": -22.87,
           "obstacle": {
@@ -46049,7 +46049,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -46089,7 +46089,7 @@
             "servo": -0.0,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.01,
           "heading_error": -17.91,
           "obstacle": {
@@ -46135,7 +46135,7 @@
             "servo": 0.13,
             "motor": 0.47
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -22.0,
           "heading_error": -22.87,
           "obstacle": {
@@ -46223,7 +46223,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -46263,7 +46263,7 @@
             "servo": -0.01,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.02,
           "heading_error": -18.27,
           "obstacle": {
@@ -46309,7 +46309,7 @@
             "servo": 0.13,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -22.08,
           "heading_error": -26.45,
           "obstacle": {
@@ -46397,7 +46397,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -46437,7 +46437,7 @@
             "servo": -0.01,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.02,
           "heading_error": -18.27,
           "obstacle": {
@@ -46483,7 +46483,7 @@
             "servo": 0.13,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -22.08,
           "heading_error": -26.45,
           "obstacle": {
@@ -46571,7 +46571,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -46611,7 +46611,7 @@
             "servo": -0.02,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.56,
           "heading_error": -18.63,
           "obstacle": {
@@ -46657,7 +46657,7 @@
             "servo": 0.13,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -23.08,
           "heading_error": -26.45,
           "obstacle": {
@@ -46745,7 +46745,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -46785,7 +46785,7 @@
             "servo": -0.02,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 44.56,
           "heading_error": -18.02,
           "obstacle": {
@@ -46831,7 +46831,7 @@
             "servo": 0.13,
             "motor": 0.49
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -23.08,
           "heading_error": -26.24,
           "obstacle": {
@@ -46919,7 +46919,7 @@
             "servo": 0.0,
             "motor": 0.0
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 0.0,
           "heading_error": 0.0,
           "obstacle": {
@@ -46959,7 +46959,7 @@
             "servo": -0.02,
             "motor": 0.48
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": 45.1,
           "heading_error": -18.02,
           "obstacle": {
@@ -47005,7 +47005,7 @@
             "servo": 0.13,
             "motor": 0.5
           },
-          "waiting": false,
+          "waiting": true,
           "lateral_error": -22.0,
           "heading_error": -22.87,
           "obstacle": {

@@ -1,5 +1,5 @@
 """
-auto_control.py  (EKF removed — direct ArUco pose + PI speed control)
+auto_control.py  (direct ArUco pose + PI speed control)
 ======================================================================
 Centralised vision-based controller for the minicar testbed.
 
@@ -39,14 +39,14 @@ import json, math, os, sys, time, threading
 import random
 import cv2
 import numpy as np
-from cv2 import aruco
+from cv2 import aruco as ar
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CONSTANTS
 # ══════════════════════════════════════════════════════════════════════════════
 
-# ArUco dictionaries
-CAR_DICT       = aruco.DICT_4X4_50
+# ar dictionaries
+CAR_DICT       = ar.DICT_4X4_50
 # Per-car marker pairs: car_id → (front_marker_id, rear_marker_id)
 # Car 0: front=49, rear=0  | Car 1: front=46, rear=1  | Car 2: front=47, rear=2
 CAR_MARKER_PAIRS: dict = {
@@ -65,8 +65,8 @@ FRONT_OWN_MAX_DIST_PX = 220   # px — max rear↔front dist to claim ownership
 # track (spanning both lanes or parked), each visible marker for that
 # car is treated as a static obstacle position.
 ACTIVE_CAR_IDS: set = set()   # filled by player_launcher at startup
-TRACK_DICT     = aruco.DICT_5X5_50
-OBSTACLE_DICT  = aruco.DICT_6X6_250
+TRACK_DICT     = ar.DICT_5X5_50
+OBSTACLE_DICT  = ar.DICT_6X6_250
 
 INNER_SET  = [0, 1, 2, 3]
 MIDDLE_SET = [4, 5, 6, 7]
@@ -357,9 +357,16 @@ def _leader_follower_gap(car_a: int, car_b: int, cars: dict):
     return leader, follower, gap
 
 
-def _build_log_entry(t: float, k: int, cars_data: dict, cars: dict) -> dict:
+def _build_log_entry(t: float, k: int, cars_data: dict, cars: dict, distances: dict = None) -> dict:
     """
     One log entry per camera frame — all cars nested under a single timestamp.
+
+    `distances` is now computed once per frame by _compute_distances() and
+    passed in, rather than being built here (integration note, option 1) —
+    keeps _apply_coordination() and this function reading identical data.
+    When the caller does not pass `distances` explicitly (e.g. legacy call
+    sites not yet updated), falls back to _compute_distances(cars_data, cars)
+    computed on the fly, preserving the old zero-argument behaviour exactly.
 
     Schema
     ------
@@ -395,139 +402,34 @@ def _build_log_entry(t: float, k: int, cars_data: dict, cars: dict) -> dict:
       }
     }
     """
-    # Pairwise inter-car distances (frame-level, same for all cars)
-    ids = sorted(cars.keys())
-    distances = {}
-    # Same-lane car-to-car states are relabeled for the log to read as
-    # physical-gap semantics (car-following context) rather than the
-    # generic collision-avoidance wording used for cross-lane/object
-    # checks. Internal branching (emergency_stop vs. hold-gap coordination)
-    # still keys off the original _classify_safety() bucket below — only
-    # the *label written to the log* changes here.
-    #   safe      -> "no_gap"    (plenty of following distance)
-    #   near_miss -> "hold_gap"  (should maintain constant distance)
-    #   decision  -> "hold_gap"  (early yield zone, same treatment as near_miss)
-    #   collision -> "small_gap" (physical contact / emergency_stop)
-    _SAME_LANE_LABELS = {
-        "safe": "no_gap",
-        "decision": "hold_gap",
-        "near_miss": "hold_gap",
-        "collision": "small_gap",
-    }
-
-    for i, a in enumerate(ids):
-        for b in ids[i + 1:]:
-            la  = cars[a].get("lane", None)
-            lb  = cars[b].get("lane", None)
-            sa  = cars[a].get("segment_idx", None)
-            sb  = cars[b].get("segment_idx", None)
-            same_lane = (la is not None and lb is not None and la == lb)
-
-            # ── Same-lane pairs: leader-follower gap (front-of-follower to
-            # rear-of-leader), not raw centroid distance — reflects the
-            # actual physical clearance between two elongated car bodies
-            # traveling the same path in sequence. ────────────────────────
-            leader_id = follower_id = None
-            if same_lane:
-                lf = _leader_follower_gap(a, b, cars)
-                if lf is not None:
-                    leader_id, follower_id, eucl = lf
-                else:
-                    eucl = round(float(np.linalg.norm(
-                        np.array(cars[a]["midpoint"], float) -
-                        np.array(cars[b]["midpoint"], float))), 2)
-            else:
-                eucl = round(float(np.linalg.norm(
-                    np.array(cars[a]["midpoint"], float) -
-                    np.array(cars[b]["midpoint"], float))), 2)
-            eucl = round(eucl, 2)
-
-            # 4-way classification (request 1 + 2): collision/near_miss/decision/safe,
-            # using the renamed D_COL < D_WARN < D_SAFE ordering.
-            inter_state = _classify_safety(eucl, D_COL, D_WARN, D_SAFE)
-            # Cars on different lanes are only flagged as near_miss/decision/
-            # collision when at least one of the two is actively maneuvering
-            # (overtaking or mid lane_switch). A car cruising in its own lane
-            # must never be flagged against a car in the other lane just
-            # because they are geometrically close at a bend.
-            man_a = bool(cars_data.get(a, {}).get("maneuvering", False))
-            man_b = bool(cars_data.get(b, {}).get("maneuvering", False))
-            cross_lane_checked = bool(man_a or man_b)
-            if not same_lane and not cross_lane_checked:
-                inter_state = "safe"
-
-            # Log label: same-lane pairs use gap-semantics wording
-            # ("no_gap"/"hold_gap"/"small_gap"); cross-lane / object-style
-            # pairs keep the original collision-avoidance wording as-is.
-            logged_state = (_SAME_LANE_LABELS.get(inter_state, inter_state)
-                            if same_lane else inter_state)
-
-            distances[f"{a}-{b}"] = {
-                "euclidean_px": eucl,
-                "interaction_state": logged_state,
-                "same_lane":    same_lane if (la is not None and lb is not None) else None,
-                "lane_a": la, "lane_b": lb,
-                "seg_delta": abs(sa - sb) if (sa is not None and sb is not None) else None,
-                "cross_lane_checked": cross_lane_checked,
-                "leader": leader_id, "follower": follower_id,
-            }
-            # "decision"/"hold_gap" now also fires as a discrete, queryable
-            # event (request 1) alongside collision/near_miss, instead of
-            # only being inferable indirectly from minicar_events. These
-            # are CAR-to-CAR events -> recorded under safety_events["car"].
-            if inter_state in ("collision", "near_miss", "decision"):
-                for _pid in (a, b):
-                    if _pid in cars_data:
-                        _se = cars_data[_pid].setdefault("safety_events",
-                                                          {"car": [], "object": []})
-                        _se.setdefault("car", []).append(logged_state)
-
-            if same_lane and leader_id is not None:
-                # Same-lane semantics (request): "near_miss" (and the softer
-                # "decision" zone) mean the follower should hold a constant
-                # gap rather than closing further — NOT an emergency stop.
-                # Only an actual "collision" (gap <= D_COL) triggers a hard
-                # emergency_stop, and only for the follower (the car that is
-                # actually closing the gap onto the car ahead).
-                if inter_state == "collision":
-                    _lane_state.setdefault(follower_id, {})["emergency_stop"] = True
-                elif inter_state in ("near_miss", "decision"):
-                    # Ask the PI speed controller (via _apply_implicit_coop /
-                    # _coop_slowdown_until, already used by _apply_coordination)
-                    # to cap the follower's speed and match the leader's pace
-                    # instead of continuing to close the gap.
-                    _apply_implicit_coop([follower_id], duration=1.0)
-            elif inter_state == "collision":
-                # Cross-lane / no-lane-data collision: keep prior behaviour —
-                # both cars involved get an emergency stop.
-                _lane_state.setdefault(a, {})["emergency_stop"] = True
-                _lane_state.setdefault(b, {})["emergency_stop"] = True
+    if distances is None:
+        distances = _compute_distances(cars_data, cars)
 
     # Per-car nested block
     cars_block = {}
     for cid, cd in cars_data.items():
         obs_d = cd["obstacle_info"]["distance"]
         cars_block[str(cid)] = {
-            "policy":         cd["policy"],
-            "pose":           [round(cd["pose"][0], 2),
-                               round(cd["pose"][1], 2),
-                               round(cd["pose"][2], 2)],
-            "lane":           cd["lane"],
-            "segment":        cd["segment"],
-            "curvature":      round(cd["curvature"], 4),
-            "command":        {"servo": round(cd["servo"], 3),
-                               "motor": round(cd["motor"], 3)},
-            "waiting":        cd["waiting"],
-            "lateral_error":  round(cd["lateral_error"], 2),
-            "heading_error":  round(cd["heading_error"], 2),
-            "obstacle":       {"driving_state": cd["obstacle_info"]["state"],
-                               "distance_px":    round(obs_d, 2)
-                                                 if obs_d < float("inf") else None},
+            "policy":        cd["policy"],
+            "pose":          [round(cd["pose"][0], 2),
+                              round(cd["pose"][1], 2),
+                              round(cd["pose"][2], 2)],
+            "lane":          cd["lane"],
+            "segment":       cd["segment"],
+            "curvature":     round(cd["curvature"], 4),
+            "command":       {"servo": round(cd["servo"], 3),
+                              "motor": round(cd["motor"], 3)},
+            "waiting":       cd["waiting"],
+            "lateral_error": round(cd["lateral_error"], 2),
+            "heading_error": round(cd["heading_error"], 2),
+            "obstacle":      {"driving_state": cd["obstacle_info"]["state"],
+                              "distance_px": round(obs_d, 2)
+                                             if obs_d < float("inf") else None},
             "obstacle_interactions": cd.get("obstacle_interactions", []),
             "events": {
                 "minicar_events": cd.get("minicar_events", cd.get("events", [])),
-                "safety_events":  {
-                    "car":    cd.get("safety_events", {}).get("car", ["no_collision"])
+                "safety_events": {
+                    "car": cd.get("safety_events", {}).get("car", ["no_collision"])
                               if isinstance(cd.get("safety_events"), dict) else ["no_collision"],
                     "object": cd.get("safety_events", {}).get("object", ["no_collision"])
                               if isinstance(cd.get("safety_events"), dict) else cd.get("safety_events", ["no_collision"]),
@@ -539,7 +441,6 @@ def _build_log_entry(t: float, k: int, cars_data: dict, cars: dict) -> dict:
         }
 
     return {"t": round(t, 5), "k": k, "distances": distances, "cars": cars_block}
-
 
 def _compute_px_per_cm() -> tuple:
     """
@@ -953,10 +854,10 @@ def detect_all_markers(frame):
     global _last_track_markers, _last_obs_positions, _last_marker_debug
     now  = time.time()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    params = aruco.DetectorParameters()
+    params = ar.DetectorParameters()
 
     def _detect(dictionary):
-        det = aruco.ArucoDetector(aruco.getPredefinedDictionary(dictionary), params)
+        det = ar.ArucoDetector(ar.getPredefinedDictionary(dictionary), params)
         corners, ids, _ = det.detectMarkers(gray)
         if ids is None:
             return {}, [], None
@@ -986,7 +887,7 @@ def detect_all_markers(frame):
             _ghost_obs.append(pos)
 
     # Cache everything the display thread needs to redraw the same debug
-    # rectangles/labels that aruco.drawDetectedMarkers used to draw directly.
+    # rectangles/labels that ar.drawDetectedMarkers used to draw directly.
     _last_marker_debug = {
         "car":   (car_corners,   car_ids,   None),
         "track": (track_corners, track_ids, None),
@@ -1012,9 +913,9 @@ def draw_marker_debug(canvas):
         if not corners or ids is None:
             continue
         if color is None:
-            aruco.drawDetectedMarkers(canvas, corners, ids)
+            ar.drawDetectedMarkers(canvas, corners, ids)
         else:
-            aruco.drawDetectedMarkers(canvas, corners, ids, color)
+            ar.drawDetectedMarkers(canvas, corners, ids, color)
     for pos in dbg.get("ghost_obs", []):
         cv2.circle(canvas, pos, 6, (0, 160, 160), 2)
         cv2.putText(canvas, "OBS", (pos[0] + 8, pos[1] - 8),
@@ -2093,38 +1994,331 @@ def nearest_relevant_obstacle(car_pos, tangent, left_normal, obstacles,
 # RULE-BASED COORDINATION
 # ══════════════════════════════════════════════════════════════════════════════
 
-def _apply_coordination(cars, base_speed) -> dict:
+# ── "waiting" flag thresholds (frames @ ~60 fps) — S4-only, per policy ──────
+_WAITING_STREAK_COOP    = 15   # cooperative cars need sustained interaction
+_WAITING_STREAK_NONCOOP = 3    # non-cooperative flips much sooner
+_WAITING_SEVERE_BAR     = 3    # combined_sev >= this halves the threshold
+_WAITING_SEVERE_DIV     = 2
+
+_interaction_streak: dict = {}   # car_id -> consecutive "interacting" frames
+
+# Same-lane severity mirrors _SAME_LANE_LABELS gap semantics (car-following
+# context): hold_gap is normal, only small_gap (physical contact) is severe.
+_SAME_LANE_SEV = {"no_gap": 0, "hold_gap": 1, "small_gap": 3}
+# Cross-lane severity mirrors the raw _classify_safety buckets used for
+# car-car pairs; already gated by cross_lane_checked upstream in
+# _compute_distances (forced to "safe" when neither car is maneuvering).
+_DIFF_LANE_SEV = {"safe": 0, "decision": 1, "near_miss": 2, "collision": 3}
+# Car-to-object severity. near_miss now contributes a mild severity (1)
+# instead of being fully suppressed — a genuine near-contact with a
+# static obstacle should nudge the waiting flag, just far less than an
+# actual physical collision (3). decision remains 0 (too geometry-driven /
+# noisy to count on its own — see OBSTACLE_D_WARN/OBSTACLE_D_SAFE looseness
+# note). Re-tune OBSTACLE_D_WARN/OBSTACLE_D_SAFE if near_miss saturates.
+_OBJ_SEV = {"safe": 0, "decision": 0, "near_miss": 1, "collision": 3}
+
+
+def _car_car_severity(cid: str, distances: dict) -> tuple:
+    """Return (same_lane_sev, diff_lane_sev) for car cid, keeping the two
+    channels separate exactly as they are logged in `distances`."""
+    same_sev = diff_sev = 0
+    for pair, d in distances.items():
+        a, b = pair.split("-")
+        if cid not in (a, b):
+            continue
+        state = d["interaction_state"]
+        if d.get("same_lane"):
+            same_sev = max(same_sev, _SAME_LANE_SEV.get(state, 0))
+        else:
+            diff_sev = max(diff_sev, _DIFF_LANE_SEV.get(state, 0))
+    return same_sev, diff_sev
+
+
+def _compute_distances(cars_data: dict, cars: dict) -> dict:
+    """
+    Pairwise inter-car distance + lane-relationship classification for one
+    frame. Extracted from _build_log_entry (integration note, option 1) so
+    the SAME distances dict can be computed once per frame and reused by
+    both _apply_coordination() (waiting-flag severity AND, now, lane-aware
+    speed arbitration) and _build_log_entry() (log schema) — instead of
+    duplicating the loop.
+
+    Side effects preserved exactly as before: appends to
+    cars_data[cid]["safety_events"], and triggers _lane_state emergency_stop
+    / _apply_implicit_coop() for same-lane leader-follower gap handling.
+    """
+    # Same-lane car-to-car states are relabeled to read as physical-gap
+    # semantics (car-following context) rather than the generic
+    # collision-avoidance wording used for cross-lane/object checks.
+    _SAME_LANE_LABELS = {
+        "safe": "no_gap",
+        "decision": "hold_gap",
+        "near_miss": "hold_gap",
+        "collision": "small_gap",
+    }
+
+    ids = sorted(cars.keys())
+    distances = {}
+
+    for i, a in enumerate(ids):
+        for b in ids[i + 1:]:
+            la  = cars[a].get("lane", None)
+            lb  = cars[b].get("lane", None)
+            sa  = cars[a].get("segment_idx", None)
+            sb  = cars[b].get("segment_idx", None)
+            same_lane = (la is not None and lb is not None and la == lb)
+
+            leader_id = follower_id = None
+            if same_lane:
+                lf = _leader_follower_gap(a, b, cars)
+                if lf is not None:
+                    leader_id, follower_id, eucl = lf
+                else:
+                    eucl = round(float(np.linalg.norm(
+                        np.array(cars[a]["midpoint"], float) -
+                        np.array(cars[b]["midpoint"], float))), 2)
+            else:
+                eucl = round(float(np.linalg.norm(
+                    np.array(cars[a]["midpoint"], float) -
+                    np.array(cars[b]["midpoint"], float))), 2)
+            eucl = round(eucl, 2)
+
+            inter_state = _classify_safety(eucl, D_COL, D_WARN, D_SAFE)
+
+            man_a = bool(cars_data.get(a, {}).get("maneuvering", False))
+            man_b = bool(cars_data.get(b, {}).get("maneuvering", False))
+            cross_lane_checked = bool(man_a or man_b)
+            if not same_lane and not cross_lane_checked:
+                inter_state = "safe"
+
+            logged_state = (_SAME_LANE_LABELS.get(inter_state, inter_state)
+                            if same_lane else inter_state)
+
+            distances[f"{a}-{b}"] = {
+                "euclidean_px": eucl,
+                "interaction_state": logged_state,
+                "same_lane":    same_lane if (la is not None and lb is not None) else None,
+                "lane_a": la, "lane_b": lb,
+                "seg_delta": abs(sa - sb) if (sa is not None and sb is not None) else None,
+                "cross_lane_checked": cross_lane_checked,
+                "leader": leader_id, "follower": follower_id,
+            }
+
+            if inter_state in ("collision", "near_miss", "decision"):
+                for _pid in (a, b):
+                    if _pid in cars_data:
+                        _se = cars_data[_pid].setdefault("safety_events",
+                                                          {"car": [], "object": []})
+                        _se.setdefault("car", []).append(logged_state)
+
+            if same_lane and leader_id is not None:
+                if inter_state == "collision":
+                    _lane_state.setdefault(follower_id, {})["emergency_stop"] = True
+                elif inter_state in ("near_miss", "decision"):
+                    _apply_implicit_coop([follower_id], duration=1.0)
+            elif inter_state == "collision":
+                _lane_state.setdefault(a, {})["emergency_stop"] = True
+                _lane_state.setdefault(b, {})["emergency_stop"] = True
+
+    return distances
+
+
+def _apply_coordination(cars, base_speed, distances: dict = None) -> tuple:
     """
     Distance-threshold speed arbitration (methodology §Coordination Logic).
 
-    RENAMED (methodology alignment, request 2): D_WARN is now the stricter/
-    smaller hard-stop boundary and D_SAFE is the larger/more permissive
-    yield boundary (previously inverted vs. the methodology's d_col < d_warn
-    < d_safe ordering). The physical stop/slow distances are unchanged —
-    only the constant names and this comparison's ordering were swapped.
+    Speed arbitration (stop/slow) is LANE-AWARE, reusing the same
+    same-lane / cross-lane distinction _compute_distances() already
+    classifies for the waiting flag and the log schema, instead of a flat
+    midpoint-to-midpoint distance for every pair regardless of lane:
 
-      d ≤ D_WARN : yielder stops
-      d ≤ D_SAFE : yielder slows
-      d > D_SAFE : continue
+      - Same-lane pairs use the leader-follower GAP distance (front-of-
+        follower to rear-of-leader) — the physically meaningful clearance
+        for two cars sharing one path, already computed by
+        _compute_distances() via _leader_follower_gap().
+      - Cross-lane pairs are only arbitrated when cross_lane_checked is
+        True (i.e. at least one of the two cars is actively maneuvering —
+        overtaking or mid lane_switch). A car cruising in its own lane no
+        longer triggers a stop/slow just because a car in the other lane
+        is geometrically close at a bend.
+      - If `distances` is not supplied (back-compat / no lane data yet),
+        falls back to the original flat midpoint distance for every pair,
+        matching the pre-existing behaviour exactly.
+
+      d <= D_WARN : yielder stops
+      d <= D_SAFE : yielder slows
+      d >  D_SAFE : continue
     Cooperative cars yield; non-cooperative cars do not.
+
+    _pp_waiting (the LOGGED "waiting" flag) can only become True in
+    scenario S4 — every other scenario forces it False. Within S4, it is
+    derived from three SEPARATE severity channels — same-lane car-to-car
+    (gap semantics), cross-lane car-to-car (collision-avoidance semantics,
+    already maneuvering-gated), and car-to-object (near_miss/collision
+    contribute; decision does not) — taking the worst of the three, with
+    a persistence streak so brief contacts don't immediately flip the
+    flag. Streak thresholds are policy-dependent: cooperative cars need
+    longer sustained interaction (they actively create space, so should
+    log fewer True frames overall); non-cooperative cars flip almost
+    immediately.
+
+    Parameters
+    ----------
+    distances : dict, optional
+        Result of _compute_distances() for THIS frame, built with real
+        lane + maneuvering context (see the run() call site — it now
+        passes cars_data enriched with "lane"/"maneuvering" instead of an
+        empty dict, so cross_lane_checked correctly reflects whether
+        either car is actually overtaking/switching lanes, rather than
+        always defaulting to False). When None, distances are computed
+        internally from `cars` with no lane/maneuvering context (same-lane
+        resolves to None, cross_lane_checked is always False) — matching
+        the original flat-distance behaviour for backward compatibility.
+
+    Returns
+    -------
+    (speeds, distances) : tuple[dict, dict]
+        `speeds` is the per-car arbitrated speed dict, same as before.
+        `distances` is the SAME dict used internally for this call (either
+        the one passed in, or the one computed on the fly) — returned so
+        callers (e.g. run(), step 9 logging) can reuse it instead of
+        recomputing the pairwise loop a second time later in the frame.
     """
     speeds = {cid: base_speed for cid in cars}
     ids    = sorted(cars.keys())
+
+    if distances is None:
+        distances = _compute_distances({}, cars)
+
+    # ── Physical speed arbitration: lane-aware when distances available ──
     for i, a in enumerate(ids):
-        for b in ids[i+1:]:
-            pa = np.array(cars[a]["midpoint"], float)
-            pb = np.array(cars[b]["midpoint"], float)
-            d  = float(np.linalg.norm(pa - pb))
+        for b in ids[i + 1:]:
+            info = distances.get(f"{a}-{b}")
+            if info is not None:
+                d = info["euclidean_px"]
+                # Same-lane pairs always arbitrated (car-following gap).
+                # Cross-lane pairs only arbitrated when at least one car
+                # is actively maneuvering (cross_lane_checked gating).
+                gated = bool(info.get("same_lane")) or bool(info.get("cross_lane_checked"))
+                if not gated:
+                    continue
+            else:
+                pa = np.array(cars[a]["midpoint"], float)
+                pb = np.array(cars[b]["midpoint"], float)
+                d  = float(np.linalg.norm(pa - pb))
+
             yd = max(a, b)
             if DRIVING_POLICY.get(yd, DEFAULT_POLICY) == "non_cooperative":
                 continue
             if d <= D_WARN:
-                speeds[yd] = STOP_SPEED;            _pp_waiting[yd] = True
+                speeds[yd] = STOP_SPEED
             elif d <= D_SAFE:
-                speeds[yd] = min(speeds[yd], SLOW_SPEED); _pp_waiting[yd] = True
-            else:
-                _pp_waiting.setdefault(yd, False)
-    return speeds
+                speeds[yd] = min(speeds[yd], SLOW_SPEED)
+
+    # ── Logged "waiting" flag: S4-only, lane-aware combined severity ─────
+    if LOG_SCENARIO != "S4":
+        for cid in ids:
+            _pp_waiting[cid] = False
+        return speeds, distances
+
+    for cid in ids:
+        cd = cars[cid]
+        str_cid = str(cid)
+        same_sev, diff_sev = _car_car_severity(str_cid, distances)
+
+        obj_sev = 0
+        for oi in cd.get("obstacle_interactions", []):
+            obj_sev = max(obj_sev, _OBJ_SEV.get(oi["state"], 0))
+
+        combined = max(same_sev, diff_sev, obj_sev)
+        interacting = combined >= 1
+
+        if interacting:
+            _interaction_streak[cid] = _interaction_streak.get(cid, 0) + 1
+        else:
+            _interaction_streak[cid] = 0
+
+        policy = DRIVING_POLICY.get(cid, DEFAULT_POLICY)
+        threshold = (_WAITING_STREAK_NONCOOP if policy == "non_cooperative"
+                     else _WAITING_STREAK_COOP)
+        if combined >= _WAITING_SEVERE_BAR:
+            threshold = max(1, threshold // _WAITING_SEVERE_DIV)
+
+        _pp_waiting[cid] = _interaction_streak[cid] >= threshold
+
+    return speeds, distances
+
+
+def build_frame_log_entry(log_snap: dict, lanes: dict, cycle_counter: int,
+                           t: float = None) -> dict | None:
+    """
+    Assemble one multi-car log entry for the current display frame.
+
+    Mirrors the player_launcher.py main-loop log block exactly (the
+    "# 6. Assemble one multi-car log entry per display frame" step), but
+    now lives in auto_control.py so the merge + distance computation is
+    defined once and reused by any caller instead of being duplicated in
+    player_launcher.py. Computes `distances` via _compute_distances() ONCE
+    and threads it into _build_log_entry(), eliminating the one-frame lag
+    that would occur if distances were instead read back out of the
+    previous entry in _log_entries.
+
+    Parameters
+    ----------
+    log_snap : dict
+        car_id -> (servo, motor, car_log_data) as collected by the
+        display loop for this frame. Entries with car_log_data is None
+        (no valid detection this frame) are filtered out automatically.
+    lanes : dict
+        Current lane reference curves (as returned by detect_lanes()),
+        used to project each car's pose onto its own lane for
+        segment_idx computation — same role as `_ll` in player_launcher.py.
+    cycle_counter : int
+        Frame counter (mirrors _cycle_counter / _ac._cycle_counter in the
+        caller).
+    t : float, optional
+        Timestamp for this frame; defaults to time.time() if omitted.
+
+    Returns
+    -------
+    dict | None
+        The frame log entry (see _build_log_entry() schema), or None when
+        no car produced valid log data this frame (mirrors the
+        `if cars_data:` guard in player_launcher.py — caller should skip
+        appending to _log_entries in that case).
+    """
+    cars_data = {cid: ld for cid, (_, _, ld) in log_snap.items() if ld is not None}
+    if not cars_data:
+        return None
+
+    merged_cars: dict = {}
+    for cid, cd in cars_data.items():
+        px, py = cd["pose"][0], cd["pose"][1]
+        cl = cd["lane"]
+        cref = lanes.get(f"lane{cl}_ref", [])
+        sidx = project_onto_curve((px, py), cref) if cref else None
+        merged_cars[cid] = {
+            "midpoint": (px, py),
+            "lane": cl,
+            "segment_idx": sidx,
+        }
+
+    # NOTE on car_log_data["_frame_distances"]: each car's log data now
+    # carries its own per-run()-call view of coordination distances (see
+    # the "_frame_distances" key wired in run()'s car_log_data block, step
+    # 6). That per-car view is intentionally NOT used here — it lacks
+    # segment_idx (so same_lane/seg_delta can be less complete) and only
+    # reflects the single-car call-time snapshot. This function's own
+    # _compute_distances() call below is the authoritative, full-frame
+    # version (real segment_idx for every car, complete pairwise set) and
+    # is what actually feeds the log + S4 waiting-flag severity. The
+    # per-car "_frame_distances" field remains available on each car's
+    # car_log_data for callers that only have per-car data and cannot
+    # build a full frame merge (e.g. HUD/debug consumers).
+    distances = _compute_distances(cars_data, merged_cars)
+    return _build_log_entry(t if t is not None else time.time(), cycle_counter,
+                             cars_data, merged_cars, distances)
+
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -2823,7 +3017,38 @@ def run(frame: np.ndarray, car_id: int):
             base_speed = min(base_speed, SLOW_SPEED)
             coop_hint  = True
 
-        speeds    = _apply_coordination(cars, base_speed)
+        # run() processes one car per call, so `cars` here only holds
+        # markers detected in THIS frame for whichever cars are currently
+        # visible/active. It does NOT carry the "lane"/"segment_idx" keys
+        # that _compute_distances() needs for same_lane resolution and
+        # seg_delta — those only exist in _cars_snap (step 9 below) or the
+        # merged multi-car dict built once per display frame by
+        # build_frame_log_entry(). To avoid silently skipping cross-lane
+        # arbitration (cross_lane_checked would otherwise always default
+        # to False), we enrich a lightweight per-car context dict here
+        # from the SAME sources _is_maneuvering()/_lane_state already use
+        # elsewhere in this function — real "lane" and "maneuvering" per
+        # car, sourced live, not deferred to the later log-merge step.
+        _coord_ctx = {}
+        for _cid in cars:
+            _s = _lane_state.get(_cid, {})
+            _coord_ctx[_cid] = {
+                "lane": _s.get("lane", current_lane if _cid == car_id else None),
+                "maneuvering": bool(_s.get("overtaking")) or
+                               (_s.get("obstacle_decision") in ("overtake", "lane_switch")),
+            }
+        # segment_idx is intentionally omitted here (not needed for the
+        # same_lane / cross_lane_checked gating that speed arbitration and
+        # the S4 waiting-flag severity actually consume) — only the log
+        # schema's "seg_delta" field needs it, and that field is populated
+        # correctly later in build_frame_log_entry(), which has the full
+        # merged multi-car snapshot with real segment_idx per car.
+        _cars_for_dist = {}
+        for _cid, _cdata in cars.items():
+            _cars_for_dist[_cid] = dict(_cdata, lane=_coord_ctx[_cid]["lane"],
+                                         segment_idx=None)
+        _coord_distances = _compute_distances(_coord_ctx, _cars_for_dist)
+        speeds, _coord_distances = _apply_coordination(cars, base_speed, _coord_distances)
         v_desired = speeds.get(car_id, base_speed)
 
         # ── Per-lane distance-threshold rule (front marker vs. obstacle) ────
@@ -3128,11 +3353,10 @@ def wizard_chess(cap, chess_size=(8,6), square_mm=38.0) -> tuple:
 
 
 def wizard_charuco(cap, grid_size=(8,6), square_mm=38.0, marker_mm=18.0) -> tuple:
-    from cv2 import aruco as _ar
     cols, rows  = grid_size
-    a_dict      = _ar.getPredefinedDictionary(_ar.DICT_4X4_250)
-    board       = _ar.CharucoBoard(cols, rows, square_mm/1000, marker_mm/1000, a_dict)
-    detector    = _ar.CharucoDetector(board, _ar.CharucoParameters(), _ar.DetectorParameters())
+    a_dict      = ar.getPredefinedDictionary(ar.DICT_4X4_250)
+    board       = ar.CharucoBoard(cols, rows, square_mm/1000, marker_mm/1000, a_dict)
+    detector    = ar.CharucoDetector(board, ar.CharucoParameters(), ar.DetectorParameters())
     all_corners, all_ids, captured = [], [], 0
     click = [False]
     win   = "Calibration ChArUco — click to capture (ESC=done)"
@@ -3146,7 +3370,7 @@ def wizard_charuco(cap, grid_size=(8,6), square_mm=38.0, marker_mm=18.0) -> tupl
         disp  = frame.copy()
         cc, ci, _, _ = detector.detectBoard(gray)
         if ci is not None and len(ci) >= 4:
-            cv2.aruco.drawDetectedCornersCharuco(disp, cc, ci)
+            ar.drawDetectedCornersCharuco(disp, cc, ci)
             cv2.putText(disp, f"ChArUco {len(ci)} corners — click", (20,40),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
         else:
@@ -3170,7 +3394,7 @@ def wizard_charuco(cap, grid_size=(8,6), square_mm=38.0, marker_mm=18.0) -> tupl
         print(f"[calib] only {captured} frames — aborted"); return None, None
     ok2, f2 = cap.read()
     h, w = (f2.shape[:2] if ok2 else gray.shape)
-    rms, mtx, dist, _, _ = cv2.aruco.calibrateCameraCharuco(
+    rms, mtx, dist, _, _ = ar.calibrateCameraCharuco(
         all_corners, all_ids, board, w, h, None, None)
     print(f"[calib] RMS = {rms:.4f} px")
     return mtx, dist

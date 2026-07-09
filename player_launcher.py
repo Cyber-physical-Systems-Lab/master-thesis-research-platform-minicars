@@ -331,24 +331,9 @@ def players_run(car_list: list, sock: socket.socket, args,
 
             # 6. Assemble one multi-car log entry per display frame
             #    Mirrors the auto_control main loop log block exactly.
-            cars_data = {cid: ld
-                         for cid, (_, _, ld) in log_snap.items()
-                         if ld is not None}
-            if cars_data:
-                _merged_cars: dict = {}
-                for _cid, _cd in cars_data.items():
-                    _px, _py = _cd["pose"][0], _cd["pose"][1]
-                    _cl      = _cd["lane"]
-                    _cref    = _ll.get(f"lane{_cl}_ref", [])
-                    _sidx    = project_onto_curve((_px, _py), _cref) if _cref else None
-                    _merged_cars[_cid] = {
-                        "midpoint":    (_px, _py),
-                        "lane":        _cl,
-                        "segment_idx": _sidx,
-                    }
-                _log_entries.append(
-                    _build_log_entry(time.time(), _ac._cycle_counter,
-                                     cars_data, _merged_cars))
+            entry = _ac.build_frame_log_entry(log_snap, _ll, _ac._cycle_counter)
+            if entry is not None:
+                _log_entries.append(entry)
 
             # 7. FPS / counter overlay (top-right, same style as auto_control)
             fps_text = f"{len(args.cars)} car(s)  |  k={_ac._cycle_counter}"
