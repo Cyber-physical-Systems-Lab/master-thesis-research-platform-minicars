@@ -36,9 +36,9 @@ param(
 )
 
 $PYTHON   = "python"
-$SCRIPT   = "player_launcher.py"
-$CALIB_90 = "calib-90_RMS-1p71.npz"
-$CALIB_78 = "calib-78_RMS-2p02.npz"
+$SCRIPT   = ".\src\player_launcher.py"
+$CALIB_90 = ".\calib_files\calib-90_RMS-1p71.npz"
+$CALIB_78 = ".\calib_files\calib-78_RMS-2p02.npz"
 $REP      = $Repetition
 
 function Invoke-Launch ([string[]]$CmdArgs) {

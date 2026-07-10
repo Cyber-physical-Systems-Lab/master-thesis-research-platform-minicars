@@ -37,7 +37,7 @@ def run(car_list):
         
         response = ping(ip)
         if response == 0:
-            os.system('psftp cpslab1@{} -pw cpslab1 -b ./firmware/update_firmware.txt'.format(ip))
+            os.system('psftp cpslab1@{} -pw cpslab1 -b ./src/minicar_firmware/update_firmware.txt'.format(ip))
         elif response == 1:
             print('Player {} unresponsive!'.format(car_number))
             unresponsive.append(car_number)

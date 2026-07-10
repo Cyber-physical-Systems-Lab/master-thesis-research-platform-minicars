@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 benchmark_plot.py -- Analysis & visualisation tool for experiment JSON files.
 

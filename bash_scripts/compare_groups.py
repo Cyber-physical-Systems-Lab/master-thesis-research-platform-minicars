@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 compare_groups.py -- Cross-group comparison wrapper around benchmark_plot.py
 
@@ -49,7 +48,7 @@ from collections import defaultdict
 from typing import List
 
 try:
-    import benchmark_plot as bp
+    import exp.benchmark_plot as bp
 except ImportError:
     print("ERROR: could not import benchmark_plot.py. "
           "Make sure compare_groups.py is in the same folder as benchmark_plot.py.")

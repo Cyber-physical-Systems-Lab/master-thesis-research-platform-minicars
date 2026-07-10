@@ -47,9 +47,9 @@ import keyboard
 import numpy as np
 from threading import Thread, Lock
 
-from player import binds
-from player import controllers
-import auto_control as _ac
+from src.player import binds
+from src.player import controllers
+import src.auto_control as _ac
 
 # ── Shared state ──────────────────────────────────────────────────────────────
 frame_lock      = Lock()
@@ -82,7 +82,7 @@ class Player:
 
     def __init__(self, number: int, controller: str, mode: int,
                  ideal_speed: float = 0.55, max_angle: float = 0.5):
-        from auto_control import _car_ip          # canonical IP derivation
+        from src.auto_control import _car_ip          # canonical IP derivation
 
         self.car_number  = number
         self.ip          = _car_ip(number)
@@ -102,13 +102,13 @@ class Player:
             raise ValueError(f'Unknown controller type: {controller!r}')
 
     def boot(self):
-        from auto_control import boot as _boot, _SSH_USERNAME, _SSH_PASSWORD, _LAUNCH_SCRIPT
+        from src.auto_control import boot as _boot, _SSH_USERNAME, _SSH_PASSWORD, _LAUNCH_SCRIPT
         _boot(self.ip, _SSH_USERNAME, _SSH_PASSWORD, _LAUNCH_SCRIPT)
 
     def copy_file(self):
         os.system(
             f'pscp -pw {self.password} {self.username}@{self.ip}:'
-            f'car-{self.copy_file_nb}-log.txt ./firmware/console_prints')
+            f'car-{self.copy_file_nb}-log.txt ./src/minicar_firmware/console_prints')
 
     def ping(self):
         return os.system(f'ping -n 1 -w 200 {self.ip} | find "Reply"') if os.name == 'nt' \
@@ -175,13 +175,11 @@ def players_run(car_list: list, sock: socket.socket, args,
     # Using auto_control's own module-level state means the player launcher
     # shares the same EKF, lane-cache, log-entries list, and save_log() as the
     # standalone auto_control runner — zero duplication.
-    from auto_control import (
+    from src.auto_control import (
         draw_lanes,
         draw_obstacles,
         draw_marker_debug,
-        _build_log_entry,
         _log_entries,
-        project_onto_curve,
         save_log,
         undistort_frame,
         _startup_calibration,
@@ -297,7 +295,7 @@ def players_run(car_list: list, sock: socket.socket, args,
             canvas = raw.copy()
 
             # 2. Draw lane fills ONCE — avoids repeated semi-transparent stacking
-            from auto_control import _last_lanes as _ll
+            from src.auto_control import _last_lanes as _ll
             draw_lanes(canvas, _ll)
 
             # 3. Draw shared obstacle circles ONCE, from auto_control's own
@@ -411,7 +409,7 @@ def _draw_car_overlay(canvas, dd):
 
     iz = dd.get("interaction_zone")
     if iz is not None:
-        from auto_control import draw_interaction_zone
+        from src.auto_control import draw_interaction_zone
         draw_interaction_zone(canvas, iz["car_pos"], iz["tangent"],
                               iz["left_normal"], iz["obs_state"])
 

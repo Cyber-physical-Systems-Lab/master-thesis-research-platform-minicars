@@ -76,8 +76,8 @@ param(
 )
 
 $PYTHON        = "python"
-$SCRIPT        = "benchmark_plot.py"
-$COMPARE_SCRIPT = "compare_groups.py"
+$SCRIPT        = ".\exp\benchmark_plot.py"
+$COMPARE_SCRIPT = ".\bash_scripts\compare_groups.py"
 
 # ── Filename pattern ─────────────────────────────────────────────────────────
 # Captures: Scenario, Repetition, FOV, HeightCM, Calib, Policy, (optional) DupTag

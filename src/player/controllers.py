@@ -22,8 +22,8 @@ import pygame
 import sys
 
 # from central_basestation import run
-from auto_control import run
-from player import binds
+from src.auto_control import run
+from src.player import binds
 
 def safe_write(file, msg):
     """Displays on console and writes to a .txt file safely"""
@@ -55,8 +55,8 @@ class Keyboard(object):
         self.running = True
 
         self.binds = binds.KeyboardBinds()
-        self.file = open('./player/console_prints/keyboard-console-log.txt', 'w')
-        self.file1 = open('./player/console_prints/camera-console-log.txt', 'w')
+        self.file = open('./src/player/console_prints/keyboard-console-log.txt', 'w')
+        self.file1 = open('./src/player/console_prints/camera-console-log.txt', 'w')
         _MODE_LABELS = {0: "Manual", 1: "Semi-Autonomous", 2: "Autonomous"}
         safe_write(self.file, "Turning on the control functionality...")
         safe_write(self.file,
@@ -259,7 +259,7 @@ class Joystick(object):
         self.joystick = None
         
         self.binds = binds.JoystickBinds()
-        self.file = open('./player/console_prints/joystick-console-log.txt', 'w')
+        self.file = open('./src/player/console_prints/joystick-console-log.txt', 'w')
 
         # Initialise joystick
         pygame.display.init()
