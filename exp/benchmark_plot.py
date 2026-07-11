@@ -901,13 +901,26 @@ def plot_emergency_stop_timeline(arrs_by_car: dict, meta: dict, outdir: str) -> 
 
 # ── Trajectory coverage chart (ground-truth + car positions) ─────────────────
 
-def _extract_car_positions(frames: List[dict], car_id: str) -> List[tuple]:
-    """Return list of (x_px, y_px) from the pose field for *car_id*."""
+def _extract_car_positions(frames: List[dict], car_id: str, px_per_cm: Optional[float] = None,
+                           unit: str = "px") -> List[tuple]:
+    """Return list of (x, y) positions from the pose field for *car_id*.
+
+    The saved logs store pose coordinates in pixel space. When the log metadata
+    reports the display/output unit as centimetres and a valid ``px_per_cm`` is
+    available, the trajectory chart converts those pose values to centimetres so
+    the axis labels match the plotted geometry.
+    """
+    scale_to_cm = (str(unit).lower() == "cm" and px_per_cm not in (None, 0))
     pts = []
     for f in frames:
         p = _car_field(f, car_id, "pose", default=None)
         if p and len(p) >= 2:
-            pts.append((float(p[0]), float(p[1])))
+            x = float(p[0])
+            y = float(p[1])
+            if scale_to_cm:
+                x /= float(px_per_cm)
+                y /= float(px_per_cm)
+            pts.append((x, y))
     return pts
 
 def plot_trajectory(runs_data: List[dict], outdir: str, avg_mode: bool = False) -> None:
@@ -933,8 +946,12 @@ def plot_trajectory(runs_data: List[dict], outdir: str, avg_mode: bool = False) 
     ax.set_aspect("equal")
     ax.invert_yaxis()
 
-    gt = next((r.get("track_ground_truth") for r in runs_data
-               if r.get("track_ground_truth")), None)
+    gt_run = next((r for r in runs_data if r.get("track_ground_truth")), None)
+    gt = gt_run.get("track_ground_truth") if gt_run else None
+    gt_meta = gt_run.get("meta", {}) if gt_run else {}
+    gt_unit = str(gt_meta.get("unit", "px")).lower()
+    gt_px_per_cm = gt_meta.get("px_per_cm")
+    gt_scale_to_cm = (gt_unit == "cm" and gt_px_per_cm not in (None, 0))
 
     GT_STYLE = {
         "lane1_ref": ("#6daa45", 2.0, "Lane 1 ideal path"),
@@ -945,6 +962,8 @@ def plot_trajectory(runs_data: List[dict], outdir: str, avg_mode: bool = False) 
             pts = gt.get(key, [])
             if pts:
                 arr = np.array(pts, dtype=float)
+                if gt_scale_to_cm:
+                    arr = arr / float(gt_px_per_cm)
                 arr_closed = np.vstack([arr, arr[[0]]])
                 ax.plot(arr_closed[:, 0], arr_closed[:, 1],
                         color=col, lw=lw, alpha=0.75, label=lbl)
@@ -963,7 +982,12 @@ def plot_trajectory(runs_data: List[dict], outdir: str, avg_mode: bool = False) 
         colour = _RUN_COLOURS[ci % len(_RUN_COLOURS)]
         all_x, all_y = [], []
         for r in runs_data:
-            for px, py in _extract_car_positions(r.get("frames", []), car_id):
+            rmeta = r.get("meta", {})
+            for px, py in _extract_car_positions(
+                r.get("frames", []), car_id,
+                px_per_cm=rmeta.get("px_per_cm"),
+                unit=rmeta.get("unit", "px")
+            ):
                 all_x.append(px); all_y.append(py)
         if all_x:
             ax.scatter(all_x, all_y, s=2, alpha=0.35, color=colour,
