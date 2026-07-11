@@ -452,7 +452,25 @@ def compute_summary(frames: List[dict], meta: dict, car_id: str) -> dict:
 
     lat_errs = np.abs(arrs["lat"]); lat_errs = lat_errs[~np.isnan(lat_errs)]
     hdg_errs = np.abs(arrs["hdg"]); hdg_errs = hdg_errs[~np.isnan(hdg_errs)]
-    iv_errors: List[float] = []
+
+    px_per_cm = meta.get("px_per_cm") or None
+    gap_px_samples: List[float] = []
+    iv = frames_to_iv_arrays(frames)
+    for pair, rec in iv.items():
+        a, b = pair.split("-")
+        if str(car_id) not in (a, b):
+            continue
+        if not rec.get("same_lane"):
+            continue
+        for d, state in zip(rec["distarr"], rec["state_list"]):
+            if state in ("hold_gap", "small_gap") and not np.isnan(d):
+                gap_px_samples.append(d)
+
+    if gap_px_samples:
+        mean_gap_px = float(np.mean(gap_px_samples))
+        mean_gap_cm = round(mean_gap_px / px_per_cm, 4) if px_per_cm else round(mean_gap_px, 4)
+    else:
+        mean_gap_cm = None
 
     n_col = arrs["safety"].count("collision")
     n_near = arrs["safety"].count("near_miss")
@@ -476,7 +494,7 @@ def compute_summary(frames: List[dict], meta: dict, car_id: str) -> dict:
     return dict(
         mean_lateral_error_px  = round(float(np.mean(lat_errs)), 4) if len(lat_errs) else None,
         mean_heading_error_deg = round(float(np.mean(hdg_errs)), 4) if len(hdg_errs) else None,
-        mean_iv_dist_error_px  = round(float(np.mean(iv_errors)), 4) if iv_errors else None,
+        mean_gap_cm            = mean_gap_cm,
         mean_obs_dist_px       = mean_obs,
         n_collision            = n_col,
         n_near_miss            = n_near,
@@ -1071,7 +1089,7 @@ def plot_policy_comparison(runs: List[dict], outdir: str) -> None:
 
 SUMMARY_COLS = [
     "scenario", "policy", "calibration", "car_id", "n_frames",
-    "mean_lateral_error_px", "mean_heading_error_deg", "mean_iv_dist_error_px",
+    "mean_lateral_error_px", "mean_heading_error_deg", "mean_gap_cm",
     "mean_obs_dist_px",
     "n_collision", "n_near_miss", "n_emergency_stop",
     "collision_rate", "near_miss_rate", "emergency_stop_rate",
