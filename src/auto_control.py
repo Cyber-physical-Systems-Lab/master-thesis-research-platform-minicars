@@ -522,7 +522,7 @@ def save_log(path: str = None) -> None:
         dfov_tag   = f"{_DFOV}fov" if _DFOV else "unknownfov"
         camera_height = _DFOV_HEIGHT_CM.get(_DFOV)
         height_tag = f"-{int(camera_height)}cm" if camera_height else ""
-        run_dir  = os.path.join("./exp", LOG_SCENARIO)
+        run_dir  = os.path.join("./exp/logs", LOG_SCENARIO)
         if LOG_RUN_NAME:
             run_dir = os.path.join(run_dir, LOG_RUN_NAME)
         os.makedirs(run_dir, exist_ok=True)
