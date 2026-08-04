@@ -483,6 +483,7 @@ def compute_summary(frames: List[dict], meta: dict, car_id: str) -> dict:
     n_dec_obj  = arrs["safety_object"].count("decision")
 
     taus = _waiting_durations(frames, car_id)
+    n_frames = max(len(frames), 1)
     n_exp = max(len(taus), 1)
 
     n_emstop = int(np.sum(arrs["emstop"]))  # frames with emergency_stop=True
@@ -505,13 +506,13 @@ def compute_summary(frames: List[dict], meta: dict, car_id: str) -> dict:
         n_near_miss_object     = n_near_obj,
         n_decision_object      = n_dec_obj,
         n_emergency_stop       = n_emstop,
-        collision_rate         = round(n_col / n_exp, 4),
-        near_miss_rate         = round(n_near / n_exp, 4),
-        collision_rate_car     = round(n_col_car / n_exp, 4),
-        near_miss_rate_car     = round(n_near_car / n_exp, 4),
-        collision_rate_object  = round(n_col_obj / n_exp, 4),
-        near_miss_rate_object  = round(n_near_obj / n_exp, 4),
-        emergency_stop_rate    = round(n_emstop / max(len(frames), 1), 4),
+        collision_rate         = round(n_col / n_frames, 4),
+        near_miss_rate         = round(n_near / n_frames, 4),
+        collision_rate_car     = round(n_col_car / n_frames, 4),
+        near_miss_rate_car     = round(n_near_car / n_frames, 4),
+        collision_rate_object  = round(n_col_obj / n_frames, 4),
+        near_miss_rate_object  = round(n_near_obj / n_frames, 4),
+        emergency_stop_rate    = round(n_emstop / n_frames, 4),
         mean_waiting_time_s    = round(float(np.mean(taus)), 4) if taus else None,
     )
 
@@ -532,10 +533,17 @@ def _fig(h: float = FIGH):
     return fig, ax
 
 def _save(fig, path: str) -> None:
+    """
+    Save each chart as both PNG (for quick inspection) and PDF (vector, for thesis).
+    The caller always passes a *.png path; we derive the *.pdf sibling here.
+    """
     fig.tight_layout()
-    fig.savefig(path, dpi=DPI, bbox_inches="tight")
+    png_path = path
+    pdf_path = os.path.splitext(path)[0] + ".pdf"
+    fig.savefig(png_path, dpi=DPI, bbox_inches="tight")
+    fig.savefig(pdf_path, bbox_inches="tight")  # vector version
     plt.close(fig)
-    print(f"  chart -> {path}")
+    print(f"  chart -> {png_path} / {pdf_path}")
 
 # ── Per-run charts ────────────────────────────────────────────────────────────
 
@@ -547,7 +555,7 @@ def plot_lateral_error(arrs_by_car: dict, meta: dict, outdir: str) -> None:
         ax.plot(arrs["t"], lat, lw=1.2, alpha=0.85, label=f"Car {car_id}")
         ax.axhline(float(np.nanmean(lat)), lw=1.2, ls="--",
                    label=f"Mean car {car_id} ({np.nanmean(lat):.1f} px)")
-    ax.set_xlabel("Time s"); ax.set_ylabel("Lateral error px")
+    ax.set_xlabel("Time [s]"); ax.set_ylabel("Lateral error [px]")
     ax.set_title(f"Pose Tracking - Lateral Error {meta.get('scenario','')} {meta.get('policy','')}")
     ax.legend(framealpha=0.7)
     _save(fig, os.path.join(outdir, "lateral_error_timeseries.png"))
@@ -560,7 +568,7 @@ def plot_heading_error(arrs_by_car: dict, meta: dict, outdir: str) -> None:
         ax.plot(arrs["t"], hdg, lw=1.2, alpha=0.85, label=f"Car {car_id}")
         ax.axhline(float(np.nanmean(hdg)), lw=1.2, ls="--",
                    label=f"Mean car {car_id} ({np.nanmean(hdg):.1f} deg)")
-    ax.set_xlabel("Time s"); ax.set_ylabel("Heading error deg")
+    ax.set_xlabel("Time [s]"); ax.set_ylabel("Heading error [deg]")
     ax.set_title(f"Pose Tracking - Heading Error {meta.get('scenario','')} {meta.get('policy','')}")
     ax.legend(framealpha=0.7)
     _save(fig, os.path.join(outdir, "heading_error_timeseries.png"))
@@ -616,7 +624,7 @@ def plot_car_object_dist(arrs_by_car: dict, meta: dict, outdir: str) -> None:
         ax.fill_between(t_all, 0, d_col, alpha=0.12, color=PAL["collision"])
         ax.fill_between(t_all, d_col, d_warn, alpha=0.08, color=PAL["d_warn"])
         ax.fill_between(t_all, d_warn, d_safe, alpha=0.06, color=PAL["d_safe"])
-    ax.set_xlabel("Time s"); ax.set_ylabel("Distance px")
+    ax.set_xlabel("Time [s]"); ax.set_ylabel("Distance [px]")
     ax.set_title(f"Car-to-Object Distance {meta.get('scenario','')} {meta.get('policy','')}")
     ax.legend(framealpha=0.7, fontsize=7, loc="upper right")
     _save(fig, os.path.join(outdir, "car_object_dist_timeseries.png"))
@@ -688,11 +696,11 @@ def plot_commands(arrs_by_car: dict, meta: dict, outdir: str) -> None:
             for sp in ax.spines.values(): sp.set_edgecolor("#d4d1ca")
             ax.tick_params(colors="#7a7974")
         ax1.step(arrs["t"], arrs["servo"], color=PAL["servo"], lw=1.2, where="post")
-        ax1.set_ylabel(f"Servo rad\n(car {car_id})")
+        ax1.set_ylabel(f"Servo [rad]\n(car {car_id})")
         ax1.axhline(0, color="#d4d1ca", lw=0.8)
         ax2.step(arrs["t"], arrs["motor"], color=PAL["motor"], lw=1.2, where="post")
-        ax2.set_ylabel(f"Motor\n(car {car_id})")
-    axes[-1].set_xlabel("Time s")
+        ax2.set_ylabel(f"Motor [-]\n(car {car_id})")
+    axes[-1].set_xlabel("Time [s]")
     axes[0].set_title(f"Commands - Servo & Motor {meta.get('scenario','')} {meta.get('policy','')}",
                        color="#28251d")
     _save(fig, os.path.join(outdir, "commands_timeseries.png"))
@@ -774,9 +782,9 @@ def plot_car_car_dist(frames: List[dict], meta: dict, outdir: str) -> None:
         ax.fill_between(all_t, d_col, d_warn, alpha=0.08, color=PAL["d_warn"])
         ax.fill_between(all_t, d_warn, d_safe, alpha=0.06, color=PAL["d_safe"])
         ax.axhline(d_warn, color=PAL["d_warn"], lw=1.4, ls="--",
-                   label=f"D_WARN {d_warn} px")
+                   label=f"D_WARN {d_warn} [px]")
         ax.axhline(d_safe, color=PAL["d_safe"], lw=1.2, ls=":",
-                   label=f"D_SAFE {d_safe} px")
+                   label=f"D_SAFE {d_safe} [px]")
         has_seg = any(not np.all(np.isnan(v["seg_delta_arr"])) for v in same_pairs.values())
         if has_seg:
             ax2 = ax.twinx()
@@ -789,8 +797,8 @@ def plot_car_car_dist(frames: List[dict], meta: dict, outdir: str) -> None:
             ax2.set_ylabel("Segment-index gap (samples)", color="#c8c6c0", fontsize=8)
             ax2.tick_params(colors="#c8c6c0")
             ax2.legend(loc="upper right", fontsize=7, framealpha=0.5)
-        ax.set_xlabel("Time s")
-        ax.set_ylabel("Euclidean distance px")
+        ax.set_xlabel("Time [s]")
+        ax.set_ylabel("Euclidean distance [px]")
         ax.set_title(f"Car-to-Car Distance - Same-Lane {title_sfx}")
         ax.legend(loc="upper left", framealpha=0.7, fontsize=8)
 
@@ -806,8 +814,8 @@ def plot_car_car_dist(frames: List[dict], meta: dict, outdir: str) -> None:
                     ax.scatter(v["tarr"][i], v["distarr"][i], marker=marker, s=22,
                                color=PAL[pal_key], edgecolor="#28251d",
                                linewidth=0.3, alpha=0.85, zorder=4)
-        ax.set_xlabel("Time s")
-        ax.set_ylabel("Euclidean distance px")
+        ax.set_xlabel("Time [s]")
+        ax.set_ylabel("Euclidean distance [px]")
         ax.set_title(f"Car-to-Car Distance - Cross-Lane {title_sfx}")
         ax.legend(loc="upper left", framealpha=0.7, fontsize=8)
 
@@ -854,7 +862,7 @@ def plot_waiting_times(frames: List[dict], car_ids: List[str], meta: dict, outdi
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + max(means) * 0.03,
                 f"n={n}", ha="center", va="bottom", fontsize=8, color="#28251d")
     ax.set_xticks(x); ax.set_xticklabels([f"Car {c}" for c in labels])
-    ax.set_xlabel("Car ID"); ax.set_ylabel("Waiting time s (mean +/- std)")
+    ax.set_xlabel("Car ID"); ax.set_ylabel("Waiting time [s] (mean +/- std)")
     ax.set_title(f"Per-Car Waiting Time {meta.get('scenario','')} {meta.get('policy','')}")
     ax.legend(framealpha=0.7)
     _save(fig, os.path.join(outdir, "waiting_time_bar.png"))
@@ -876,7 +884,7 @@ def plot_error_cdf(arrs_by_car: dict, meta: dict, outdir: str) -> None:
         ax.text(0.5, 0.5, "No lateral error data available",
                 transform=ax.transAxes, ha="center", va="center",
                 color="#7a7974", fontsize=10)
-    ax.set_xlabel("Lateral error px"); ax.set_ylabel("Cumulative probability")
+    ax.set_xlabel("Lateral error [px]"); ax.set_ylabel("Cumulative probability")
     ax.set_title(f"CDF - Lateral Error {meta.get('scenario','')} {meta.get('policy','')}")
     ax.grid(True, alpha=0.3, color="#d4d1ca"); ax.legend(framealpha=0.7)
     _save(fig, os.path.join(outdir, "error_cdf.png"))
@@ -888,7 +896,7 @@ def plot_lane_timeline(arrs_by_car: dict, meta: dict, outdir: str) -> None:
         lane = np.where(np.isnan(arrs["lane"].astype(float)), 1, arrs["lane"])
         ax.step(arrs["t"], lane, lw=1.4, where="post", label=f"Car {car_id}")
     ax.set_yticks([1, 2]); ax.set_yticklabels(["Lane 1 (inner)", "Lane 2 (outer)"])
-    ax.set_xlabel("Time s"); ax.set_ylabel("Lane")
+    ax.set_xlabel("Time [s]"); ax.set_ylabel("Lane")
     ax.set_title(f"Lane Assignment Over Time {meta.get('scenario','')} {meta.get('policy','')}")
     ax.legend(framealpha=0.7)
     _save(fig, os.path.join(outdir, "lane_timeline.png"))
@@ -912,7 +920,7 @@ def plot_emergency_stop_timeline(arrs_by_car: dict, meta: dict, outdir: str) -> 
         em = arrs.get("emstop", np.zeros_like(arrs["t"]))
         ax.step(arrs["t"], em, lw=1.4, where="post", label=f"Car {car_id}")
     ax.set_yticks([0, 1]); ax.set_yticklabels(["Normal", "EMERGENCY"])
-    ax.set_xlabel("Time s"); ax.set_ylabel("Emergency stop active")
+    ax.set_xlabel("Time [s]"); ax.set_ylabel("Emergency stop active")
     ax.set_title(f"Emergency Stop Active Frames {meta.get('scenario','')} {meta.get('policy','')}")
     ax.legend(framealpha=0.7)
     _save(fig, os.path.join(outdir, "emergency_stop_timeline.png"))
@@ -1022,8 +1030,8 @@ def plot_trajectory(runs_data: List[dict], outdir: str, avg_mode: bool = False) 
         f"{meta0.get('policy', '')}{_dfov_lbl}{suffix}",
         color="#28251d",
     )
-    ax.set_xlabel(f"x ({_unit})", color="#7a7974")
-    ax.set_ylabel(f"y ({_unit})", color="#7a7974")
+    ax.set_xlabel(f"x [{_unit}]", color="#7a7974")
+    ax.set_ylabel(f"y [{_unit}]", color="#7a7974")
     ax.legend(loc="upper right", fontsize=7, framealpha=0.6,
               facecolor="#1c1b19", labelcolor="white")
     _save(fig, os.path.join(outdir, "trajectory_coverage.png"))
