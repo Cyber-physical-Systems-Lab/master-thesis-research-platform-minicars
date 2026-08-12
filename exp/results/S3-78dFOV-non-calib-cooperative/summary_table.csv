@@ -1,0 +1,3 @@
+scenario,policy,calibration,car_id,n_frames,mean_lateral_error_px,mean_heading_error_deg,mean_gap_cm,mean_obs_dist_px,n_collision,n_near_miss,n_emergency_stop,collision_rate,near_miss_rate,emergency_stop_rate,n_collision_car,n_near_miss_car,n_decision_car,collision_rate_car,near_miss_rate_car,n_collision_object,n_near_miss_object,n_decision_object,collision_rate_object,near_miss_rate_object,mean_waiting_time_s
+S3,cooperative,non-calib,1,358,31.0545,8.3372,58.4122,72.3018,98.3333,181.1667,91.0,0.2844,0.475,0.2625,29.8333,16.5,17.8333,0.1134,0.0457,84.6667,162.3333,32.3333,0.2457,0.4275,-
+S3,cooperative,non-calib,2,358,48.9936,14.1844,58.4122,71.9713,107.3333,122.3333,98.6667,0.3108,0.32,0.2838,29.8333,16.8333,17.6667,0.1134,0.0466,93.1667,77.1667,42.0,0.2706,0.1989,-

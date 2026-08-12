@@ -1,0 +1,3 @@
+scenario | policy | calibration | car_id | n_frames | mean_lateral_error_px | mean_heading_error_deg | mean_gap_cm | mean_obs_dist_px | n_collision | n_near_miss | n_emergency_stop | collision_rate | near_miss_rate | emergency_stop_rate | n_collision_car | n_near_miss_car | n_decision_car | collision_rate_car | near_miss_rate_car | n_collision_object | n_near_miss_object | n_decision_object | collision_rate_object | near_miss_rate_object | mean_waiting_time_s
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+S1 | cooperative | calib | 2 | 393 | 30.5953 | 12.2951 | - | - | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | -
