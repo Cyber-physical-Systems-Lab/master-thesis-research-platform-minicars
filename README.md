@@ -222,7 +222,7 @@ In the thesis context, autonomous operation is evaluated in freeway-inspired sce
 A short demonstration video showing autonomous operation is embedded below:
 
 <div align="center" style="text-align:center">
-  <video src="media\videos\S1-coop-90-nocalib.mp4" alt="Autonomous video demonstration" controls></video>
+  <video src="https://github.com/user-attachments/assets/e5351a43-08e6-469a-883f-2008979c01a2" alt="Autonomous video demonstration" controls></video>
   
   Autonomous Operation Mode
 </div>
