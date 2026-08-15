@@ -680,7 +680,6 @@ def process_averaged_files(paths: List[str]) -> dict:
         avg_arrs_by_car[cid] = averaged
 
     rundir = results_dir(meta)
-
     plot_lateral_error(avg_arrs_by_car, meta, rundir)
     plot_heading_error(avg_arrs_by_car, meta, rundir)
     plot_car_object_dist(avg_arrs_by_car, meta, rundir)
@@ -744,7 +743,6 @@ def process_file(path: str) -> dict:
     plot_lane_timeline(arrs_by_car, meta, rundir)
     plot_emergency_stop_timeline(arrs_by_car, meta, rundir)
     plot_trajectory([data], rundir, avg_mode=False)
-
     return data
 
 def main():
@@ -753,14 +751,12 @@ def main():
     parser.add_argument("-f", "--avg-files", type=int, default=None, metavar="N",
                          help="Average the first N files as repeated runs of the same scenario")
     args = parser.parse_args()
-
     if not args.files:
         parser.print_help(); sys.exit(0)
 
     os.makedirs(os.path.join(".", "exp", "results"), exist_ok=True)
 
     if args.avg_files and len(args.files) >= args.avg_files:
-
         avg_run = process_averaged_files(args.files[:args.avg_files])
         runs = [avg_run] + [process_file(p) for p in args.files[args.avg_files:]]
     else:

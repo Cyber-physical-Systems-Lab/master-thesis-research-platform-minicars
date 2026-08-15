@@ -51,7 +51,6 @@ def camera_producer(capture):
         with frame_lock:
             latest_frame = frame.copy()
 
-
 def get_latest_frame():
     with frame_lock:
         return latest_frame.copy() if latest_frame is not None else None
@@ -135,6 +134,7 @@ def _draw_car_overlay(canvas, dd):
     rear = dd.get("rear_pt")
     if rear is None:
         return
+
     tier = dd.get("occlusion_tier", "BOTH_VISIBLE")
     cv2.circle(canvas, rear, 5, _TIER_COLOUR.get(tier, (0, 255, 255)), -1)
 
@@ -358,7 +358,6 @@ def main():
         sys.exit(0)
 
     cap, out = _ac.init_camera(args.cam, video_name=args.video_name)
-
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         players_run(args.cars, sock, args, cap, out)
