@@ -3,17 +3,6 @@ controllers.py — Keyboard and Joystick controllers for minicar player mode.
 
 Autonomous control delegates entirely to auto_control.run():
     servo, motor, draw_data, car_log_data = run(frame, car_id)
-
-After each listen() call the caller (player_launcher) can read:
-    ctrl.draw_data      — lightweight overlay geometry dict for this car
-    ctrl.last_log_data  — car_log_data dict returned by the last run() call
-                          (None in manual mode, populated in semi/autonomous)
-
-Drawing itself now happens ONLY in the display thread (player_launcher.py),
-which draws lane fills and obstacles once per frame, then iterates over
-every connected car's draw_data in a fixed order to render markers, guide
-lines, and per-car HUD boxes. Worker threads (and this controller) never
-touch a shared canvas.
 """
 
 import time

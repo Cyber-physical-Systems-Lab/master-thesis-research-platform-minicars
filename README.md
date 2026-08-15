@@ -1,4 +1,4 @@
-# Master Thesis Project – Cyber-Physical Systems at Uppsala University  
+# Master Thesis Project – Cyber-Physical Systems at Uppsala University
 Design of a Research Platform for Mini Autonomous Cars
 
 Main author of the Master Thesis Project: **Darius Loga**
@@ -352,14 +352,14 @@ Experiments are organised around four freeway-inspired scenarios:
   Several minicars pass a bottleneck with a static obstacle, used to evaluate coordination under spatial constraints.
 
 - **S4 – Cooperative vs non-cooperative bottleneck traffic**  
-  Multi-vehicle interaction with explicit policy comparison, used to study safety and mean waiting time under the same sensing and hardware conditions.[file:2]
+  Multi-vehicle interaction with explicit policy comparison, used to study safety and mean waiting time under the same sensing and hardware conditions.
 
 For each scenario, the analysis uses a fixed set of metrics:
 
-- **Pose tracking error**: how closely the estimated planar pose \((x, y, \theta)\) follows a reference trajectory over time.[file:2]
-- **Inter-vehicle distance error**: absolute error between vision-based distance and reference distance, crucial for safety-aware coordination.[file:2]
-- **Safety event rates**: frame-normalised collision rate and near-miss rate based on thresholds \(d_{\text{col}}, d_{\text{warn}}, d_{\text{safe}}\).[file:2]
-- **Mean waiting time**: how long a vehicle remains in an interaction zone (bottleneck/queue) before it can proceed safely.[file:2]
+- **Pose tracking error**: how closely the estimated planar pose \((x, y, \theta)\) follows a reference trajectory over time.
+- **Inter-vehicle distance error**: absolute error between vision-based distance and reference distance, crucial for safety-aware coordination.
+- **Safety event rates**: frame-normalised collision rate and near-miss rate based on thresholds \(d_{\text{col}}, d_{\text{warn}}, d_{\text{safe}}\).
+- **Mean waiting time**: how long a vehicle remains in an interaction zone (bottleneck/queue) before it can proceed safely.
 
 These metrics are computed offline from the same JSON logs that drove the controller, ensuring that all figures and tables can be regenerated from raw data.
 
@@ -378,7 +378,7 @@ where:
 - `{dfov}`: diagonal field-of-view tag (e.g. 90 or 78 degrees).
 - `{HeightCM}`: measured camera height.
 - `{calib|non-calib}`: whether a calibration file was used.
-- `{Policy}`: cooperative or non_cooperative.[file:2]
+- `{Policy}`: cooperative or non_cooperative.
 
 Files are stored under:
 
@@ -386,7 +386,7 @@ Files are stored under:
 ./exp/{Scenario}/
 ```
 
-with optional subfolders for run names, so that different experimental conditions can be identified and grouped without opening the JSON content.[file:2]
+with optional subfolders for run names, so that different experimental conditions can be identified and grouped without opening the JSON content.
 
 #### 1.3 Benchmarking and plot generation
 
@@ -394,7 +394,7 @@ Offline evaluation and visualisation are handled by the benchmarking script in t
 
 - Reads one or more JSON log files.
 - Recomputes pose and distance errors, safety events, waiting times, lane assignments, and emergency-stop flags.
-- Generates a fixed set of charts and summary tables for each run.[file:2]
+- Generates a fixed set of charts and summary tables for each run.
 
 For a single log file, you can run:
 
@@ -416,7 +416,7 @@ Key plots include:
 - Command time-series (servo and motor values).
 - Waiting-time bar charts per scenario and policy.
 - Lane timelines and trajectory coverage plots.
-- Emergency-stop timelines.[file:2]
+- Emergency-stop timelines.
 
 For multi-run comparisons (e.g. cooperative vs non-cooperative policy under the same camera configuration), the script aggregates metrics into shared folders such as:
 
@@ -424,16 +424,56 @@ For multi-run comparisons (e.g. cooperative vs non-cooperative policy under the 
 ./exp/results/{scenario}-{dfov}dFOV-{calib}-{pol_or_multi}/
 ```
 
-and produces policy-comparison bar charts and Markdown/CSV summary tables suitable for direct inclusion in the thesis or other reports.[file:2]
+and produces policy-comparison bar charts and Markdown/CSV summary tables suitable for direct inclusion in the thesis or other reports.
 
-#### 1.4. Linking the code to the thesis figures
+#### 1.4 Overall results for the experimental scenarios
 
-The tables and plots in the Results and Analysis chapters are generated directly from these logs and scripts. In particular:
+The experimental results quantify both localisation accuracy and traffic behaviour across the four freeway-inspired scenarios (S1–S4). For S1–S3, we report mean lateral/heading errors and typical minicar–minicar and minicar–obstacle gaps, aggregated over camera geometries and repetitions, while the S4 tables compare cooperative and non-cooperative policies in a three-minicar bottleneck via gap statistics, frame-normalised safety-event rates, and mean waiting times. Together, these metrics show how camera configuration and coordination policy jointly shape tracking quality, obstacle interactions, and waiting-time patterns for the platform.
 
-- The **traceability table** (R1–R6) is supported by build-cost summaries, controller tests, pose and distance accuracy plots, camera-geometry comparisons, and policy-comparison charts.[file:2]
-- Scenario-specific figures (S1–S4) report tracking errors, safety rates, and waiting times using the metrics and output directories described above.[file:2]
+##### Pose and distance metrics (S1–S3)
+| Scenario                 | Mean lateral error (px) | Mean heading error (°) | Typical mean gap (cm) | Typical obstacle distance (cm) |
+|--------------------------|-------------------------|------------------------|------------------------|---------------------------------|
+| S1 (Single minicar)      | 35.2                    | 12.6                   | --                     | --                              |
+| S2 (Car-following)       | 24.5                    | 10.6                   | 45–58                  | --                              |
+| S3 (Merging + obstacles) | 50.6                    | 12.0                   | 57–60                  | 12–17                           |
 
-By keeping the logging format, file naming, and benchmarking scripts within this repository, the experimental results are auditable and reproducible: rerunning an experiment and the corresponding `benchmark_plot.py` commands should recreate the same figures and tables used in the thesis.
+---
+##### Camera configuration vs tracking accuracy (S1–S3)
+
+| Camera configuration                      | Mean lateral error (px) | Mean heading error (°) |
+|-------------------------------------------|-------------------------|------------------------|
+| 78° FOV, 220 cm (calibrated)              | 36.7                    | 11.5                   |
+| 78° FOV, 220 cm (not calibrated)          | 24.8                    | 9.5                    |
+| 90° FOV, 170 cm (calibrated)              | 39.0                    | 11.6                   |
+| 90° FOV, 170 cm (not calibrated)          | 42.1                    | 13.1                   |
+
+---
+
+##### Scenario S4 – 78° FOV at 220 cm (non-calibrated)
+
+| Eval. metric              | Metric                                | Car 0  | Car 1  | Car 2  |
+|---------------------------|----------------------------------------|--------|--------|--------|
+| Pose tracking error       | Mean lateral error (px)                | 76.1   | 33.6   | 41.7   |
+|                           | Mean heading error (°)                 | 8.8    | 10.3   | 14.5   |
+| Distance estimation       | Mean minicar–minicar gap (cm)         | 58.3   | 63.4   | 70.3   |
+|                           | Mean minicar–obstacle distance (cm)   | 10.7   | 10.3   | 15.5   |
+| Safety events             | Collision rate (per frame)            | 0.053  | 0.153  | 0.341  |
+|                           | Near-miss rate (per frame)            | 0.417  | 0.664  | 0.601  |
+|                           | Emergency-stop rate (per frame)       | 0.171  | 0.162  | 0.343  |
+| Mean waiting time         | Mean waiting time (s)                  | 15.3   | 12.8   | 16.3   |
+
+##### Scenario S4 – 78° FOV at 220 cm (non-cooperative policy)
+
+| Eval. metric              | Metric                                | Car 0  | Car 1  | Car 2  |
+|---------------------------|----------------------------------------|--------|--------|--------|
+| Pose tracking error       | Mean lateral error (px)                | 29.9   | 18.8   | 39.0   |
+|                           | Mean heading error (°)                 | 5.5    | 5.9    | 13.0   |
+| Distance estimation       | Mean minicar–minicar gap (cm)         | 72.9   | 73.5   | 61.1   |
+|                           | Mean minicar–obstacle distance (cm)   | 19.2   | 13.4   | 15.8   |
+| Safety events             | Collision rate (per frame)            | 0.013  | 0.171  | 0.274  |
+|                           | Near-miss rate (per frame)            | 0.362  | 0.603  | 0.442  |
+|                           | Emergency-stop rate (per frame)       | 0.097  | 0.254  | 0.287  |
+| Mean waiting time         | Mean waiting time (s)                  | 16.7   | 15.8   | 8.3    |
 
 ---
 

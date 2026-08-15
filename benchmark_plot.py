@@ -1,86 +1,13 @@
-"""
-benchmark_plot.py -- Analysis & visualisation tool for experiment JSON files.
+"""benchmark_plot.py -- charts + summary tables for auto_control.py experiment logs.
 
-Input : one or more .json files produced by auto_control.save_log
-Output: PNG charts + a Markdown/CSV summary table
+Usage:
+    python benchmark_plot.py log.json                  single file
+    python benchmark_plot.py a.json b.json              compare runs
+    python benchmark_plot.py *.json                     batch
+    python benchmark_plot.py -f 5 r1.json r2.json ...    average first N as one run
 
-Usage
------
-python benchmark_plot.py experiment_log.json               # single file
-python benchmark_plot.py S1_coop.json S1_noncoop.json      # compare runs
-python benchmark_plot.py *.json                            # batch (output auto-derived from each file's metadata)
-python benchmark_plot.py -f 5 exp-log-S1-1-calib.json  # average first 5 files
-    exp-log-S1-2-calib.json exp-log-S1-3-calib.json \
-    exp-log-S1-4-calib.json exp-log-S1-5-calib.json
-
-JSON schema (actual auto_control.py output — adapted here, not the other
-way around; see notes below for every field this script now reads)
-----------------------------------------
-Top-level keys
-  meta               : {scenario, policy, calibration, dfov, camera_height_cm,
-                        coordinate_origin, unit, px_per_cm, track_long_axis_cm,
-                        cross_check, saved_at, n_frames, n_exp}
-                       NOTE: auto_control.py does NOT write car_ids, d_col_px,
-                       d_safe_px, or d_warn_px into meta. car_ids is derived
-                       here from frames (_car_ids()); the D_* pixel thresholds
-                       are hardcoded below as _D_COL/_D_WARN/_D_SAFE, matching
-                       the controller's actual constants (25 / 57 / 115), with
-                       d_col < d_warn < d_safe ordering (methodology-aligned
-                       naming: D_WARN is the *stricter* near-miss boundary,
-                       D_SAFE is the *farther*, most permissive decision zone).
-  frames             : list of frame dicts
-  track_ground_truth : {lane1_ref, lane2_ref} -- list of [x, y] pairs (top-level,
-                        written once by save_log; also mirrored per-frame)
-  summary / summary_by_car : populated here and written back
-
-Per-frame dict
-  t          : float timestamp (s)
-  k          : int frame counter
-  distances  : {"1-2": {euclidean_px, same_lane, lane_a, lane_b, seg_delta}, ...}
-  cars       : {
-    "<id>": {
-      policy         : str,
-      pose           : [x_px, y_px, theta_deg],
-      lane           : int,
-      segment        : str,
-      command        : {servo: float, motor: float},
-      waiting        : bool,
-      lateral_error  : float,
-      heading_error  : float,
-      obstacle       : {driving_state: str, distance_px: float|null},
-      events         : {minicar_events: [str], safety_events: [str]}  # NESTED,
-                        not a flat list -- see _safety() below for the actual
-                        tag vocabulary used by auto_control.py.
-      emergency_stop : bool
-    }
-  }
-
-There is no discrete "interaction_zones" block written by auto_control.py
-(no {car_id, taus} list exists anywhere in the log). Waiting time is instead
-derived here from contiguous True-runs in the per-frame "waiting" boolean
-(see _waiting_durations()).
-
-Charts produced (per file / per averaged group)
---------------------------
-1.  lateral_error_timeseries.png   lateral error over time + mean
-2.  heading_error_timeseries.png   heading error over time + mean
-3a. car_object_dist_timeseries.png car-to-object (obstacle) dist + D_SAFE / D_WARN bands,
-                                    markers where safety_events.object fired
-                                    (renamed from obstacle_dist_timeseries.png)
-3b. car_car_dist_timeseries.png    car-to-car pairwise dist, same-lane / cross-lane panels,
-                                    markers where safety_events.car fired
-                                    (renamed from iv_distance_timeseries.png)
-4.  safety_event_pie.png           collision / near-miss / safe proportions (combined, legacy)
-4a. safety_event_pie_car.png       car-to-car safety event distribution
-4b. safety_event_pie_object.png    car-to-object safety event distribution
-5.  commands_timeseries.png        servo + motor step commands over time
-7.  waiting_time_bar.png           per-interaction waiting time (derived)
-8.  error_cdf.png                  empirical CDF of lateral error (RQ1.2)
-10. lane_timeline.png              lane assignment over time
-11. trajectory_coverage.png        ground-truth track + car position scatter
-12. emergency_stop_timeline.png    emergency-stop active frames (skipped when none occurred)
-Multi-file
-9. policy_comparison_bar.png      side-by-side summary across runs
+Reads the JSON schema written by auto_control.save_log (meta/frames/track_ground_truth).
+D_COL/D_WARN/D_SAFE below mirror auto_control.py's real thresholds (not stored in meta).
 """
 
 import argparse
@@ -89,275 +16,130 @@ import os
 import sys
 from collections import Counter
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import numpy as np
 
-# -- Colour palette (Nexus design system) --------------------------------------
+# ── Style ────────────────────────────────────────────────────────────────
 PAL = {
-    "cooperative":     "#01696f",
-    "non_cooperative": "#964219",
-    "egocentric":      "#964219",  # alias kept for backward compat
-    "safe":            "#437a22",
-    "decision":        "#5591c7",
-    "near_miss":       "#d19900",
-    "collision":       "#a12c7b",
-    "no_collision":    "#437a22",  # alias used by the split car/object safety_events schema
-    "servo":           "#006494",
-    "motor":           "#da7101",
-    "lateral":         "#01696f",
-    "heading":         "#7a39bb",
-    "obs_dist":        "#a13544",
-    "d_safe":          "#a12c7b",
-    "d_warn":          "#d19900",
-    "default":         "#28251d",
+    "cooperative": "#01696f", "non_cooperative": "#964219", "egocentric": "#964219",
+    "safe": "#437a22", "decision": "#5591c7", "near_miss": "#d19900",
+    "collision": "#a12c7b", "no_collision": "#437a22",
+    "servo": "#006494", "motor": "#da7101", "lateral": "#01696f", "heading": "#7a39bb",
+    "obs_dist": "#a13544", "d_safe": "#a12c7b", "d_warn": "#d19900", "default": "#28251d",
 }
+RUN_COLOURS = ["#01696f", "#964219", "#437a22", "#006494", "#7a39bb", "#a12c7b", "#d19900", "#a13544"]
+BG, PANEL, GRID, MUTED, DARK = "#f7f6f2", "#f9f8f5", "#d4d1ca", "#7a7974", "#28251d"
 
-# Per-run scatter colours for trajectory chart (one per car ID)
-_RUN_COLOURS = [
-    "#01696f", "#964219", "#437a22", "#006494",
-    "#7a39bb", "#a12c7b", "#d19900", "#a13544",
-]
+D_COL, D_WARN, D_SAFE = 25, 57, 115  # px, matches auto_control.py's real constants
+FIGW, FIGH, DPI = 10, 4, 150
+EVENT_STATES = {"decision", "near_miss", "collision", "hold_gap", "small_gap"}
+EMERGENCY_TAGS = {"emergency_stop_straddle", "emergency_stop_both_lanes_blocked"}
+SLOWDOWN_TAGS = {"safety_stop", "obstacle_near_slowdown", "both_lanes_near_slowdown"}
 
-# -- Real controller safety thresholds (px) -------------------------------------
-# auto_control.py never writes these into meta, so they are hardcoded here to
-# match the actual D_COL / D_WARN / D_SAFE constants in auto_control.py.
-# Ordering (methodology-aligned): d_col < d_warn < d_safe.
-#   d_col  = physical-contact radius (collision)
-#   d_warn = near-miss boundary (stricter, closer to collision)
-#   d_safe = decision/yield boundary (farthest, most permissive)
-_D_COL  = 25
-_D_WARN = 57
-_D_SAFE = 115
-
-# ── I/O helpers ───────────────────────────────────────────────────────────────
-def _results_dir(meta: dict) -> str:
-    """Derive nested output path: ./exp/results/{scenario}-{dfov}fov-{calib}-{policy}/"""
-    scenario = meta.get("scenario", "S?")
-    policy   = meta.get("policy", "unknown")
-    calib    = meta.get("calibration", "non-calib")
-    dfov     = meta.get("dfov")
-    dfov_part = f"{dfov}dFOV" if dfov else ""
-    folder = f"{scenario}-{dfov_part}-{calib}-{policy}"
-    path = os.path.join(".", "exp", "results", folder)
-    os.makedirs(path, exist_ok=True)
-    return path
-
-def _multi_run_dir(runs: list) -> str:
-    """
-    Derive a shared output directory for multi-run comparison outputs
-    (policy_comparison_bar.png, aggregated summary_table.*).
-
-    The folder is placed alongside the per-run directories:
-        ./exp/results/{scenario}-{dfov}-{calib}-multi/
-
-    If all runs share the same policy, append that policy instead of "multi".
-    Falls back to ./exp/results/multi/ when runs is empty.
-    """
-    if not runs:
-        path = os.path.join(".", "exp", "results", "multi")
-        os.makedirs(path, exist_ok=True)
-        return path
-
-    metas = [r.get("meta", {}) for r in runs]
-    scenario  = metas[0].get("scenario", "S?")
-    calib     = metas[0].get("calibration", "non-calib")
-    dfov      = metas[0].get("dfov")
-    dfov_part = f"{dfov}dFOV" if dfov else ""
-    policies  = sorted({m.get("policy", "unknown") for m in metas})
-    pol_tag   = policies[0] if len(policies) == 1 else "multi"
-    folder = f"{scenario}-{dfov_part}-{calib}-{pol_tag}"
-    path = os.path.join(".", "exp", "results", folder)
-    os.makedirs(path, exist_ok=True)
-    return path
+# ── I/O helpers ──────────────────────────────────────────────────────────
 
 def load_json(path: str) -> dict:
     with open(path, encoding="utf-8") as fh:
         return json.load(fh)
 
-# ── Schema helpers ────────────────────────────────────────────────────────────
+def results_dir(meta: dict) -> str:
+    dfov = f"{meta.get('dfov')}dFOV" if meta.get("dfov") else ""
+    folder = f"{meta.get('scenario', 'S?')}-{dfov}-{meta.get('calibration', 'non-calib')}-{meta.get('policy', 'unknown')}"
+    path = os.path.join(".", "exp", "results", folder)
+    os.makedirs(path, exist_ok=True)
+    return path
 
-def _car_ids(frames: List[dict]) -> List[str]:
-    """Return sorted list of car_id strings present across all frames.
+def multi_run_dir(runs: list) -> str:
+    if not runs:
+        path = os.path.join(".", "exp", "results", "multi")
+        os.makedirs(path, exist_ok=True)
+        return path
+    metas = [r.get("meta", {}) for r in runs]
+    dfov = f"{metas[0].get('dfov')}dFOV" if metas[0].get("dfov") else ""
+    policies = sorted({m.get("policy", "unknown") for m in metas})
+    pol_tag = policies[0] if len(policies) == 1 else "multi"
+    folder = f"{metas[0].get('scenario', 'S?')}-{dfov}-{metas[0].get('calibration', 'non-calib')}-{pol_tag}"
+    path = os.path.join(".", "exp", "results", folder)
+    os.makedirs(path, exist_ok=True)
+    return path
 
-    auto_control.py never writes meta.car_ids, so this is always the
-    authoritative source -- called fresh for every run instead of trusting
-    a meta key that will never exist.
-    """
+# ── Schema helpers ───────────────────────────────────────────────────────
+
+def car_ids(frames: List[dict]) -> List[str]:
+    """Sorted car_id list, derived from frames (not stored in meta)."""
     ids = set()
     for f in frames:
         ids.update(f.get("cars", {}).keys())
     return sorted(ids)
 
-def _car_field(f: dict, car_id: str, *path, default=None):
-    """Safely navigate frame -> cars -> car_id -> nested keys."""
-    node = f.get("cars", {}).get(str(car_id), {})
+def car_field(f: dict, cid: str, *path, default=None):
+    """Navigate frame -> cars -> cid -> nested keys, returning default on miss."""
+    node = f.get("cars", {}).get(str(cid), {})
     for key in path:
         if not isinstance(node, dict):
             return default
         node = node.get(key, default)
-    if node is None:
-        return default
+        if node is None:
+            return default
     return node
 
-# ── Array extraction (per car_id) ─────────────────────────────────────────────
+def safety_state(f: dict, cid: str, source: Optional[str] = None) -> str:
+    """4-way safety bucket for one frame.
 
-def _safety(f: dict, car_id: str) -> str:
+    source=None -> combined car+object tags, "decision" folds into "near_miss" (legacy view).
+    source="car"/"object" -> restricted to one interaction source, keeps "decision" distinct.
+    The "object" source also checks minicar_events for the emergency-stop/slowdown fallback tags.
     """
-    Classify a single frame's COMBINED (car + object) safety state for
-    *car_id*. Kept for backward compatibility with older logs / callers
-    that still expect one flat safety label; prefer _safety_car() /
-    _safety_object() for source-separated analysis.
+    ev = car_field(f, cid, "events", default={}) or {}
+    raw = ev.get("safety_events", []) or []
+    minicar = set(ev.get("minicar_events", []) or [])
 
-    auto_control.py (>= v9) writes safety_events as a SPLIT dict:
-        {"minicar_events": [...],
-         "safety_events": {"car": [...], "object": [...]}}
-    Older logs (<= v8) wrote safety_events as a flat list -- treated here
-    as car-only, since that was the only source mixed into it at the time.
-    minicar_events carries the emergency-stop / obstacle-avoidance tags
-    actually used by the controller (e.g. "emergency_stop_straddle",
-    "emergency_stop_both_lanes_blocked", "safety_stop",
-    "obstacle_near_slowdown", "both_lanes_near_slowdown") and is checked
-    as a fallback for emergency conditions that may not always propagate
-    into safety_events.
-    """
-    ev = _car_field(f, car_id, "events", default={}) or {}
-    raw_se = ev.get("safety_events", []) or []
-    if isinstance(raw_se, dict):
-        safety_tags = list(raw_se.get("car", [])) + list(raw_se.get("object", []))
+    if source is None:
+        tags = list(raw.get("car", []) or []) + list(raw.get("object", []) or []) if isinstance(raw, dict) else raw
+        check_minicar = True
     else:
-        safety_tags = raw_se
-    minicar_tags = set(ev.get("minicar_events", []) or [])
+        tags = (raw.get(source, []) or []) if isinstance(raw, dict) else (raw if source == "car" else [])
+        check_minicar = source == "object"
 
-    if "collision" in safety_tags:
-        return "collision"
-    if ("emergency_stop_straddle" in minicar_tags or
-            "emergency_stop_both_lanes_blocked" in minicar_tags):
-        return "collision"
-    if "near_miss" in safety_tags:
-        return "near_miss"
-    if "decision" in safety_tags:
-        return "near_miss"
-    if ("safety_stop" in minicar_tags or
-            "obstacle_near_slowdown" in minicar_tags or
-            "both_lanes_near_slowdown" in minicar_tags):
-        return "near_miss"
-    return "safe"
-
-def _safety_source(f: dict, car_id: str, source: str) -> str:
-    """
-    Classify a single frame's safety state for *car_id*, restricted to one
-    interaction SOURCE: "car" (car-to-car) or "object" (car-to-obstacle).
-
-    Only meaningful for logs written by auto_control.py >= v9, where
-    safety_events is split into {"car": [...], "object": [...]}. Older
-    (<= v8) flat-list logs have no way to separate the two sources:
-    - source="car"    falls back to the full flat list (legacy behaviour
-                       treated everything as car-relevant).
-    - source="object" falls back to "safe" (no data available).
-    minicar_events fallback tags are only applied to the "object" source,
-    since safety_stop / obstacle_near_slowdown / both_lanes_near_slowdown
-    and the emergency_stop_* straddle/both-lanes-blocked tags are all
-    obstacle-driven in the controller.
-    """
-    ev = _car_field(f, car_id, "events", default={}) or {}
-    raw_se = ev.get("safety_events", []) or []
-    minicar_tags = set(ev.get("minicar_events", []) or [])
-
-    if isinstance(raw_se, dict):
-        tags = raw_se.get(source, []) or []
-    elif source == "car":
-        tags = raw_se
-    else:
-        tags = []
-
-    if "collision" in tags:
-        return "collision"
-    if source == "object" and ("emergency_stop_straddle" in minicar_tags or
-                                "emergency_stop_both_lanes_blocked" in minicar_tags):
+    if "collision" in tags or (check_minicar and minicar & EMERGENCY_TAGS):
         return "collision"
     if "near_miss" in tags:
         return "near_miss"
     if "decision" in tags:
-        return "decision"
-    if source == "object" and ("safety_stop" in minicar_tags or
-                                "obstacle_near_slowdown" in minicar_tags or
-                                "both_lanes_near_slowdown" in minicar_tags):
+        return "near_miss" if source is None else "decision"
+    if check_minicar and minicar & SLOWDOWN_TAGS:
         return "near_miss"
     return "safe"
 
-def _safety_car(f: dict, car_id: str) -> str:
-    """Car-to-car safety state for this frame (4-way: collision/near_miss/decision/safe)."""
-    return _safety_source(f, car_id, "car")
-
-def _safety_object(f: dict, car_id: str) -> str:
-    """Car-to-object (obstacle) safety state for this frame (4-way)."""
-    return _safety_source(f, car_id, "object")
-
-def frames_to_arrays(frames: List[dict], car_id: str) -> dict:
-    """
-    Extract numpy arrays from the frame list for one car.
-
-    All benchmark metrics -- pose tracking error, obstacle distance, safety
-    events, waiting time -- are derived from these arrays.
-    """
+def frames_to_arrays(frames: List[dict], cid: str) -> dict:
+    """Per-car numpy arrays for all benchmark metrics (pose error, obstacle dist, safety, waiting)."""
     t0 = frames[0]["t"] if frames else 0.0
-    t = np.array([f["t"] - t0 for f in frames])
-    lat = np.array([_car_field(f, car_id, "lateral_error", default=np.nan) for f in frames])
-    hdg = np.array([_car_field(f, car_id, "heading_error", default=np.nan) for f in frames])
-    servo = np.array([_car_field(f, car_id, "command", "servo", default=np.nan) for f in frames])
-    motor = np.array([_car_field(f, car_id, "command", "motor", default=np.nan) for f in frames])
-    # auto_control.py nests this under obstacle.distance_px (state key is
-    # "driving_state", not "state" -- distance_px is unaffected either way).
-    obs_dist = np.array([_car_field(f, car_id, "obstacle", "distance_px", default=np.nan) for f in frames])
-
-    safety = [_safety(f, car_id) for f in frames]
-    safety_car = [_safety_car(f, car_id) for f in frames]
-    safety_object = [_safety_object(f, car_id) for f in frames]
-    waiting = np.array([int(_car_field(f, car_id, "waiting", default=False) or False) for f in frames])
-    lane = np.array([_car_field(f, car_id, "lane", default=1) for f in frames])
-
-    emstop = np.array([int(_car_field(f, car_id, "emergency_stop", default=False) or False)
-                        for f in frames])
-
-    return dict(t=t, lat=lat, hdg=hdg, servo=servo, motor=motor,
-                obs_dist=obs_dist, safety=safety, safety_car=safety_car,
-                safety_object=safety_object, waiting=waiting, lane=lane,
-                emstop=emstop)
+    return dict(
+        t=np.array([f["t"] - t0 for f in frames]),
+        lat=np.array([car_field(f, cid, "lateral_error", default=np.nan) for f in frames]),
+        hdg=np.array([car_field(f, cid, "heading_error", default=np.nan) for f in frames]),
+        servo=np.array([car_field(f, cid, "command", "servo", default=np.nan) for f in frames]),
+        motor=np.array([car_field(f, cid, "command", "motor", default=np.nan) for f in frames]),
+        obs_dist=np.array([car_field(f, cid, "obstacle", "distance_px", default=np.nan) for f in frames]),
+        safety=[safety_state(f, cid) for f in frames],
+        safety_car=[safety_state(f, cid, "car") for f in frames],
+        safety_object=[safety_state(f, cid, "object") for f in frames],
+        waiting=np.array([int(car_field(f, cid, "waiting", default=False) or False) for f in frames]),
+        lane=np.array([car_field(f, cid, "lane", default=1) for f in frames]),
+        emstop=np.array([int(car_field(f, cid, "emergency_stop", default=False) or False) for f in frames]),
+    )
 
 def frames_to_iv_arrays(frames: List[dict]) -> dict:
-    """
-    Extract inter-vehicle (car-to-car) distance arrays from the frame-level
-    'distances' dict.
+    """Per-pair car-to-car distance arrays from each frame's 'distances' dict.
 
-    Handles both the legacy scalar format::
-
-        {"1-2": 123.4}
-
-    and the rich-dict format actually written by auto_control.py::
-
-        {"1-2": {"euclidean_px": 123.4, "interaction_state": "safe",
-                  "same_lane": True, "lane_a": 1, "lane_b": 1, "seg_delta": 42}}
-
-    Returns a dict keyed by pair string -> dict with keys:
-        tarr             - np.array of relative timestamps (s)
-        distarr          - np.array of Euclidean pixel distances
-        same_lane        - bool | None (majority vote over the run)
-        lane_a/lane_b    - int | None (lane of each car, from first frame)
-        seg_delta_arr    - np.array of |seg_idx_a - seg_idx_b| (NaN if missing)
-        state_list       - list[str] of the raw per-frame "interaction_state"
-                            (already lane-labelled by _build_log_entry, e.g.
-                            "no_gap"/"hold_gap"/"small_gap" for same-lane,
-                            "safe"/"decision"/"near_miss"/"collision" for
-                            cross-lane) -- used to mark car-to-car
-                            safety_events on the timeseries chart.
-        event_t/event_v  - lists of (t, dist) points where state_list
-                            indicates a non-safe / non-"no_gap" event, for
-                            direct scatter overlay.
+    Returns {pair: {tarr, distarr, same_lane, lane_a, lane_b, seg_delta_arr,
+    state_list, event_t, event_v}}. Handles both the legacy scalar format and
+    the rich-dict format ({"euclidean_px", "same_lane", "lane_a", "lane_b",
+    "seg_delta", "interaction_state"}).
     """
     t0 = frames[0]["t"] if frames else 0.0
     pairs: Dict[str, dict] = {}
@@ -365,775 +147,481 @@ def frames_to_iv_arrays(frames: List[dict]) -> dict:
         t_rel = f["t"] - t0
         for pair, raw in (f.get("distances") or {}).items():
             if isinstance(raw, dict):
-                d = raw.get("euclidean_px", float("nan"))
-                sl = raw.get("same_lane")
-                la = raw.get("lane_a")
-                lb = raw.get("lane_b")
-                sdelta = raw.get("seg_delta")
-                state = raw.get("interaction_state")
+                d, sl, la, lb = raw.get("euclidean_px", float("nan")), raw.get("same_lane"), raw.get("lane_a"), raw.get("lane_b")
+                sdelta, state = raw.get("seg_delta"), raw.get("interaction_state")
             else:
                 d, sl, la, lb, sdelta, state = float(raw), None, None, None, None, None
-            rec = pairs.setdefault(pair, {"t": [], "d": [], "sl": [],
-                                           "la": None, "lb": None, "sd": [],
-                                           "state": []})
-            rec["t"].append(t_rel)
-            rec["d"].append(d)
-            rec["sl"].append(sl)
-            rec["sd"].append(sdelta)
-            rec["state"].append(state)
-            if rec["la"] is None and la is not None:
-                rec["la"] = la
-            if rec["lb"] is None and lb is not None:
-                rec["lb"] = lb
+            rec = pairs.setdefault(pair, {"t": [], "d": [], "sl": [], "la": None, "lb": None, "sd": [], "state": []})
+            rec["t"].append(t_rel); rec["d"].append(d); rec["sl"].append(sl)
+            rec["sd"].append(sdelta); rec["state"].append(state)
+            rec["la"] = rec["la"] if rec["la"] is not None else la
+            rec["lb"] = rec["lb"] if rec["lb"] is not None else lb
+
     out = {}
-    # States that count as a "safety event" worth marking on the chart --
-    # excludes the benign steady-states ("safe", "no_gap") for each scale.
-    _EVENT_STATES = {"decision", "near_miss", "collision", "hold_gap", "small_gap"}
     for p, rec in pairs.items():
         sl_vals = [v for v in rec["sl"] if v is not None]
-        sl_majority = (sum(sl_vals) / len(sl_vals)) >= 0.5 if sl_vals else None
-        sd_arr = np.array(
-            [v if v is not None else float("nan") for v in rec["sd"]], dtype=float
-        )
-        tarr = np.array(rec["t"])
-        distarr = np.array(rec["d"])
+        tarr, distarr = np.array(rec["t"]), np.array(rec["d"])
         states = rec["state"]
-        event_t = [tarr[i] for i, s in enumerate(states) if s in _EVENT_STATES]
-        event_v = [distarr[i] for i, s in enumerate(states) if s in _EVENT_STATES]
+        event_idx = [i for i, s in enumerate(states) if s in EVENT_STATES]
         out[p] = {
-            "tarr": tarr,
-            "distarr": distarr,
-            "same_lane": sl_majority,
-            "lane_a": rec["la"],
-            "lane_b": rec["lb"],
-            "seg_delta_arr": sd_arr,
+            "tarr": tarr, "distarr": distarr,
+            "same_lane": (sum(sl_vals) / len(sl_vals)) >= 0.5 if sl_vals else None,
+            "lane_a": rec["la"], "lane_b": rec["lb"],
+            "seg_delta_arr": np.array([v if v is not None else float("nan") for v in rec["sd"]], dtype=float),
             "state_list": states,
-            "event_t": event_t,
-            "event_v": event_v,
+            "event_t": [tarr[i] for i in event_idx], "event_v": [distarr[i] for i in event_idx],
         }
     return out
 
-def _waiting_durations(frames: List[dict], car_id: str) -> List[float]:
-    """
-    Derive discrete waiting-time durations (seconds) from contiguous
-    True-runs in the per-frame "waiting" boolean.
-
-    auto_control.py has no discrete interaction_zones/taus log -- only a
-    per-frame per-car "waiting" flag (from _pp_waiting). Each maximal
-    consecutive run of waiting=True is treated as one "interaction" and its
-    wall-clock duration (t[end] - t[start of run]) is one tau sample. This
-    replaces the old zones["interactions"][*]["taus"] lookup.
-    """
-    arrs = frames_to_arrays(frames, car_id)
-    w = arrs["waiting"].astype(bool)
-    t = arrs["t"]
-    durations: List[float] = []
-    in_run = False
-    start_t = None
+def waiting_durations(frames: List[dict], cid: str) -> List[float]:
+    """Durations (s) of contiguous True-runs in the per-frame 'waiting' flag."""
+    arrs = frames_to_arrays(frames, cid)
+    w, t = arrs["waiting"].astype(bool), arrs["t"]
+    durations, in_run, start_t = [], False, None
     for i in range(len(w)):
         if w[i] and not in_run:
             in_run, start_t = True, t[i]
         elif not w[i] and in_run:
-            durations.append(float(t[i] - start_t))
-            in_run = False
-    if in_run and start_t is not None and len(t) > 0:
+            durations.append(float(t[i] - start_t)); in_run = False
+    if in_run and start_t is not None and len(t):
         durations.append(float(t[-1] - start_t))
     return durations
 
-# ── Summary metrics ───────────────────────────────────────────────────────────
+# ── Summary metrics ──────────────────────────────────────────────────────
 
-def compute_summary(frames: List[dict], meta: dict, car_id: str) -> dict:
-    """
-    Note: the *zones* parameter from the old interaction_zones-based schema
-    has been removed -- waiting time and interaction counts are now derived
-    directly from frames via _waiting_durations().
-    """
-    arrs = frames_to_arrays(frames, car_id)
-
+def compute_summary(frames: List[dict], meta: dict, cid: str) -> dict:
+    arrs = frames_to_arrays(frames, cid)
     lat_errs = np.abs(arrs["lat"]); lat_errs = lat_errs[~np.isnan(lat_errs)]
     hdg_errs = np.abs(arrs["hdg"]); hdg_errs = hdg_errs[~np.isnan(hdg_errs)]
-
     px_per_cm = meta.get("px_per_cm") or None
-    gap_px_samples: List[float] = []
-    iv = frames_to_iv_arrays(frames)
-    for pair, rec in iv.items():
-        a, b = pair.split("-")
-        if str(car_id) not in (a, b):
-            continue
-        if not rec.get("same_lane"):
-            continue
-        for d, state in zip(rec["distarr"], rec["state_list"]):
-            if state in ("hold_gap", "small_gap") and not np.isnan(d):
-                gap_px_samples.append(d)
 
-    if gap_px_samples:
-        mean_gap_px = float(np.mean(gap_px_samples))
-        mean_gap_cm = round(mean_gap_px / px_per_cm, 4) if px_per_cm else round(mean_gap_px, 4)
-    else:
-        mean_gap_cm = None
+    gap_px = [d for pair, rec in frames_to_iv_arrays(frames).items()
+              if str(cid) in pair.split("-") and rec.get("same_lane")
+              for d, s in zip(rec["distarr"], rec["state_list"])
+              if s in ("hold_gap", "small_gap") and not np.isnan(d)]
+    mean_gap_cm = (round(np.mean(gap_px) / px_per_cm, 4) if px_per_cm else round(float(np.mean(gap_px)), 4)) if gap_px else None
 
-    n_col = arrs["safety"].count("collision")
-    n_near = arrs["safety"].count("near_miss")
-
-    n_col_car  = arrs["safety_car"].count("collision")
-    n_near_car = arrs["safety_car"].count("near_miss")
-    n_dec_car  = arrs["safety_car"].count("decision")
-    n_col_obj  = arrs["safety_object"].count("collision")
-    n_near_obj = arrs["safety_object"].count("near_miss")
-    n_dec_obj  = arrs["safety_object"].count("decision")
-
-    taus = _waiting_durations(frames, car_id)
+    n_col, n_near = arrs["safety"].count("collision"), arrs["safety"].count("near_miss")
+    n_col_car, n_near_car, n_dec_car = (arrs["safety_car"].count(k) for k in ("collision", "near_miss", "decision"))
+    n_col_obj, n_near_obj, n_dec_obj = (arrs["safety_object"].count(k) for k in ("collision", "near_miss", "decision"))
+    taus = waiting_durations(frames, cid)
     n_frames = max(len(frames), 1)
-    n_exp = max(len(taus), 1)
-
-    n_emstop = int(np.sum(arrs["emstop"]))  # frames with emergency_stop=True
-
-    obs_dists = arrs["obs_dist"]
-    obs_valid = obs_dists[~np.isnan(obs_dists)]
-    mean_obs = round(float(np.mean(obs_valid)), 4) if len(obs_valid) else None
+    n_emstop = int(np.sum(arrs["emstop"]))
+    obs_valid = arrs["obs_dist"][~np.isnan(arrs["obs_dist"])]
 
     return dict(
-        mean_lateral_error_px  = round(float(np.mean(lat_errs)), 4) if len(lat_errs) else None,
-        mean_heading_error_deg = round(float(np.mean(hdg_errs)), 4) if len(hdg_errs) else None,
-        mean_gap_cm            = mean_gap_cm,
-        mean_obs_dist_px       = mean_obs,
-        n_collision            = n_col,
-        n_near_miss            = n_near,
-        n_collision_car        = n_col_car,
-        n_near_miss_car        = n_near_car,
-        n_decision_car         = n_dec_car,
-        n_collision_object     = n_col_obj,
-        n_near_miss_object     = n_near_obj,
-        n_decision_object      = n_dec_obj,
-        n_emergency_stop       = n_emstop,
-        collision_rate         = round(n_col / n_frames, 4),
-        near_miss_rate         = round(n_near / n_frames, 4),
-        collision_rate_car     = round(n_col_car / n_frames, 4),
-        near_miss_rate_car     = round(n_near_car / n_frames, 4),
-        collision_rate_object  = round(n_col_obj / n_frames, 4),
-        near_miss_rate_object  = round(n_near_obj / n_frames, 4),
-        emergency_stop_rate    = round(n_emstop / n_frames, 4),
-        mean_waiting_time_s    = round(float(np.mean(taus)), 4) if taus else None,
+        mean_lateral_error_px=round(float(np.mean(lat_errs)), 4) if len(lat_errs) else None,
+        mean_heading_error_deg=round(float(np.mean(hdg_errs)), 4) if len(hdg_errs) else None,
+        mean_gap_cm=mean_gap_cm,
+        mean_obs_dist_cm=(round(np.mean(obs_valid) / px_per_cm, 4) if px_per_cm else round(float(np.mean(obs_valid)), 4)) if len(obs_valid) else None,
+        n_collision=n_col, n_near_miss=n_near,
+        n_collision_car=n_col_car, n_near_miss_car=n_near_car, n_decision_car=n_dec_car,
+        n_collision_object=n_col_obj, n_near_miss_object=n_near_obj, n_decision_object=n_dec_obj,
+        n_emergency_stop=n_emstop,
+        collision_rate=round(n_col / n_frames, 4), near_miss_rate=round(n_near / n_frames, 4),
+        collision_rate_car=round(n_col_car / n_frames, 4), near_miss_rate_car=round(n_near_car / n_frames, 4),
+        collision_rate_object=round(n_col_obj / n_frames, 4), near_miss_rate_object=round(n_near_obj / n_frames, 4),
+        emergency_stop_rate=round(n_emstop / n_frames, 4),
+        mean_waiting_time_s=round(float(np.mean(taus)), 4) if taus else None,
     )
 
-# ── Chart helpers ─────────────────────────────────────────────────────────────
-FIGW, FIGH = 10, 4
-DPI = 150
+# ── Chart helpers ────────────────────────────────────────────────────────
 
-def _fig(h: float = FIGH):
+def new_fig(h: float = FIGH):
     fig, ax = plt.subplots(figsize=(FIGW, h), dpi=DPI)
-    fig.patch.set_facecolor("#f7f6f2")
-    ax.set_facecolor("#f9f8f5")
+    fig.patch.set_facecolor(BG); ax.set_facecolor(PANEL)
     for spine in ax.spines.values():
-        spine.set_edgecolor("#d4d1ca")
-    ax.tick_params(colors="#7a7974")
-    ax.title.set_color("#28251d")
-    ax.xaxis.label.set_color("#7a7974")
-    ax.yaxis.label.set_color("#7a7974")
+        spine.set_edgecolor(GRID)
+    ax.tick_params(colors=MUTED)
+    ax.title.set_color(DARK); ax.xaxis.label.set_color(MUTED); ax.yaxis.label.set_color(MUTED)
     return fig, ax
 
-def _save(fig, path: str) -> None:
-    """
-    Save each chart as both PNG (for quick inspection) and PDF (vector, for thesis).
-    The caller always passes a *.png path; we derive the *.pdf sibling here.
-    """
+def save_fig(fig, path: str) -> None:
+    """Saves PNG + vector PDF sibling."""
     fig.tight_layout()
-    png_path = path
+    fig.savefig(path, dpi=DPI, bbox_inches="tight")
     pdf_path = os.path.splitext(path)[0] + ".pdf"
-    fig.savefig(png_path, dpi=DPI, bbox_inches="tight")
-    fig.savefig(pdf_path, bbox_inches="tight")  # vector version
+    fig.savefig(pdf_path, bbox_inches="tight")
     plt.close(fig)
-    print(f"  chart -> {png_path} / {pdf_path}")
+    print(f"  chart -> {path} / {pdf_path}")
 
-# ── Per-run charts ────────────────────────────────────────────────────────────
+def title_suffix(meta: dict) -> str:
+    return f"{meta.get('scenario', '')} {meta.get('policy', '')}"
+
+# ── Per-run charts ───────────────────────────────────────────────────────
 
 def plot_lateral_error(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 1 -- lateral error time-series (all cars overlaid)."""
-    fig, ax = _fig()
-    for car_id, arrs in arrs_by_car.items():
+    fig, ax = new_fig()
+    for cid, arrs in arrs_by_car.items():
         lat = np.abs(arrs["lat"])
-        ax.plot(arrs["t"], lat, lw=1.2, alpha=0.85, label=f"Car {car_id}")
-        ax.axhline(float(np.nanmean(lat)), lw=1.2, ls="--",
-                   label=f"Mean car {car_id} ({np.nanmean(lat):.1f} px)")
+        ax.plot(arrs["t"], lat, lw=1.2, alpha=0.85, label=f"Car {cid}")
+        ax.axhline(float(np.nanmean(lat)), lw=1.2, ls="--", label=f"Mean car {cid} ({np.nanmean(lat):.1f} px)")
     ax.set_xlabel("Time [s]"); ax.set_ylabel("Lateral error [px]")
-    ax.set_title(f"Pose Tracking - Lateral Error {meta.get('scenario','')} {meta.get('policy','')}")
+    ax.set_title(f"Pose Tracking - Lateral Error {title_suffix(meta)}")
     ax.legend(framealpha=0.7)
-    _save(fig, os.path.join(outdir, "lateral_error_timeseries.png"))
+    save_fig(fig, os.path.join(outdir, "lateral_error_timeseries.png"))
 
 def plot_heading_error(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 2 -- heading error time-series (all cars overlaid)."""
-    fig, ax = _fig()
-    for car_id, arrs in arrs_by_car.items():
+    fig, ax = new_fig()
+    for cid, arrs in arrs_by_car.items():
         hdg = np.abs(arrs["hdg"])
-        ax.plot(arrs["t"], hdg, lw=1.2, alpha=0.85, label=f"Car {car_id}")
-        ax.axhline(float(np.nanmean(hdg)), lw=1.2, ls="--",
-                   label=f"Mean car {car_id} ({np.nanmean(hdg):.1f} deg)")
+        ax.plot(arrs["t"], hdg, lw=1.2, alpha=0.85, label=f"Car {cid}")
+        ax.axhline(float(np.nanmean(hdg)), lw=1.2, ls="--", label=f"Mean car {cid} ({np.nanmean(hdg):.1f} deg)")
     ax.set_xlabel("Time [s]"); ax.set_ylabel("Heading error [deg]")
-    ax.set_title(f"Pose Tracking - Heading Error {meta.get('scenario','')} {meta.get('policy','')}")
+    ax.set_title(f"Pose Tracking - Heading Error {title_suffix(meta)}")
     ax.legend(framealpha=0.7)
-    _save(fig, os.path.join(outdir, "heading_error_timeseries.png"))
+    save_fig(fig, os.path.join(outdir, "heading_error_timeseries.png"))
 
 def plot_car_object_dist(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 3a -- car-to-object (obstacle) distance with D_COL / D_WARN / D_SAFE
-    reference bands, with event markers drawn from safety_events.object
-    (via the per-car "safety_object" 4-way classification already computed
-    in frames_to_arrays()). Renamed from plot_obstacle_dist() /
-    obstacle_dist_timeseries.png to make the car-to-object vs car-to-car
-    split explicit, matching the log's own safety_events.{car,object} schema.
-
-    Uses the hardcoded _D_COL/_D_WARN/_D_SAFE (matching auto_control.py's
-    real constants) since meta never carries d_col_px/d_warn_px/d_safe_px.
-    Skipped (with informational text) when no obstacle data is present --
-    e.g. S1 scenarios where no obstacles are placed on the track.
-    """
-    has_obs = any(
-        not np.all(np.isnan(arrs["obs_dist"]))
-        for arrs in arrs_by_car.values()
-    )
-    d_col, d_warn, d_safe = _D_COL, _D_WARN, _D_SAFE
-    fig, ax = _fig()
+    """Car-to-object distance with D_COL/D_WARN/D_SAFE bands and safety_events.object markers."""
+    has_obs = any(not np.all(np.isnan(a["obs_dist"])) for a in arrs_by_car.values())
+    fig, ax = new_fig()
+    out_path = os.path.join(outdir, "car_object_dist_timeseries.png")
     if not has_obs:
-        ax.text(0.5, 0.5,
-                "No obstacle data in this scenario\n(obstacles not present - e.g. S1)",
-                transform=ax.transAxes, ha="center", va="center",
-                color="#7a7974", fontsize=10)
-        ax.set_title(f"Car-to-Object Distance {meta.get('scenario','')} {meta.get('policy','')}")
-        _save(fig, os.path.join(outdir, "car_object_dist_timeseries.png"))
+        ax.text(0.5, 0.5, "No obstacle data in this scenario\n(obstacles not present - e.g. S1)",
+                transform=ax.transAxes, ha="center", va="center", color=MUTED, fontsize=10)
+        ax.set_title(f"Car-to-Object Distance {title_suffix(meta)}")
+        save_fig(fig, out_path)
         return
-    for car_id, arrs in arrs_by_car.items():
-        ax.plot(arrs["t"], arrs["obs_dist"], lw=1.2, alpha=0.85,
-                color=PAL["obs_dist"], label=f"Obs dist car {car_id}")
-        # Mark frames where safety_events.object fired (decision/near_miss/collision),
-        # so the near-miss saturation issue (track-geometry artifact vs. real event)
-        # is visible directly on the distance trace instead of only in the pie chart.
-        sobj = arrs.get("safety_object", [])
-        obs_d = arrs["obs_dist"]
+
+    for cid, arrs in arrs_by_car.items():
+        ax.plot(arrs["t"], arrs["obs_dist"], lw=1.2, alpha=0.85, color=PAL["obs_dist"], label=f"Obs dist car {cid}")
+        obs_d, sobj = arrs["obs_dist"], arrs.get("safety_object", [])
         for state, marker, z in (("decision", "o", 3), ("near_miss", "^", 4), ("collision", "X", 5)):
-            idxs = [i for i, s in enumerate(sobj) if s == state and i < len(obs_d)
-                    and not np.isnan(obs_d[i])]
+            idxs = [i for i, s in enumerate(sobj) if s == state and i < len(obs_d) and not np.isnan(obs_d[i])]
             if idxs:
-                ax.scatter(arrs["t"][idxs], obs_d[idxs], marker=marker, s=26,
-                           color=PAL[state], edgecolor="#28251d", linewidth=0.4,
-                           zorder=z, alpha=0.9,
-                           label=f"{state} event car {car_id}")
-    ax.axhline(d_col, color="#28251d", lw=1.2, ls="-", label=f"D_COL {d_col} px")
-    ax.axhline(d_warn, color=PAL["d_warn"], lw=1.5, ls="--", label=f"D_WARN {d_warn} px")
-    ax.axhline(d_safe, color=PAL["d_safe"], lw=1.5, ls=":", label=f"D_SAFE {d_safe} px")
+                ax.scatter(arrs["t"][idxs], obs_d[idxs], marker=marker, s=26, color=PAL[state],
+                           edgecolor=DARK, linewidth=0.4, zorder=z, alpha=0.9, label=f"{state} event car {cid}")
+
+    ax.axhline(D_COL, color=DARK, lw=1.2, label=f"D_COL {D_COL} px")
+    ax.axhline(D_WARN, color=PAL["d_warn"], lw=1.5, ls="--", label=f"D_WARN {D_WARN} px")
+    ax.axhline(D_SAFE, color=PAL["d_safe"], lw=1.5, ls=":", label=f"D_SAFE {D_SAFE} px")
     t_all = np.concatenate([a["t"] for a in arrs_by_car.values()])
     if len(t_all):
-        ax.fill_between(t_all, 0, d_col, alpha=0.12, color=PAL["collision"])
-        ax.fill_between(t_all, d_col, d_warn, alpha=0.08, color=PAL["d_warn"])
-        ax.fill_between(t_all, d_warn, d_safe, alpha=0.06, color=PAL["d_safe"])
+        ax.fill_between(t_all, 0, D_COL, alpha=0.12, color=PAL["collision"])
+        ax.fill_between(t_all, D_COL, D_WARN, alpha=0.08, color=PAL["d_warn"])
+        ax.fill_between(t_all, D_WARN, D_SAFE, alpha=0.06, color=PAL["d_safe"])
     ax.set_xlabel("Time [s]"); ax.set_ylabel("Distance [px]")
-    ax.set_title(f"Car-to-Object Distance {meta.get('scenario','')} {meta.get('policy','')}")
+    ax.set_title(f"Car-to-Object Distance {title_suffix(meta)}")
     ax.legend(framealpha=0.7, fontsize=7, loc="upper right")
-    _save(fig, os.path.join(outdir, "car_object_dist_timeseries.png"))
+    save_fig(fig, out_path)
 
-
-def _plot_one_safety_pie(all_safety: list, title: str, fname: str,
-                          meta: dict, outdir: str) -> None:
-    """Shared pie-chart renderer for a single safety-state series (either
-    combined, car-to-car, or car-to-object), 4-way: collision / near_miss /
-    decision / safe."""
+def _safety_pie(all_safety: list, title: str, fname: str, meta: dict, outdir: str) -> None:
     counts = {k: all_safety.count(k) for k in ("collision", "near_miss", "decision", "safe")}
     labels = [k for k, v in counts.items() if v > 0]
-    vals = [counts[k] for k in labels]
-    colors = [PAL[k] for k in labels]
     fig, ax = plt.subplots(figsize=(6, 5), dpi=DPI)
-    fig.patch.set_facecolor("#f7f6f2")
-    if not vals:
+    fig.patch.set_facecolor(BG)
+    out_path = os.path.join(outdir, fname)
+    if not labels:
         ax.text(0.5, 0.5, "No safety events recorded\n(all frames: safe)",
-                transform=ax.transAxes, ha="center", va="center",
-                color="#7a7974", fontsize=10)
-        ax.set_title(f"{title} {meta.get('scenario','')} {meta.get('policy','')}", color="#28251d")
-        _save(fig, os.path.join(outdir, fname))
-        return
-    wedges, texts, autotexts = ax.pie(
-        vals, labels=labels, colors=colors, autopct="%.1f%%",
-        startangle=90, pctdistance=0.75,
-        wedgeprops=dict(edgecolor="#f7f6f2", linewidth=1.5))
-    for at in autotexts:
-        at.set_color("white"); at.set_fontsize(9)
-    ax.set_title(f"{title} {meta.get('scenario','')} {meta.get('policy','')}", color="#28251d")
-    _save(fig, os.path.join(outdir, fname))
+                transform=ax.transAxes, ha="center", va="center", color=MUTED, fontsize=10)
+    else:
+        wedges, texts, autotexts = ax.pie(
+            [counts[k] for k in labels], labels=labels, colors=[PAL[k] for k in labels],
+            autopct="%.1f%%", startangle=90, pctdistance=0.75,
+            wedgeprops=dict(edgecolor=BG, linewidth=1.5))
+        for at in autotexts:
+            at.set_color("white"); at.set_fontsize(9)
+    ax.set_title(f"{title} {title_suffix(meta)}", color=DARK)
+    save_fig(fig, out_path)
 
 def plot_safety_pie(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 4 -- combined (legacy) safety event distribution, aggregated
-    over all cars and BOTH sources (car-to-car + car-to-object). Kept for
-    backward compatibility; prefer plot_safety_pie_car / plot_safety_pie_object
-    for source-separated views."""
-    all_safety = [s for arrs in arrs_by_car.values() for s in arrs["safety"]]
-    _plot_one_safety_pie(all_safety, "Safety Event Distribution (combined)",
-                          "safety_event_pie.png", meta, outdir)
+    """Combined (legacy) safety event distribution across all cars/sources."""
+    all_safety = [s for a in arrs_by_car.values() for s in a["safety"]]
+    _safety_pie(all_safety, "Safety Event Distribution (combined)", "safety_event_pie.png", meta, outdir)
 
 def plot_safety_pie_car(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 4a -- car-to-car safety event distribution (aggregated over all cars)."""
-    all_safety = [s for arrs in arrs_by_car.values() for s in arrs.get("safety_car", [])]
-    _plot_one_safety_pie(all_safety, "Safety Event Distribution - Car-to-Car",
-                          "safety_event_pie_car.png", meta, outdir)
+    all_safety = [s for a in arrs_by_car.values() for s in a.get("safety_car", [])]
+    _safety_pie(all_safety, "Safety Event Distribution - Car-to-Car", "safety_event_pie_car.png", meta, outdir)
 
 def plot_safety_pie_object(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 4b -- car-to-object (obstacle) safety event distribution
-    (aggregated over all cars)."""
-    all_safety = [s for arrs in arrs_by_car.values() for s in arrs.get("safety_object", [])]
-    _plot_one_safety_pie(all_safety, "Safety Event Distribution - Car-to-Object",
-                          "safety_event_pie_object.png", meta, outdir)
+    all_safety = [s for a in arrs_by_car.values() for s in a.get("safety_object", [])]
+    _safety_pie(all_safety, "Safety Event Distribution - Car-to-Object", "safety_event_pie_object.png", meta, outdir)
 
 def plot_commands(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 5 -- quantised servo + motor commands (one subplot per car)."""
+    """Servo + motor step commands, one subplot pair per car."""
     n = len(arrs_by_car)
     if n == 0:
         return
     fig, axes = plt.subplots(n * 2, 1, figsize=(FIGW, 3 * n), dpi=DPI, sharex=True)
-    fig.patch.set_facecolor("#f7f6f2")
-    if n * 2 == 1:
-        axes = [axes, axes]
-    axes = list(np.array(axes).flatten())
-    for idx, (car_id, arrs) in enumerate(arrs_by_car.items()):
+    fig.patch.set_facecolor(BG)
+    axes = list(np.array([axes, axes] if n * 2 == 1 else axes).flatten())
+    for idx, (cid, arrs) in enumerate(arrs_by_car.items()):
         ax1, ax2 = axes[idx * 2], axes[idx * 2 + 1]
         for ax in (ax1, ax2):
-            ax.set_facecolor("#f9f8f5")
-            for sp in ax.spines.values(): sp.set_edgecolor("#d4d1ca")
-            ax.tick_params(colors="#7a7974")
+            ax.set_facecolor(PANEL)
+            for sp in ax.spines.values():
+                sp.set_edgecolor(GRID)
+            ax.tick_params(colors=MUTED)
         ax1.step(arrs["t"], arrs["servo"], color=PAL["servo"], lw=1.2, where="post")
-        ax1.set_ylabel(f"Servo [rad]\n(car {car_id})")
-        ax1.axhline(0, color="#d4d1ca", lw=0.8)
+        ax1.set_ylabel(f"Servo [rad]\n(car {cid})"); ax1.axhline(0, color=GRID, lw=0.8)
         ax2.step(arrs["t"], arrs["motor"], color=PAL["motor"], lw=1.2, where="post")
-        ax2.set_ylabel(f"Motor [-]\n(car {car_id})")
+        ax2.set_ylabel(f"Motor [-]\n(car {cid})")
     axes[-1].set_xlabel("Time [s]")
-    axes[0].set_title(f"Commands - Servo & Motor {meta.get('scenario','')} {meta.get('policy','')}",
-                       color="#28251d")
-    _save(fig, os.path.join(outdir, "commands_timeseries.png"))
+    axes[0].set_title(f"Commands - Servo & Motor {title_suffix(meta)}", color=DARK)
+    save_fig(fig, os.path.join(outdir, "commands_timeseries.png"))
+
+SAME_LANE_STYLE = {"hold_gap": ("decision", "o"), "small_gap": ("collision", "X")}
+CROSS_LANE_STYLE = {"decision": ("decision", "o"), "near_miss": ("near_miss", "^"), "collision": ("collision", "X")}
 
 def plot_car_car_dist(frames: List[dict], meta: dict, outdir: str) -> None:
-    """Chart 3b -- car-to-car pairwise distance over time.
-
-    Renamed from plot_iv_distance() / iv_distance_timeseries.png to make the
-    car-to-car vs car-to-object split explicit (matches safety_events.car in
-    the log). Two sub-plots:
-      Top    - same-lane pairs (gap-following scale: no_gap/hold_gap/small_gap,
-               per _SAME_LANE_LABELS -- D_WARN/D_SAFE bands shown for reference
-               even though same-lane severity is scored on its own scale)
-      Bottom - cross-lane pairs (safe/decision/near_miss/collision scale,
-               already cross_lane_checked-gated upstream)
-    Each pair is plotted as Euclidean px distance, with event markers drawn
-    directly from the per-frame "interaction_state" (via frames_to_iv_arrays'
-    event_t/event_v) so safety_events.car occurrences are visible on the
-    trace rather than only in the pie chart.
-    A secondary y-axis on the same-lane sub-plot shows the mean
-    segment-index delta (|seg_a - seg_b|) as a dashed grey trace,
-    giving a path-distance approximation without requiring the full curve.
-    """
+    """Car-to-car pairwise distance: same-lane panel (gap-following scale) + cross-lane panel."""
     iv = frames_to_iv_arrays(frames)
     if not iv:
         return
-    d_col, d_warn, d_safe = _D_COL, _D_WARN, _D_SAFE
-
-    same_pairs = {p: v for p, v in iv.items() if v["same_lane"] is True}
+    same_pairs = {p: v for p, v in iv.items() if v["same_lane"] is not False}
     cross_pairs = {p: v for p, v in iv.items() if v["same_lane"] is False}
-    unk_pairs = {p: v for p, v in iv.items() if v["same_lane"] is None}
-    same_pairs.update(unk_pairs)
-
-    n_panels = (1 if same_pairs else 0) + (1 if cross_pairs else 0)
+    n_panels = bool(same_pairs) + bool(cross_pairs)
     if n_panels == 0:
         return
 
-    fig, axes = plt.subplots(n_panels, 1, figsize=(FIGW, FIGH * n_panels),
-                              dpi=DPI, sharex=False)
-    fig.patch.set_facecolor("#f7f6f2")
-    if n_panels == 1:
-        axes = [axes]
+    fig, axes = plt.subplots(n_panels, 1, figsize=(FIGW, FIGH * n_panels), dpi=DPI)
+    fig.patch.set_facecolor(BG)
+    axes = [axes] if n_panels == 1 else list(axes)
     for ax in axes:
-        ax.set_facecolor("#f9f8f5")
+        ax.set_facecolor(PANEL)
         for sp in ax.spines.values():
-            sp.set_edgecolor("#d4d1ca")
-        ax.tick_params(colors="#7a7974")
+            sp.set_edgecolor(GRID)
+        ax.tick_params(colors=MUTED)
 
-    panel = 0
-    title_sfx = f"{meta.get('scenario','')} {meta.get('policy','')}"
-
-    # Same-lane events use the gap-following vocabulary (hold_gap = normal
-    # following, small_gap = physical contact) -- mapped onto the shared
-    # PAL colours via the nearest severity analogue for visual consistency.
-    _SAME_LANE_MARKER_STYLE = {
-        "hold_gap": ("decision", "o"),
-        "small_gap": ("collision", "X"),
-    }
-    _CROSS_LANE_MARKER_STYLE = {
-        "decision": ("decision", "o"),
-        "near_miss": ("near_miss", "^"),
-        "collision": ("collision", "X"),
-    }
-
+    panel, suffix = 0, title_suffix(meta)
     if same_pairs:
         ax = axes[panel]; panel += 1
         for pair, v in same_pairs.items():
-            lbl = f"d({pair}) L{v['lane_a']}->L{v['lane_b']}"
-            ax.plot(v["tarr"], v["distarr"], lw=1.4, label=lbl)
-            states = v.get("state_list", [])
-            for i, s in enumerate(states):
-                if s in _SAME_LANE_MARKER_STYLE:
-                    pal_key, marker = _SAME_LANE_MARKER_STYLE[s]
-                    ax.scatter(v["tarr"][i], v["distarr"][i], marker=marker, s=22,
-                               color=PAL[pal_key], edgecolor="#28251d",
-                               linewidth=0.3, alpha=0.85, zorder=4)
+            ax.plot(v["tarr"], v["distarr"], lw=1.4, label=f"d({pair}) L{v['lane_a']}->L{v['lane_b']}")
+            for i, s in enumerate(v.get("state_list", [])):
+                if s in SAME_LANE_STYLE:
+                    pal_key, marker = SAME_LANE_STYLE[s]
+                    ax.scatter(v["tarr"][i], v["distarr"][i], marker=marker, s=22, color=PAL[pal_key],
+                               edgecolor=DARK, linewidth=0.3, alpha=0.85, zorder=4)
         all_t = np.concatenate([v["tarr"] for v in same_pairs.values()])
-        ax.fill_between(all_t, 0, d_col, alpha=0.10, color=PAL["collision"])
-        ax.fill_between(all_t, d_col, d_warn, alpha=0.08, color=PAL["d_warn"])
-        ax.fill_between(all_t, d_warn, d_safe, alpha=0.06, color=PAL["d_safe"])
-        ax.axhline(d_warn, color=PAL["d_warn"], lw=1.4, ls="--",
-                   label=f"D_WARN {d_warn} [px]")
-        ax.axhline(d_safe, color=PAL["d_safe"], lw=1.2, ls=":",
-                   label=f"D_SAFE {d_safe} [px]")
-        has_seg = any(not np.all(np.isnan(v["seg_delta_arr"])) for v in same_pairs.values())
-        if has_seg:
-            ax2 = ax.twinx()
-            ax2.set_facecolor("none")
+        ax.fill_between(all_t, 0, D_COL, alpha=0.10, color=PAL["collision"])
+        ax.fill_between(all_t, D_COL, D_WARN, alpha=0.08, color=PAL["d_warn"])
+        ax.fill_between(all_t, D_WARN, D_SAFE, alpha=0.06, color=PAL["d_safe"])
+        ax.axhline(D_WARN, color=PAL["d_warn"], lw=1.4, ls="--", label=f"D_WARN {D_WARN} [px]")
+        ax.axhline(D_SAFE, color=PAL["d_safe"], lw=1.2, ls=":", label=f"D_SAFE {D_SAFE} [px]")
+        if any(not np.all(np.isnan(v["seg_delta_arr"])) for v in same_pairs.values()):
+            ax2 = ax.twinx(); ax2.set_facecolor("none")
             for pair, v in same_pairs.items():
                 if not np.all(np.isnan(v["seg_delta_arr"])):
-                    ax2.plot(v["tarr"], v["seg_delta_arr"],
-                             lw=1.0, ls="--", alpha=0.55, color="#c8c6c0",
-                             label=f"dseg({pair})")
+                    ax2.plot(v["tarr"], v["seg_delta_arr"], lw=1.0, ls="--", alpha=0.55,
+                             color="#c8c6c0", label=f"dseg({pair})")
             ax2.set_ylabel("Segment-index gap (samples)", color="#c8c6c0", fontsize=8)
             ax2.tick_params(colors="#c8c6c0")
             ax2.legend(loc="upper right", fontsize=7, framealpha=0.5)
-        ax.set_xlabel("Time [s]")
-        ax.set_ylabel("Euclidean distance [px]")
-        ax.set_title(f"Car-to-Car Distance - Same-Lane {title_sfx}")
+        ax.set_xlabel("Time [s]"); ax.set_ylabel("Euclidean distance [px]")
+        ax.set_title(f"Car-to-Car Distance - Same-Lane {suffix}")
         ax.legend(loc="upper left", framealpha=0.7, fontsize=8)
 
     if cross_pairs:
         ax = axes[panel]
         for pair, v in cross_pairs.items():
-            lbl = f"d({pair}) L{v['lane_a']}<->L{v['lane_b']}"
-            ax.plot(v["tarr"], v["distarr"], lw=1.4, ls="-.", label=lbl)
-            states = v.get("state_list", [])
-            for i, s in enumerate(states):
-                if s in _CROSS_LANE_MARKER_STYLE:
-                    pal_key, marker = _CROSS_LANE_MARKER_STYLE[s]
-                    ax.scatter(v["tarr"][i], v["distarr"][i], marker=marker, s=22,
-                               color=PAL[pal_key], edgecolor="#28251d",
-                               linewidth=0.3, alpha=0.85, zorder=4)
-        ax.set_xlabel("Time [s]")
-        ax.set_ylabel("Euclidean distance [px]")
-        ax.set_title(f"Car-to-Car Distance - Cross-Lane {title_sfx}")
+            ax.plot(v["tarr"], v["distarr"], lw=1.4, ls="-.", label=f"d({pair}) L{v['lane_a']}<->L{v['lane_b']}")
+            for i, s in enumerate(v.get("state_list", [])):
+                if s in CROSS_LANE_STYLE:
+                    pal_key, marker = CROSS_LANE_STYLE[s]
+                    ax.scatter(v["tarr"][i], v["distarr"][i], marker=marker, s=22, color=PAL[pal_key],
+                               edgecolor=DARK, linewidth=0.3, alpha=0.85, zorder=4)
+        ax.set_xlabel("Time [s]"); ax.set_ylabel("Euclidean distance [px]")
+        ax.set_title(f"Car-to-Car Distance - Cross-Lane {suffix}")
         ax.legend(loc="upper left", framealpha=0.7, fontsize=8)
 
-    _save(fig, os.path.join(outdir, "car_car_dist_timeseries.png"))
+    save_fig(fig, os.path.join(outdir, "car_car_dist_timeseries.png"))
 
-
-def plot_waiting_times(frames: List[dict], car_ids: List[str], meta: dict, outdir: str) -> None:
-    """Chart 7 -- per-car waiting time (derived from the "waiting" flag).
-
-    X-axis is now car_id (one bar per car) instead of a pooled, unlabeled
-    "interaction index" -- makes cooperative vs non-cooperative comparison
-    across cars in the same run directly readable. Each bar shows the mean
-    waiting-time duration for that car's contiguous True-runs; error bars
-    show +/-1 std across that car's interactions, and the interaction count
-    (n) is annotated above each bar so single-sample means aren't mistaken
-    for a well-sampled average.
-
-    Replaces the old interaction_zones/taus lookup, which does not exist in
-    auto_control.py's output -- durations are still derived from contiguous
-    True-runs in the per-frame "waiting" boolean via _waiting_durations().
-    """
-    taus_by_car: Dict[str, List[float]] = {}
-    for cid in car_ids:
-        t = _waiting_durations(frames, cid)
-        if t:
-            taus_by_car[cid] = t
+def plot_waiting_times(frames: List[dict], cids: List[str], meta: dict, outdir: str) -> None:
+    """Per-car mean waiting time (+/-1 std), derived from the 'waiting' flag."""
+    taus_by_car = {cid: t for cid in cids if (t := waiting_durations(frames, cid))}
     if not taus_by_car:
         return
-
     labels = list(taus_by_car.keys())
     means = [float(np.mean(taus_by_car[c])) for c in labels]
     stds = [float(np.std(taus_by_car[c])) if len(taus_by_car[c]) > 1 else 0.0 for c in labels]
     counts = [len(taus_by_car[c]) for c in labels]
 
-    fig, ax = _fig(4)
-    pol_color = PAL.get(meta.get("policy", "cooperative"), PAL["default"])
+    fig, ax = new_fig(4)
+    colour = PAL.get(meta.get("policy", "cooperative"), PAL["default"])
     x = np.arange(len(labels))
-    bars = ax.bar(x, means, yerr=stds, capsize=4, color=pol_color, alpha=0.85,
-                   edgecolor="#f7f6f2", linewidth=1.2)
+    bars = ax.bar(x, means, yerr=stds, capsize=4, color=colour, alpha=0.85, edgecolor=BG, linewidth=1.2)
     overall_mean = float(np.mean([v for vals in taus_by_car.values() for v in vals]))
-    ax.axhline(overall_mean, color="#28251d", lw=1.5, ls="--",
-               label=f"Overall mean {overall_mean:.2f} s")
+    ax.axhline(overall_mean, color=DARK, lw=1.5, ls="--", label=f"Overall mean {overall_mean:.2f} s")
     for bar, n in zip(bars, counts):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + max(means) * 0.03,
-                f"n={n}", ha="center", va="bottom", fontsize=8, color="#28251d")
+                f"n={n}", ha="center", va="bottom", fontsize=8, color=DARK)
     ax.set_xticks(x); ax.set_xticklabels([f"Car {c}" for c in labels])
     ax.set_xlabel("Car ID"); ax.set_ylabel("Waiting time [s] (mean +/- std)")
-    ax.set_title(f"Per-Car Waiting Time {meta.get('scenario','')} {meta.get('policy','')}")
+    ax.set_title(f"Per-Car Waiting Time {title_suffix(meta)}")
     ax.legend(framealpha=0.7)
-    _save(fig, os.path.join(outdir, "waiting_time_bar.png"))
-
+    save_fig(fig, os.path.join(outdir, "waiting_time_bar.png"))
 
 def plot_error_cdf(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 8 -- empirical CDF of lateral error (supports RQ1.2)."""
-    fig, ax = _fig()
-    any_plotted = False
-    for car_id, arrs in arrs_by_car.items():
+    fig, ax = new_fig()
+    plotted = False
+    for cid, arrs in arrs_by_car.items():
         errs = np.sort(np.abs(arrs["lat"]))
         errs = errs[~np.isnan(errs)]
         if len(errs) == 0:
             continue
-        cdf = np.arange(1, len(errs) + 1) / len(errs)
-        ax.plot(errs, cdf, lw=1.8, label=f"Car {car_id}")
-        any_plotted = True
-    if not any_plotted:
-        ax.text(0.5, 0.5, "No lateral error data available",
-                transform=ax.transAxes, ha="center", va="center",
-                color="#7a7974", fontsize=10)
+        ax.plot(errs, np.arange(1, len(errs) + 1) / len(errs), lw=1.8, label=f"Car {cid}")
+        plotted = True
+    if not plotted:
+        ax.text(0.5, 0.5, "No lateral error data available", transform=ax.transAxes,
+                ha="center", va="center", color=MUTED, fontsize=10)
     ax.set_xlabel("Lateral error [px]"); ax.set_ylabel("Cumulative probability")
-    ax.set_title(f"CDF - Lateral Error {meta.get('scenario','')} {meta.get('policy','')}")
-    ax.grid(True, alpha=0.3, color="#d4d1ca"); ax.legend(framealpha=0.7)
-    _save(fig, os.path.join(outdir, "error_cdf.png"))
+    ax.set_title(f"CDF - Lateral Error {title_suffix(meta)}")
+    ax.grid(True, alpha=0.3, color=GRID); ax.legend(framealpha=0.7)
+    save_fig(fig, os.path.join(outdir, "error_cdf.png"))
 
 def plot_lane_timeline(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 10 -- lane assignment over time per car."""
-    fig, ax = _fig()
-    for car_id, arrs in arrs_by_car.items():
+    fig, ax = new_fig()
+    for cid, arrs in arrs_by_car.items():
         lane = np.where(np.isnan(arrs["lane"].astype(float)), 1, arrs["lane"])
-        ax.step(arrs["t"], lane, lw=1.4, where="post", label=f"Car {car_id}")
+        ax.step(arrs["t"], lane, lw=1.4, where="post", label=f"Car {cid}")
     ax.set_yticks([1, 2]); ax.set_yticklabels(["Lane 1 (inner)", "Lane 2 (outer)"])
     ax.set_xlabel("Time [s]"); ax.set_ylabel("Lane")
-    ax.set_title(f"Lane Assignment Over Time {meta.get('scenario','')} {meta.get('policy','')}")
+    ax.set_title(f"Lane Assignment Over Time {title_suffix(meta)}")
     ax.legend(framealpha=0.7)
-    _save(fig, os.path.join(outdir, "lane_timeline.png"))
+    save_fig(fig, os.path.join(outdir, "lane_timeline.png"))
 
 def plot_emergency_stop_timeline(arrs_by_car: dict, meta: dict, outdir: str) -> None:
-    """Chart 12 -- emergency stop active frames over time.
-
-    Plots a binary (0/1) step trace per car showing frames where
-    emergency_stop was True. Skipped when no emergency stops occurred
-    (e.g. nominal S1 runs with no obstacles and no lane straddling).
-    """
-    any_emstop = any(
-        bool(np.any(arrs.get("emstop", np.zeros(1)) > 0))
-        for arrs in arrs_by_car.values()
-    )
-    if not any_emstop:
+    """Skipped when no emergency stops occurred (e.g. nominal S1 runs)."""
+    if not any(bool(np.any(a.get("emstop", np.zeros(1)) > 0)) for a in arrs_by_car.values()):
         return
-
-    fig, ax = _fig(3)
-    for car_id, arrs in arrs_by_car.items():
+    fig, ax = new_fig(3)
+    for cid, arrs in arrs_by_car.items():
         em = arrs.get("emstop", np.zeros_like(arrs["t"]))
-        ax.step(arrs["t"], em, lw=1.4, where="post", label=f"Car {car_id}")
+        ax.step(arrs["t"], em, lw=1.4, where="post", label=f"Car {cid}")
     ax.set_yticks([0, 1]); ax.set_yticklabels(["Normal", "EMERGENCY"])
     ax.set_xlabel("Time [s]"); ax.set_ylabel("Emergency stop active")
-    ax.set_title(f"Emergency Stop Active Frames {meta.get('scenario','')} {meta.get('policy','')}")
+    ax.set_title(f"Emergency Stop Active Frames {title_suffix(meta)}")
     ax.legend(framealpha=0.7)
-    _save(fig, os.path.join(outdir, "emergency_stop_timeline.png"))
+    save_fig(fig, os.path.join(outdir, "emergency_stop_timeline.png"))
 
-# ── Trajectory coverage chart (ground-truth + car positions) ─────────────────
+# ── Trajectory coverage ──────────────────────────────────────────────────
 
-def _extract_car_positions(frames: List[dict], car_id: str, px_per_cm: Optional[float] = None,
-                           unit: str = "px") -> List[tuple]:
-    """Return list of (x, y) positions from the pose field for *car_id*.
-
-    The saved logs store pose coordinates in pixel space. When the log metadata
-    reports the display/output unit as centimetres and a valid ``px_per_cm`` is
-    available, the trajectory chart converts those pose values to centimetres so
-    the axis labels match the plotted geometry.
-    """
-    scale_to_cm = (str(unit).lower() == "cm" and px_per_cm not in (None, 0))
+def extract_car_positions(frames: List[dict], cid: str, px_per_cm: Optional[float] = None, unit: str = "px") -> List[tuple]:
+    scale = str(unit).lower() == "cm" and px_per_cm not in (None, 0)
     pts = []
     for f in frames:
-        p = _car_field(f, car_id, "pose", default=None)
+        p = car_field(f, cid, "pose", default=None)
         if p and len(p) >= 2:
-            x = float(p[0])
-            y = float(p[1])
-            if scale_to_cm:
-                x /= float(px_per_cm)
-                y /= float(px_per_cm)
+            x, y = float(p[0]), float(p[1])
+            if scale:
+                x, y = x / float(px_per_cm), y / float(px_per_cm)
             pts.append((x, y))
     return pts
 
+GT_STYLE = {"lane1_ref": ("#6daa45", 2.0, "Lane 1 ideal path"), "lane2_ref": ("#5591c7", 2.0, "Lane 2 ideal path")}
+
 def plot_trajectory(runs_data: List[dict], outdir: str, avg_mode: bool = False) -> None:
-    """
-    Chart 11 -- trajectory coverage.
-
-    Draws the track ground-truth curves (lane centrelines) on a dark
-    background, then overlays the car position scatter points from one or
-    more runs. In avg_mode (multi-file averaging) all runs are merged so
-    the point cloud density reflects the full N-repetition dataset.
-
-    The ground-truth geometry is taken from the first run that has a
-    non-empty top-level 'track_ground_truth' key (written once by save_log;
-    auto_control.py also mirrors the same object into every frame, but this
-    chart only needs the top-level copy).
-    """
+    """Track ground-truth curves + car position scatter, merged across runs in avg_mode."""
     fig, ax = plt.subplots(figsize=(8, 8), dpi=DPI)
-    fig.patch.set_facecolor("#f7f6f2")
-    ax.set_facecolor("#171614")
+    fig.patch.set_facecolor(BG); ax.set_facecolor("#171614")
     for spine in ax.spines.values():
-        spine.set_edgecolor("#d4d1ca")
-    ax.tick_params(colors="#7a7974")
-    ax.set_aspect("equal")
-    ax.invert_yaxis()
+        spine.set_edgecolor(GRID)
+    ax.tick_params(colors=MUTED); ax.set_aspect("equal"); ax.invert_yaxis()
 
     gt_run = next((r for r in runs_data if r.get("track_ground_truth")), None)
     gt = gt_run.get("track_ground_truth") if gt_run else None
     gt_meta = gt_run.get("meta", {}) if gt_run else {}
-    gt_unit = str(gt_meta.get("unit", "px")).lower()
-    gt_px_per_cm = gt_meta.get("px_per_cm")
-    gt_scale_to_cm = (gt_unit == "cm" and gt_px_per_cm not in (None, 0))
+    gt_scale = str(gt_meta.get("unit", "px")).lower() == "cm" and gt_meta.get("px_per_cm") not in (None, 0)
 
-    GT_STYLE = {
-        "lane1_ref": ("#6daa45", 2.0, "Lane 1 ideal path"),
-        "lane2_ref": ("#5591c7", 2.0, "Lane 2 ideal path"),
-    }
     if gt:
         for key, (col, lw, lbl) in GT_STYLE.items():
             pts = gt.get(key, [])
             if pts:
                 arr = np.array(pts, dtype=float)
-                if gt_scale_to_cm:
-                    arr = arr / float(gt_px_per_cm)
+                if gt_scale:
+                    arr = arr / float(gt_meta["px_per_cm"])
                 arr_closed = np.vstack([arr, arr[[0]]])
-                ax.plot(arr_closed[:, 0], arr_closed[:, 1],
-                        color=col, lw=lw, alpha=0.75, label=lbl)
+                ax.plot(arr_closed[:, 0], arr_closed[:, 1], color=col, lw=lw, alpha=0.75, label=lbl)
     else:
         ax.text(0.5, 0.5, "No track_ground_truth in log\n(run at least one frame first)",
-                transform=ax.transAxes, ha="center", va="center",
-                color="#7a7974", fontsize=9)
+                transform=ax.transAxes, ha="center", va="center", color=MUTED, fontsize=9)
 
-    all_car_ids = sorted(set(
-        cid
-        for r in runs_data
-        for f in r.get("frames", [])
-        for cid in f.get("cars", {}).keys()
-    ))
-    for ci, car_id in enumerate(all_car_ids):
-        colour = _RUN_COLOURS[ci % len(_RUN_COLOURS)]
-        all_x, all_y = [], []
+    all_cids = sorted(set(cid for r in runs_data for f in r.get("frames", []) for cid in f.get("cars", {}).keys()))
+    for i, cid in enumerate(all_cids):
+        colour = RUN_COLOURS[i % len(RUN_COLOURS)]
+        xs, ys = [], []
         for r in runs_data:
             rmeta = r.get("meta", {})
-            for px, py in _extract_car_positions(
-                r.get("frames", []), car_id,
-                px_per_cm=rmeta.get("px_per_cm"),
-                unit=rmeta.get("unit", "px")
-            ):
-                all_x.append(px); all_y.append(py)
-        if all_x:
-            ax.scatter(all_x, all_y, s=2, alpha=0.35, color=colour,
-                       label=f"Car {car_id} positions", rasterized=True)
+            for x, y in extract_car_positions(r.get("frames", []), cid, rmeta.get("px_per_cm"), rmeta.get("unit", "px")):
+                xs.append(x); ys.append(y)
+        if xs:
+            ax.scatter(xs, ys, s=2, alpha=0.35, color=colour, label=f"Car {cid} positions", rasterized=True)
 
     meta0 = runs_data[0].get("meta", {}) if runs_data else {}
-    n_runs = len(runs_data)
-    suffix = f" ({n_runs} runs averaged)" if avg_mode and n_runs > 1 else ""
-    _unit = meta0.get("unit", "px")
-    _dfov = meta0.get("dfov")
-    _dfov_lbl = f" dFOV={_dfov}deg" if _dfov else ""
-    ax.set_title(
-        f"Trajectory Coverage {meta0.get('scenario', '')} "
-        f"{meta0.get('policy', '')}{_dfov_lbl}{suffix}",
-        color="#28251d",
-    )
-    ax.set_xlabel(f"x [{_unit}]", color="#7a7974")
-    ax.set_ylabel(f"y [{_unit}]", color="#7a7974")
-    ax.legend(loc="upper right", fontsize=7, framealpha=0.6,
-              facecolor="#1c1b19", labelcolor="white")
-    _save(fig, os.path.join(outdir, "trajectory_coverage.png"))
+    suffix = f" ({len(runs_data)} runs averaged)" if avg_mode and len(runs_data) > 1 else ""
+    dfov_lbl = f" dFOV={meta0.get('dfov')}deg" if meta0.get("dfov") else ""
+    ax.set_title(f"Trajectory Coverage {title_suffix(meta0)}{dfov_lbl}{suffix}", color=DARK)
+    unit = meta0.get("unit", "px")
+    ax.set_xlabel(f"x [{unit}]", color=MUTED); ax.set_ylabel(f"y [{unit}]", color=MUTED)
+    ax.legend(loc="upper right", fontsize=7, framealpha=0.6, facecolor="#1c1b19", labelcolor="white")
+    save_fig(fig, os.path.join(outdir, "trajectory_coverage.png"))
 
-# ── Multi-run comparison chart ────────────────────────────────────────────────
+# ── Multi-run comparison ─────────────────────────────────────────────────
+
+COMPARISON_METRICS = [
+    ("mean_lateral_error_px", "Mean lat. error px"), ("mean_heading_error_deg", "Mean hdg error deg"),
+    ("mean_waiting_time_s", "Mean waiting time s"), ("collision_rate", "Collision rate"),
+    ("near_miss_rate", "Near-miss rate"),
+]
 
 def plot_policy_comparison(runs: List[dict], outdir: str) -> None:
-    """Chart 9 -- side-by-side summary metrics: cooperative vs non-cooperative."""
-    metrics = [
-        ("mean_lateral_error_px",  "Mean lat. error px"),
-        ("mean_heading_error_deg", "Mean hdg error deg"),
-        ("mean_waiting_time_s",    "Mean waiting time s"),
-        ("collision_rate",         "Collision rate"),
-        ("near_miss_rate",         "Near-miss rate"),
-    ]
-    labels = []
-    for r in runs:
-        for cid in r.get("meta", {}).get("car_ids", ["?"]):
-            labels.append(f"{r['meta'].get('scenario','')}\n{r['meta'].get('policy','?')[:4].upper()} c{cid}")
+    labels = [f"{r['meta'].get('scenario', '')}\n{r['meta'].get('policy', '?')[:4].upper()} c{cid}"
+              for r in runs for cid in r.get("meta", {}).get("car_ids", ["?"])]
+    fig, axes = plt.subplots(1, len(COMPARISON_METRICS), figsize=(3.5 * len(COMPARISON_METRICS), 5), dpi=DPI)
+    fig.patch.set_facecolor(BG)
+    axes = [axes] if len(COMPARISON_METRICS) == 1 else axes
 
-    n_met = len(metrics)
-    fig, axes = plt.subplots(1, n_met, figsize=(3.5 * n_met, 5), dpi=DPI)
-    fig.patch.set_facecolor("#f7f6f2")
-    if n_met == 1:
-        axes = [axes]
-
-    for ax, (key, ylabel) in zip(axes, metrics):
+    for ax, (key, ylabel) in zip(axes, COMPARISON_METRICS):
         vals, colors = [], []
         for r in runs:
             pol = r["meta"].get("policy", "cooperative")
             for cid in r.get("meta", {}).get("car_ids", ["?"]):
                 summ = r.get("summary_by_car", {}).get(str(cid), r.get("summary", {}))
-                vals.append(summ.get(key))
-                colors.append(PAL.get(pol, PAL["default"]))
-
+                vals.append(summ.get(key)); colors.append(PAL.get(pol, PAL["default"]))
         has_data = [v is not None for v in vals]
         bar_vals = [v if v is not None else 0 for v in vals]
         x = np.arange(len(labels))
-        bars = ax.bar(
-            [xi for xi, h in enumerate(has_data) if h],
-            [bar_vals[i] for i in range(len(labels)) if has_data[i]],
-            width=0.65,
-            color=[colors[i] for i in range(len(labels)) if has_data[i]],
-            alpha=0.88, edgecolor="#f7f6f2", linewidth=1.2)
-        ax.set_xticks(x)
-        ax.set_xticklabels(labels, fontsize=7)
-        ax.set_ylabel(ylabel, fontsize=8, color="#7a7974")
-        ax.set_facecolor("#f9f8f5")
-        for sp in ax.spines.values(): sp.set_edgecolor("#d4d1ca")
-        ax.tick_params(colors="#7a7974")
-        shown_vals = [bar_vals[i] for i in range(len(labels)) if has_data[i]]
-        for bar, val in zip(bars, shown_vals):
-            ax.text(bar.get_x() + bar.get_width() / 2,
-                    bar.get_height() + 0.01 * max(bar_vals + [1e-9]),
-                    f"{val:.3g}", ha="center", va="bottom",
-                    fontsize=7, color="#28251d")
+        shown_x = [i for i in range(len(labels)) if has_data[i]]
+        bars = ax.bar(shown_x, [bar_vals[i] for i in shown_x], width=0.65,
+                       color=[colors[i] for i in shown_x], alpha=0.88, edgecolor=BG, linewidth=1.2)
+        ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=7)
+        ax.set_ylabel(ylabel, fontsize=8, color=MUTED); ax.set_facecolor(PANEL)
+        for sp in ax.spines.values():
+            sp.set_edgecolor(GRID)
+        ax.tick_params(colors=MUTED)
+        for bar, i in zip(bars, shown_x):
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.01 * max(bar_vals + [1e-9]),
+                    f"{bar_vals[i]:.3g}", ha="center", va="bottom", fontsize=7, color=DARK)
 
-    fig.suptitle("Policy / Scenario Comparison - Summary Metrics",
-                 color="#28251d", fontsize=11)
-    _save(fig, os.path.join(outdir, "policy_comparison_bar.png"))
+    fig.suptitle("Policy / Scenario Comparison - Summary Metrics", color=DARK, fontsize=11)
+    save_fig(fig, os.path.join(outdir, "policy_comparison_bar.png"))
 
-# ── Summary table ─────────────────────────────────────────────────────────────
+# ── Summary table ────────────────────────────────────────────────────────
 
 SUMMARY_COLS = [
     "scenario", "policy", "calibration", "car_id", "n_frames",
-    "mean_lateral_error_px", "mean_heading_error_deg", "mean_gap_cm",
-    "mean_obs_dist_px",
+    "mean_lateral_error_px", "mean_heading_error_deg", "mean_gap_cm", "mean_obs_dist_cm",
     "n_collision", "n_near_miss", "n_emergency_stop",
     "collision_rate", "near_miss_rate", "emergency_stop_rate",
-    "n_collision_car", "n_near_miss_car", "n_decision_car",
-    "collision_rate_car", "near_miss_rate_car",
-    "n_collision_object", "n_near_miss_object", "n_decision_object",
-    "collision_rate_object", "near_miss_rate_object",
+    "n_collision_car", "n_near_miss_car", "n_decision_car", "collision_rate_car", "near_miss_rate_car",
+    "n_collision_object", "n_near_miss_object", "n_decision_object", "collision_rate_object", "near_miss_rate_object",
     "mean_waiting_time_s",
 ]
+RATE_COLS = {c for c in SUMMARY_COLS if c.startswith(("n_", "collision_rate", "near_miss_rate", "emergency_stop_rate"))}
+
+def _fmt(v, col: str) -> str:
+    if v is None:
+        return "0" if col in RATE_COLS else "-"
+    return str(v)
 
 def write_summary_table(runs: List[dict], outdir: str) -> None:
-    rows = []
-    for r in runs:
-        for cid in r.get("meta", {}).get("car_ids", ["?"]):
-            summ = r.get("summary_by_car", {}).get(str(cid), r.get("summary", {}))
-            row = {**r["meta"], "car_id": cid, **summ}
-            rows.append({c: row.get(c) for c in SUMMARY_COLS})
+    rows = [{c: {**r["meta"], "car_id": cid, **r.get("summary_by_car", {}).get(str(cid), r.get("summary", {}))}.get(c)
+             for c in SUMMARY_COLS}
+            for r in runs for cid in r.get("meta", {}).get("car_ids", ["?"])]
 
     csv_path = os.path.join(outdir, "summary_table.csv")
-    def _fmt(v, col: str) -> str:
-        """
-        Rules:
-        - Count columns (n_*) and rate columns -> "0" when value is 0 (not blank)
-        - Obstacle / waiting metrics -> "-" when None (not present in this scenario)
-        - All other None -> "-"
-        """
-        COUNT_COLS = {"n_collision", "n_near_miss", "n_emergency_stop",
-                      "collision_rate", "near_miss_rate", "emergency_stop_rate",
-                      "n_collision_car", "n_near_miss_car", "n_decision_car",
-                      "collision_rate_car", "near_miss_rate_car",
-                      "n_collision_object", "n_near_miss_object", "n_decision_object",
-                      "collision_rate_object", "near_miss_rate_object"}
-        if v is None:
-            return "0" if col in COUNT_COLS else "-"
-        return str(v)
-
     with open(csv_path, "w", encoding="utf-8") as fh:
         fh.write(",".join(SUMMARY_COLS) + "\n")
         for row in rows:
@@ -1148,85 +636,50 @@ def write_summary_table(runs: List[dict], outdir: str) -> None:
             fh.write(" | ".join(_fmt(row[c], c) for c in SUMMARY_COLS) + "\n")
     print(f"  table -> {md_path}")
 
-# ── Multi-file averaging ──────────────────────────────────────────────────────
+# ── Multi-file averaging ─────────────────────────────────────────────────
 
-def _resample(arr: np.ndarray, n: int = 1000) -> np.ndarray:
-    """Resample *arr* to exactly *n* points using linear interpolation."""
+def resample(arr: np.ndarray, n: int = 1000) -> np.ndarray:
     if len(arr) == 0:
         return np.full(n, np.nan)
-    idx = np.linspace(0, len(arr) - 1, n)
-    return np.interp(idx, np.arange(len(arr)), arr)
+    return np.interp(np.linspace(0, len(arr) - 1, n), np.arange(len(arr)), arr)
+
+NUMERIC_KEYS = ["lat", "hdg", "servo", "motor", "obs_dist", "waiting", "lane", "emstop"]
+N_RESAMPLE = 1000
 
 def process_averaged_files(paths: List[str]) -> dict:
-    """
-    Load N JSON files, average their per-car metrics, produce charts from
-    the averaged arrays, and return a synthetic run dict.
-
-    Averaging strategy
-    ------------------
-    Each per-car numeric array (lateral_error, heading_error, etc.) is
-    resampled to N_RESAMPLE=1000 points (normalised time axis) before
-    stacking. np.nanmean across the N runs then produces a single averaged
-    trace, which is used for all charts.
-
-    Safety labels use majority-vote per time step.
-    Summary statistics are recomputed from each file's frames, then averaged
-    numerically across runs.
-    """
-    N_RESAMPLE = 1000
+    """Averages N JSON files (resampled to a normalised time axis) and charts the result."""
     print(f"\nAveraging {len(paths)} file(s):")
     for p in paths:
         print(f"  {p}")
-
     loaded = [load_json(p) for p in paths]
 
     meta = dict(loaded[0]["meta"])
     meta["n_frames"] = int(round(np.mean([len(d["frames"]) for d in loaded])))
     meta["averaged_runs"] = len(paths)
     meta["source_files"] = [Path(p).name for p in paths]
+    all_cids = sorted(set(cid for d in loaded for f in d["frames"] for cid in f.get("cars", {}).keys()))
+    meta["car_ids"] = all_cids
 
-    all_car_ids: List[str] = sorted(set(
-        cid for d in loaded for f in d["frames"]
-        for cid in f.get("cars", {}).keys()
-    ))
-    meta["car_ids"] = all_car_ids
+    def majority_vote(run_arrs, step_i, key):
+        votes = []
+        for ra in run_arrs:
+            series = ra.get(key, [])
+            n = len(series)
+            votes.append(series[min(int(round(step_i * (n - 1) / (N_RESAMPLE - 1))), n - 1)] if n else "safe")
+        return Counter(votes).most_common(1)[0][0]
 
-    avg_arrs_by_car: dict = {}
-    for car_id in all_car_ids:
-        run_arrs = [frames_to_arrays(d["frames"], car_id) for d in loaded]
-
-        numeric_keys = ["lat", "hdg", "servo", "motor", "obs_dist", "waiting", "lane", "emstop"]
-        averaged: dict = {}
-        for k in numeric_keys:
-            stacked = np.stack(
-                [_resample(ra[k].astype(float), N_RESAMPLE) for ra in run_arrs],
-                axis=0)
-            averaged[k] = np.nanmean(stacked, axis=0)
-
-        mean_dur = float(np.mean([
-            ra["t"][-1] if len(ra["t"]) > 0 else 1.0 for ra in run_arrs
-        ]))
+    avg_arrs_by_car = {}
+    for cid in all_cids:
+        run_arrs = [frames_to_arrays(d["frames"], cid) for d in loaded]
+        averaged = {k: np.nanmean(np.stack([resample(ra[k].astype(float), N_RESAMPLE) for ra in run_arrs], axis=0), axis=0)
+                    for k in NUMERIC_KEYS}
+        mean_dur = float(np.mean([ra["t"][-1] if len(ra["t"]) else 1.0 for ra in run_arrs]))
         averaged["t"] = np.linspace(0, mean_dur, N_RESAMPLE)
+        for key in ("safety", "safety_car", "safety_object"):
+            averaged[key] = [majority_vote(run_arrs, i, key) for i in range(N_RESAMPLE)]
+        avg_arrs_by_car[cid] = averaged
 
-        def _majority_vote(step_i: int, key: str) -> str:
-            votes = []
-            for ra in run_arrs:
-                series = ra.get(key, [])
-                n = len(series)
-                if n == 0:
-                    votes.append("safe")
-                    continue
-                idx_r = min(int(round(step_i * (n - 1) / (N_RESAMPLE - 1))), n - 1)
-                votes.append(series[idx_r])
-            return Counter(votes).most_common(1)[0][0]
-
-        averaged["safety"] = [_majority_vote(i, "safety") for i in range(N_RESAMPLE)]
-        averaged["safety_car"] = [_majority_vote(i, "safety_car") for i in range(N_RESAMPLE)]
-        averaged["safety_object"] = [_majority_vote(i, "safety_object") for i in range(N_RESAMPLE)]
-        avg_arrs_by_car[car_id] = averaged
-
-    rundir = _results_dir(meta)
-
+    rundir = results_dir(meta)
     plot_lateral_error(avg_arrs_by_car, meta, rundir)
     plot_heading_error(avg_arrs_by_car, meta, rundir)
     plot_car_object_dist(avg_arrs_by_car, meta, rundir)
@@ -1235,59 +688,44 @@ def process_averaged_files(paths: List[str]) -> dict:
     plot_safety_pie_object(avg_arrs_by_car, meta, rundir)
     plot_commands(avg_arrs_by_car, meta, rundir)
     plot_car_car_dist(loaded[0]["frames"], meta, rundir)
-    plot_waiting_times(loaded[0]["frames"], all_car_ids, meta, rundir)
+    plot_waiting_times(loaded[0]["frames"], all_cids, meta, rundir)
     plot_error_cdf(avg_arrs_by_car, meta, rundir)
     plot_lane_timeline(avg_arrs_by_car, meta, rundir)
     plot_emergency_stop_timeline(avg_arrs_by_car, meta, rundir)
-
     plot_trajectory(loaded, rundir, avg_mode=True)
 
-    all_run_summaries: Dict[str, List[dict]] = {cid: [] for cid in all_car_ids}
-    for d in loaded:
-        for cid in all_car_ids:
-            all_run_summaries[cid].append(
-                compute_summary(d["frames"], meta, cid))
-
-    summary_by_car: Dict[str, dict] = {}
-    for cid in all_car_ids:
-        summ_list = all_run_summaries[cid]
-        avg_summ: dict = {}
-        for key in summ_list[0]:
-            vals = [s[key] for s in summ_list if s[key] is not None]
-            avg_summ[key] = round(float(np.mean(vals)), 4) if vals else None
-        summary_by_car[cid] = avg_summ
+    summary_by_car = {}
+    for cid in all_cids:
+        summ_list = [compute_summary(d["frames"], meta, cid) for d in loaded]
+        summary_by_car[cid] = {
+            key: round(float(np.mean(vals)), 4) if (vals := [s[key] for s in summ_list if s[key] is not None]) else None
+            for key in summ_list[0]
+        }
 
     return {
-        "meta": meta,
-        "frames": loaded[0]["frames"],
-        "summary_by_car": summary_by_car,
-        "summary": summary_by_car.get(all_car_ids[0], {}) if all_car_ids else {},
-        "track_ground_truth": next(
-            (d.get("track_ground_truth") for d in loaded if d.get("track_ground_truth")),
-            None),
+        "meta": meta, "frames": loaded[0]["frames"], "summary_by_car": summary_by_car,
+        "summary": summary_by_car.get(all_cids[0], {}) if all_cids else {},
+        "track_ground_truth": next((d.get("track_ground_truth") for d in loaded if d.get("track_ground_truth")), None),
     }
 
-# ── Entry points ──────────────────────────────────────────────────────────────
+# ── Entry points ─────────────────────────────────────────────────────────
 
 def process_file(path: str) -> dict:
     print(f"\nProcessing {path}")
     data = load_json(path)
-    meta = data["meta"]
-    frames = data["frames"]
+    meta, frames = data["meta"], data["frames"]
+    rundir = results_dir(meta)
+    cids = car_ids(frames)
+    meta["car_ids"] = cids
 
-    rundir = _results_dir(meta)
-
-    car_ids = _car_ids(frames)
-    meta["car_ids"] = car_ids
-
-    if not car_ids:
+    if not cids:
         print(f"  [warn] No car data found in frames -- skipping charts for {path}")
         return data
 
-    arrs_by_car = {cid: frames_to_arrays(frames, cid) for cid in car_ids}
-    summary_by_car = {cid: compute_summary(frames, meta, cid) for cid in car_ids}
+    arrs_by_car = {cid: frames_to_arrays(frames, cid) for cid in cids}
+    summary_by_car = {cid: compute_summary(frames, meta, cid) for cid in cids}
     data["summary_by_car"] = summary_by_car
-    data["summary"] = summary_by_car.get(car_ids[0], {}) if car_ids else {}
+    data["summary"] = summary_by_car.get(cids[0], {})
 
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, indent=2)
@@ -1300,54 +738,40 @@ def process_file(path: str) -> dict:
     plot_safety_pie_object(arrs_by_car, meta, rundir)
     plot_commands(arrs_by_car, meta, rundir)
     plot_car_car_dist(frames, meta, rundir)
-    plot_waiting_times(frames, car_ids, meta, rundir)
+    plot_waiting_times(frames, cids, meta, rundir)
     plot_error_cdf(arrs_by_car, meta, rundir)
     plot_lane_timeline(arrs_by_car, meta, rundir)
     plot_emergency_stop_timeline(arrs_by_car, meta, rundir)
     plot_trajectory([data], rundir, avg_mode=False)
-
     return data
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Benchmark plotter for experiment JSON files")
-    parser.add_argument(
-        "files", nargs="*",
-        help="Paths to experiment .json files")
-    parser.add_argument(
-        "-f", "--avg-files", type=int, default=None, metavar="N",
-        help=(
-            "Average the first N positional files as repeated runs of the "
-            "same scenario. The averaged result is treated as one run entry "
-            "alongside any remaining files. "
-            "Example: -f 5 (with 5 matching .json paths listed)"
-        ))
+    parser = argparse.ArgumentParser(description="Benchmark plotter for experiment JSON files")
+    parser.add_argument("files", nargs="*", help="Paths to experiment .json files")
+    parser.add_argument("-f", "--avg-files", type=int, default=None, metavar="N",
+                         help="Average the first N files as repeated runs of the same scenario")
     args = parser.parse_args()
-
     if not args.files:
         parser.print_help(); sys.exit(0)
 
     os.makedirs(os.path.join(".", "exp", "results"), exist_ok=True)
 
     if args.avg_files and len(args.files) >= args.avg_files:
-        avg_group = args.files[:args.avg_files]
-        remaining = args.files[args.avg_files:]
-        avg_run = process_averaged_files(avg_group)
-        ind_runs = [process_file(p) for p in remaining]
-        runs = [avg_run] + ind_runs
+        avg_run = process_averaged_files(args.files[:args.avg_files])
+        runs = [avg_run] + [process_file(p) for p in args.files[args.avg_files:]]
     else:
         runs = [process_file(p) for p in args.files]
 
-    for _r in runs:
-        write_summary_table([_r], _results_dir(_r.get("meta", {})))
+    for r in runs:
+        write_summary_table([r], results_dir(r.get("meta", {})))
 
     if len(runs) > 1:
-        multi_dir = _multi_run_dir(runs)
+        multi_dir = multi_run_dir(runs)
         write_summary_table(runs, multi_dir)
         plot_policy_comparison(runs, multi_dir)
         print(f"  Multi-run outputs -> {multi_dir}")
 
-    print(f"\nAll per-run outputs written to ./exp/results/")
+    print("\nAll per-run outputs written to ./exp/results/")
 
 if __name__ == "__main__":
     main()

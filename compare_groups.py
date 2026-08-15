@@ -133,14 +133,14 @@ def main():
         runs.append(run)
 
         # Per-group individual outputs (same as main()'s per-run loop)
-        bp.write_summary_table([run], bp._results_dir(run.get("meta", {})))
+        bp.write_summary_table([run], bp.results_dir(run.get("meta", {})))
 
     if not runs:
         print("\nNo groups met --min-files threshold. Nothing to compare.")
         sys.exit(1)
 
     if len(runs) > 1:
-        multi_dir = bp._multi_run_dir(runs)
+        multi_dir = bp.multi_run_dir(runs)
         bp.write_summary_table(runs, multi_dir)
         bp.plot_policy_comparison(runs, multi_dir)
         print(f"\nCross-group comparison outputs -> {multi_dir}")
