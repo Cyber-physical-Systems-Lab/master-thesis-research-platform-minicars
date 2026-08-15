@@ -1,7 +1,7 @@
 """
-This file updates the files within the SD cards.
+This file updates the files within the Raspberry Pis' memory.
 
-The <username> and <password> on line 26 must be replaced by the username and password of the Raspberry Pi before
+The <username> and <password> on line 40 must be replaced by the username and password of the Raspberry Pi before
 running this code.
 """
 

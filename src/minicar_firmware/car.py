@@ -124,7 +124,7 @@ class Output(object):
             self.pwm_pin.ChangeDutyCycle(desired_cycle)
 
 
-# works with L298N driver motor - not for much time and that great, but still
+# works with L298N driver motor - not great, but do its job
 # works with DRV8871 driver motor - surprisingly well
 class Motor(object):
     """ 
